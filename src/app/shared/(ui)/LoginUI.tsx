@@ -1,6 +1,6 @@
 "use client";
 import { loginAction } from "@/actions/authAction";
-import Input from "@/components/Input";
+import Input from "@/components/Inputs/Input";
 import { loginSchema } from "@/schema/login.schema";
 import { SERVICE_AUTH } from "@/utils/enums/service-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
