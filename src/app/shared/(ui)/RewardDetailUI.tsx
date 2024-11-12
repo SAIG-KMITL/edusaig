@@ -16,7 +16,7 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
     setReward(rewards.find((reward) => reward.id == rewardId) ?? null);
   }, [rewardId]);
 
-  if(!reward) {
+  if (!reward) {
     return null;
   }
 
@@ -34,8 +34,12 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
         </div>
         <div className="w-[400px] flex flex-col items-start gap-6">
           <div className="flex flex-col items-start gap-1">
-            <h1 className="text-[36px] font-semibold leading-[100%]">{reward.name}</h1>
-            <p className="px-3 py-[2px] rounded-full text-white bg-gray-400">{reward.type}</p>
+            <h1 className="text-[36px] font-semibold leading-[100%]">
+              {reward.name}
+            </h1>
+            <p className="px-3 py-[2px] rounded-full text-white bg-gray-400">
+              {reward.type}
+            </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <p className="text-[28px] font-semibold">{reward.points}</p>
@@ -47,11 +51,13 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[20px] font-medium leading-[100%]">Description</p>
+            <p className="text-[20px] font-medium leading-[100%]">
+              Description
+            </p>
             <p className="text-[14px] text-gray-400">{reward.description}</p>
           </div>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="py-2 w-full flex flex-row justify-center items-center gap-1 rounded-lg bg-gray-800"
           >
             <p className="text-[20px] text-white font-medium">Redeem</p>
