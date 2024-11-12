@@ -12,6 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      boxShadow: {
+        "card": '0px 8px 24px 0px rgba(149, 157, 165, 0.2)',
+        "card-hover": '0px 8px 36px 0px rgba(149, 157, 165, 0.6)',
+      },
     },
   },
   plugins: [],
