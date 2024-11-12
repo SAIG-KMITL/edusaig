@@ -1,5 +1,11 @@
 import { RewardType } from "@/types/reward";
 
+type RewardOptions = {
+  id: string;
+  label: string;
+  count: number;
+};
+
 export const rewards: RewardType[] = [
   {
     id: "1",
@@ -131,4 +137,135 @@ export const rewards: RewardType[] = [
     createdAt: "2024-04-15",
     updatedAt: "2024-04-20",
   },
+  {
+    id: "11",
+    name: "Gourmet Chocolate Box",
+    description: "Indulge in a selection of premium gourmet chocolates, handpicked and crafted by top chocolatiers. Perfect for a sweet treat or as a gift for someone special.",
+    thumbnail: "/mockup.jpg",
+    type: "Food & Beverage",
+    points: 150,
+    stock: 40,
+    status: "Available",
+    createdAt: "2024-05-01",
+    updatedAt: "2024-05-10"
+  },
+  {
+    id: "12",
+    name: "E-Book Collection",
+    description: "Unlock access to a collection of popular e-books across genres. From thrilling mysteries to insightful self-help, dive into a world of stories and knowledge.",
+    thumbnail: "/mockup.jpg",
+    type: "Education",
+    points: 250,
+    stock: 60,
+    status: "Available",
+    createdAt: "2024-05-15",
+    updatedAt: "2024-05-25"
+  },
+  {
+    id: "13",
+    name: "Virtual Fitness Class",
+    description: "Join a virtual fitness class with expert instructors, designed to fit any schedule. Enjoy options from yoga to HIIT to stay active from home.",
+    thumbnail: "/mockup.jpg",
+    type: "Wellness",
+    points: 180,
+    stock: 50,
+    status: "Available",
+    createdAt: "2024-06-01",
+    updatedAt: "2024-06-10"
+  },
+  {
+    id: "14",
+    name: "Music Streaming Subscription",
+    description: "Enjoy unlimited music streaming for one month with access to millions of songs, playlists, and podcasts. Perfect for music lovers who want to explore new sounds.",
+    thumbnail: "/mockup.jpg",
+    type: "Entertainment",
+    points: 200,
+    stock: 25,
+    status: "Available",
+    createdAt: "2024-06-15",
+    updatedAt: "2024-06-20"
+  },
+  {
+    id: "15",
+    name: "Cooking Class Voucher",
+    description: "Take a virtual or in-person cooking class taught by a professional chef. Learn new recipes, techniques, and flavors from the comfort of your kitchen.",
+    thumbnail: "/mockup.jpg",
+    type: "Education",
+    points: 300,
+    stock: 10,
+    status: "Limited",
+    createdAt: "2024-07-01",
+    updatedAt: "2024-07-10"
+  },
+  {
+    id: "16",
+    name: "Personalized Water Bottle",
+    description: "Stay hydrated with a high-quality, personalized water bottle. Choose from a variety of colors and add your name or initials for a custom look.",
+    thumbnail: "/mockup.jpg",
+    type: "Merchandise",
+    points: 120,
+    stock: 80,
+    status: "Available",
+    createdAt: "2024-07-05",
+    updatedAt: "2024-07-15"
+  },
+  {
+    id: "17",
+    name: "Streaming Service Subscription",
+    description: "Enjoy one month of access to popular streaming services, offering movies, shows, and exclusive content for binge-watching enthusiasts.",
+    thumbnail: "/mockup.jpg",
+    type: "Entertainment",
+    points: 250,
+    stock: 20,
+    status: "Available",
+    createdAt: "2024-08-01",
+    updatedAt: "2024-08-10"
+  },
+  {
+    id: "18",
+    name: "Customized Notebook",
+    description: "Receive a beautifully crafted notebook with your chosen cover design, perfect for journaling, taking notes, or sketching out your next big idea.",
+    thumbnail: "/mockup.jpg",
+    type: "Merchandise",
+    points: 90,
+    stock: 100,
+    status: "Available",
+    createdAt: "2024-08-20",
+    updatedAt: "2024-08-30"
+  },
+  {
+    id: "19",
+    name: "Language Learning Subscription",
+    description: "Get three months of premium access to a language-learning platform. Start speaking a new language with lessons, activities, and practice sessions.",
+    thumbnail: "/mockup.jpg",
+    type: "Education",
+    points: 400,
+    stock: 30,
+    status: "Available",
+    createdAt: "2024-09-01",
+    updatedAt: "2024-09-10"
+  },
+  {
+    id: "20",
+    name: "Eco-Friendly Tote Bag",
+    description: "Carry your essentials in style with this eco-friendly, reusable tote bag. Made from sustainable materials, it's perfect for everyday use or shopping trips.",
+    thumbnail: "/mockup.jpg",
+    type: "Merchandise",
+    points: 75,
+    stock: 120,
+    status: "Available",
+    createdAt: "2024-09-15",
+    updatedAt: "2024-09-25"
+  }
 ];
+
+export const rewardOptions: RewardOptions[] = [
+  { id: "1", label: "Food & Beverage", count: 3 },
+  { id: "2", label: "Entertainment", count: 4 },
+  { id: "3", label: "Gift", count: 1 },
+  { id: "4", label: "Wellness", count: 3 },
+  { id: "5", label: "Travel", count: 1 },
+  { id: "6", label: "Education", count: 4 },
+  { id: "7", label: "Charity", count: 1 },
+  { id: "8", label: "Merchandise", count: 3 }
+]
