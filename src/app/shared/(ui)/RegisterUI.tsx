@@ -1,7 +1,7 @@
 "use client";
-import { loginAction } from "@/actions/authAction";
+import { registerAction } from "@/actions/registerAction";
 import Input from "@/components/Inputs/Input";
-import { loginSchema } from "@/schema/login.schema";
+import { registerSchema } from "@/schema/register.schema";
 import { SERVICE_AUTH } from "@/utils/enums/service-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -10,9 +10,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-const LoginUI = () => {
+const RegisterUI = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
@@ -20,26 +20,28 @@ const LoginUI = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      userName: "",
+      fullname: "",
       email: "",
-      password: "",
+      password: ""
     },
   });
 
-  const onSubmit = async (data: LoginFormData): Promise<void> => {
+  const onSubmit = async (data: RegisterFormData): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await loginAction(data.email, data.password);
+      const response = await registerAction(data.userName, data.fullname, data.email, data.password);
       if (response.error?.message) {
         alert(response.error?.message);
       } else {
-        alert(SERVICE_AUTH.LOGIN_SUCCESS);
+        alert(SERVICE_AUTH.REGISTER_SUCCESS);
       }
       reset();
     } catch (error) {
-      alert(error instanceof Error ? error.message : SERVICE_AUTH.LOGIN_FAILED);
+      alert(error instanceof Error ? error.message : SERVICE_AUTH.REGISTER_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +53,7 @@ const LoginUI = () => {
         <div className="max-w-md text-center">
           <Image
             src="/icons/banner.svg"
-            alt="login"
+            alt="register"
             width={500}
             height={500}
             className="object-cover"
@@ -64,9 +66,23 @@ const LoginUI = () => {
             Register
           </h1>
           <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-            Join to Our Community with all time access and free
+            Register to Our Community with all time access and free
           </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Input
+              type="text"
+              label="User Name"
+              placeholder="User Name"
+              error={errors.userName}
+              {...register("userName")}
+            />
+            <Input
+              type="text"
+              label="FullName"
+              placeholder="FullName"
+              error={errors.fullname}
+              {...register("fullname")}
+            />
             <Input
               type="email"
               label="Email"
@@ -87,15 +103,15 @@ const LoginUI = () => {
                 disabled={isLoading}
                 className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
               >
-                {isLoading ? "Loading..." : "Login"}
+                {isLoading ? "Loading..." : "Register"}
               </button>
             </div>
           </form>
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>
-              Doesn&apos;t have an account?{" "}
+              Do you already have an account?{" "}
               <Link href="/register" className="text-black hover:underline">
-                Sign In
+                Login
               </Link>
             </p>
           </div>
@@ -105,4 +121,4 @@ const LoginUI = () => {
   );
 };
 
-export default LoginUI;
+export default RegisterUI;
