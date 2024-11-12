@@ -1,6 +1,10 @@
-import RewardDetailUI from "@/app/shared/(ui)/RewardDetailUI"
+import RewardDetailUI from "@/app/shared/(ui)/RewardDetailUI";
 
-export default async function RewardDetailPage({ params }: { params: { id: string } }) {
+interface RewardDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function RewardDetailPage({ params }: RewardDetailPageProps) {
   const { id } = await params;
-  return <RewardDetailUI rewardId={id}/>
+  return <RewardDetailUI rewardId={id} />;
 }
