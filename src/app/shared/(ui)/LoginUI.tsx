@@ -1,6 +1,7 @@
 "use client";
 import { loginAction } from "@/actions/authAction";
 import Input from "@/components/Inputs/Input";
+import { Toast } from "@/components/Toast/Toast";
 import { loginSchema } from "@/schema/login.schema";
 import { SERVICE_AUTH } from "@/utils/enums/service-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,15 +37,18 @@ const LoginUI = () => {
       setIsLoading(true);
       const response = await loginAction(data.email, data.password);
       if (response.error?.message) {
-        alert(response.error?.message);
+        Toast(response.error?.message, "error");
       } else {
-        alert(SERVICE_AUTH.LOGIN_SUCCESS);
+        Toast("Login Success", "success");
         Cookies.set("AUTH_TOKEN", response.data?.accessToken || "");
         router.push("/");
       }
       reset();
     } catch (error) {
-      alert(error instanceof Error ? error.message : SERVICE_AUTH.LOGIN_FAILED);
+      Toast(
+        error instanceof Error ? error.message : SERVICE_AUTH.LOGIN_FAILED,
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
