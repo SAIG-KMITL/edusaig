@@ -9,7 +9,7 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ data }) => {
   return (
-    <Link href={`/course`}>
+    <Link href={`/course/${data.id}`}>
       <div className="border border-gray-300 drop-shadow-md bg-white w-72 rounded-md overflow-hidden">
         <div className="relative aspect-video h-48 w-full">
           <Image
