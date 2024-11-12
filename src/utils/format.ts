@@ -12,3 +12,11 @@ export function formatDuration(minutes: number): string {
   const remainingMinutes = minutes % 60;
   return `${hours}h ${remainingMinutes}m`;
 }
+
+export function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

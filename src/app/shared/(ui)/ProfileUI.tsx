@@ -1,21 +1,30 @@
 import CourseTable from "@/components/Tables/CourseTable";
 import { courses } from "@/constants/course";
+import { UserResponseType } from "@/types/user.type";
+import { formatDate } from "@/utils/format";
+import Image from "next/image";
 
-export default function ProfileUI() {
+type ProfileUIProps = {
+  user: UserResponseType;
+};
+
+export default function ProfileUI({ user }: ProfileUIProps) {
   return (
     <div className="container mx-auto my-5 p-5">
       <div className="md:flex no-wrap md:-mx-2 ">
         <div className="w-full md:w-3/12 md:mx-2">
-          <div className="bg-white p-3 border-t-4 border-green-400">
+          <div className="bg-white p-3 border-t-4 border-blue-400">
             <div className="image overflow-hidden">
-              <img
+              <Image
                 className="h-auto w-full mx-auto"
-                src="https://lavinephotography.com.au/wp-content/uploads/2017/01/PROFILE-Photography-112.jpg"
+                src="https://plus.unsplash.com/premium_photo-1682089892133-556bde898f2c?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c3R1ZGVudCUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
                 alt=""
+                width={1000}
+                height={1000}
               />
             </div>
             <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
-              Jane Doe
+              {user.fullname}
             </h1>
             <h3 className="text-gray-600 font-lg text-semibold leading-6">
               Student in our platform.
@@ -30,14 +39,14 @@ export default function ProfileUI() {
               <li className="flex items-center py-3">
                 <span>Roles</span>
                 <span className="ml-auto">
-                  <span className="bg-green-500 py-1 px-2 rounded text-white text-sm">
-                    Student
+                  <span className="bg-blue-500 py-1 px-2 rounded text-white text-sm">
+                    {user.role}
                   </span>
                 </span>
               </li>
               <li className="flex items-center py-3">
                 <span>Member since</span>
-                <span className="ml-auto">Nov 07, 2016</span>
+                <span className="ml-auto">{formatDate(user.createdAt)}</span>
               </li>
             </ul>
           </div>
@@ -45,7 +54,7 @@ export default function ProfileUI() {
         <div className="w-full md:w-9/12 mx-2 h-64">
           <div className="bg-white p-3 shadow-sm rounded-sm">
             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
-              <span className="text-green-500">
+              <span className="text-blue-500">
                 <svg
                   className="h-5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,30 +76,30 @@ export default function ProfileUI() {
               <div className="grid md:grid-cols-2 text-sm">
                 <div className="grid grid-cols-2">
                   <div className="px-4 py-2 font-semibold">First Name</div>
-                  <div className="px-4 py-2">Jane</div>
-                </div>
-                <div className="grid grid-cols-2">
-                  <div className="px-4 py-2 font-semibold">Last Name</div>
-                  <div className="px-4 py-2">Doe</div>
-                </div>
-                <div className="grid grid-cols-2">
-                  <div className="px-4 py-2 font-semibold">Email.</div>
                   <div className="px-4 py-2">
-                    <a className="text-blue-800" href="mailto:jane@example.com">
-                      jane@example.com
-                    </a>
+                    <span>{user.fullname.split(" ")[0]}</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2">
+                  <div className="px-4 py-2 font-semibold">Last Name</div>
+                  <div className="px-4 py-2">
+                    <span>{user.fullname.split(" ")[1]}</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2">
+                  <div className="px-4 py-2 font-semibold">Email</div>
+                  <div className="px-4 py-2">{user.email}</div>
+                </div>
+                <div className="grid grid-cols-2">
                   <div className="px-4 py-2 font-semibold">Member Since</div>
-                  <div className="px-4 py-2">Nov 07, 2016</div>
+                  <div className="px-4 py-2">{formatDate(user.createdAt)}</div>
                 </div>
               </div>
             </div>
           </div>
           <div className="bg-white shadow-sm rounded-sm my-4">
             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-              <span className="text-green-500 p-3">
+              <span className="text-blue-500 p-3">
                 <svg
                   className="h-5"
                   xmlns="http://www.w3.org/2000/svg"

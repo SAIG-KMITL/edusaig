@@ -8,6 +8,7 @@ export const Toast = (
     case "success":
       return toast.success(message);
     case "error":
+      console.log("error: ", message);
       return toast.error(message);
     case "loading":
       return toast.loading(message);

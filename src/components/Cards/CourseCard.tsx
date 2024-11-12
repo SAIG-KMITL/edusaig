@@ -1,4 +1,4 @@
-import { CourseType } from "@/app/types/course.type";
+import { CourseType } from "@/types/course.type";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
