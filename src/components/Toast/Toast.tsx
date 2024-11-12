@@ -10,7 +10,7 @@ export const Toast = (
     case "error":
       return toast.error(message);
     case "loading":
-      return toast(message, { icon: "⌛" });
+      return toast.loading(message);
     default:
       return toast(message);
   }
