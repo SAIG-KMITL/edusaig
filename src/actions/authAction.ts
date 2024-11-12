@@ -1,6 +1,6 @@
 "use server";
-import { baseApiAction } from "./baseAction";
 import { AuthResponseType } from "@/types/auth.type";
+import { baseApiAction } from "./baseAction";
 
 export async function loginAction(email: string, password: string) {
   return baseApiAction<AuthResponseType>(`/auth/login`, {
