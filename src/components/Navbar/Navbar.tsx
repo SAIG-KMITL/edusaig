@@ -23,7 +23,7 @@ function Navbar() {
                     <Link href={"/roadmap"} className=' hover:text-sky-500 transition px-1'>Roadmap</Link>
                     <Link href={"/reward"} className=' hover:text-sky-500 transition px-1'>Rewards</Link>
                 </div>
-                
+
                 {/* Waiting user data */}
                 <Link href={"/login"} className='hidden md:flex border px-5 py-2 text-lg bg-trans-white rounded-full border-skyblue transition mr-5 background bg-sky-500 font-semibold text-white hover:bg-sky-700'>Get Started</Link>
 
@@ -43,8 +43,8 @@ function Navbar() {
 
             {/* Mobile */}
             {isOpen ?
-                <div className=''>
-                    <div className='md:hidden z-[1] absolute w-[260px] h-full shadow-xl bg-white right-0'>
+                <div>
+                    <div className='md:hidden z-[1] absolute w-[260px] h-full shadow-xl bg-white right-0 transition'>
                         <div className='' onClick={Toggle}>
                             <div className='grid grid-cols-1'>
                                 <div className='flex justify-center py-2'><Link href={"/login"} className='border w-[230px] py-2 flex justify-center bg-trans-white rounded-[50px] border-skyblue transition background bg-sky-500 font-semibold text-white hover:bg-sky-700'>Get Started</Link></div>
@@ -55,6 +55,7 @@ function Navbar() {
                             </div>
                         </div>
                     </div>
+                    <div className='absolute h-full w-full bg-gray-900 opacity-50'/>
                 </div>
                 : ""
             }

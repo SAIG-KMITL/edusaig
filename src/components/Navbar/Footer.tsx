@@ -3,7 +3,7 @@ import Image from "next/image"
 
 function Footer() {
     return (
-        <div className="flex lg:justify-between justify-center border-t mb-5">
+        <div className="flex lg:justify-between justify-center border-t">
             <div className='font-bold text-3xl lg:flex lg:ml-10 pointer mt-6 hidden'>
                 <Link href={"/home"}>edusaig</Link>
             </div>
