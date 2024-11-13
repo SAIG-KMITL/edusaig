@@ -63,6 +63,8 @@ function Footer() {
                     <div className="grid gap-y-4 gap-x-8 lg:mr-[100px] text-gray-500 mt-3 font-bold text-sm">
                         <Link href={""} className="hover:underline">Privacy Policy</Link>
                         <Link href={""} className="hover:underline">Terms & Conditions</Link>
+                        <Link href={""} className="hover:underline">Cookie Policy</Link>
+                        <Link href={""} className="hover:underline">AI Additional Terms of Use</Link>
                     </div>
                 </div>
             </div>
