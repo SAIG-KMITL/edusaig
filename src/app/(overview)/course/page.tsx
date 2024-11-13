@@ -1,4 +1,4 @@
-import CourseUI from "../shared/(ui)/CourseUI";
+import CourseUI from "@/app/shared/(ui)/CourseUI";
 
 export default function Course() {
   return <CourseUI />;

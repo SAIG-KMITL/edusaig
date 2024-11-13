@@ -1,7 +1,5 @@
 "use client"
 
-import Navbar from "@/components/Navbar/Navbar"
-import Footer from "@/components/Navbar/Footer"
 import { CourseType } from "@/types/course.type"
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,7 +27,6 @@ export default function CourseDetailsUI({
 
     return (
         <>
-            <Navbar />
             <div>
                 <div className="pl-10 absolute flex">
                     <Image
@@ -102,7 +99,6 @@ export default function CourseDetailsUI({
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     )
 }
