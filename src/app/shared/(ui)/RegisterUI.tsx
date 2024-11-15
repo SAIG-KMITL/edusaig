@@ -1,11 +1,15 @@
 "use client";
+
 import { registerAction } from "@/actions/registerAction";
 import Input from "@/components/Inputs/Input";
+import { Toast } from "@/components/Toast/Toast";
 import { registerSchema } from "@/schema/register.schema";
 import { SERVICE_AUTH } from "@/utils/enums/service-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +18,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 const RegisterUI = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const {
     register,
@@ -23,25 +28,35 @@ const RegisterUI = () => {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      userName: "",
+      username: "",
       fullname: "",
       email: "",
-      password: ""
+      password: "",
     },
   });
 
   const onSubmit = async (data: RegisterFormData): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await registerAction(data.userName, data.fullname, data.email, data.password);
+      const response = await registerAction(
+        data.username,
+        data.fullname,
+        data.email,
+        data.password
+      );
       if (response.error?.message) {
-        alert(response.error?.message);
+        Toast(response.error?.message, "error");
       } else {
-        alert(SERVICE_AUTH.REGISTER_SUCCESS);
+        Toast(SERVICE_AUTH.REGISTER_SUCCESS, "success");
+        Cookies.set("AUTH_TOKEN", response.data?.accessToken || "");
+        router.push("/");
       }
       reset();
     } catch (error) {
-      alert(error instanceof Error ? error.message : SERVICE_AUTH.REGISTER_FAILED);
+      Toast(
+        error instanceof Error ? error.message : SERVICE_AUTH.REGISTER_FAILED,
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +88,12 @@ const RegisterUI = () => {
               type="text"
               label="User Name"
               placeholder="User Name"
-              error={errors.userName}
-              {...register("userName")}
+              error={errors.username}
+              {...register("username")}
             />
             <Input
               type="text"
-              label="FullName"
+              label="Full Name"
               placeholder="FullName"
               error={errors.fullname}
               {...register("fullname")}

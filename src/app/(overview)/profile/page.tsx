@@ -1,5 +1,5 @@
 import { fetchUserAction } from "@/actions/userAction";
-import ProfileUI from "../shared/(ui)/ProfileUI";
+import ProfileUI from "../../shared/(ui)/ProfileUI";
 
 export default async function Profile() {
   const response = await fetchUserAction();

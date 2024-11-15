@@ -11,7 +11,7 @@ type ProfileUIProps = {
 export default function ProfileUI({ user }: ProfileUIProps) {
   return (
     <div className="container mx-auto my-5 p-5">
-      <div className="md:flex no-wrap md:-mx-2 ">
+      <div className="md:flex no-wrap md:-mx-2">
         <div className="w-full md:w-3/12 md:mx-2">
           <div className="bg-white p-3 border-t-4 border-blue-400">
             <div className="image overflow-hidden">
@@ -51,7 +51,7 @@ export default function ProfileUI({ user }: ProfileUIProps) {
             </ul>
           </div>
         </div>
-        <div className="w-full md:w-9/12 mx-2 h-64">
+        <div className="w-full md:w-9/12 mx-2">
           <div className="bg-white p-3 shadow-sm rounded-sm">
             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
               <span className="text-blue-500">
@@ -122,7 +122,9 @@ export default function ProfileUI({ user }: ProfileUIProps) {
               </span>
               <span className="tracking-wide">Course Enrollment</span>
             </div>
-            <CourseTable courses={courses} />
+            <div className="flex">
+              <CourseTable courses={courses} />
+            </div>
           </div>
         </div>
       </div>
