@@ -1,3 +1,5 @@
+import Footer from "@/components/Navbar/Footer";
+import Navbar from "@/components/Navbar/Navbar";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
