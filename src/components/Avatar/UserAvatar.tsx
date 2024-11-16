@@ -26,7 +26,10 @@ const UserAvatar = ({ profilePic }: { profilePic?: string }) => {
           <Image
             src={profilePic}
             alt="User avatar"
-            className="h-full w-full object-cover"
+            width={40}
+            height={40}
+            className="object-cover"
+            priority={false}
           />
         ) : (
           defaultAvatar
