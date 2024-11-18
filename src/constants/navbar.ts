@@ -13,7 +13,7 @@ export const navbarButtons: NavbarButtonType[] = [
     link: "/roadmap",
   },
   {
-    label: "Reward",
+    label: "Rewards",
     link: "/reward",
   },
 ];
