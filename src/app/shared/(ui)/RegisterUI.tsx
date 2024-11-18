@@ -1,6 +1,6 @@
 "use client";
 
-import { registerAction } from "@/actions/registerAction";
+import { registerAction } from "@/actions/authAction";
 import Input from "@/components/Inputs/Input";
 import { Toast } from "@/components/Toast/Toast";
 import { registerSchema } from "@/schema/register.schema";

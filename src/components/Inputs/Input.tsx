@@ -5,16 +5,17 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: FieldError;
   isLoading?: boolean;
+  labelClassName?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, isLoading, className = "", ...props }, ref) => {
+  ({ label, error, isLoading, className = "", labelClassName = "", ...props }, ref) => {
     return (
       <div className="space-y-2">
         {label && (
           <label
             htmlFor={props.id}
-            className="block text-sm font-medium text-gray-700"
+            className={`block text-sm font-medium text-gray-700 ${labelClassName}`}
           >
             {label}
           </label>
