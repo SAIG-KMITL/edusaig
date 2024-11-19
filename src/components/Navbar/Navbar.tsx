@@ -19,7 +19,7 @@ function Navbar() {
     <div className="sticky top-0 z-20">
       <div className="h-[72px] flex bg-white bg-opacity-5 backdrop-blur-md items-center justify-between px-[24px] relative z-10">
         <div className="font-bold text-[26px] leading-[100%] text-white flex ml-5 pointer">
-          <Link href={"/home"} className="flex flex-row items-center gap-3">
+          <Link href={"/"} className="flex flex-row items-center gap-3">
             <Image
               src={"/icons/logo.svg"}
               width={32}
