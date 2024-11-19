@@ -151,7 +151,7 @@ export default function HomeUI() {
                 <p className="text-silver">Explore our most popular courses</p>
               </div>
               <Link
-                href="/courses"
+                href="/course"
                 className="flex items-center text-skyBlue hover:text-electricViolet transition-colors"
               >
                 View All
