@@ -23,7 +23,6 @@ export default function SidebarChapter({
 
     return (
         <div>
-            <div className="text-xl flex justify-center p-2 border-b">Contents</div>
             {chaptersId.map(chapter =>
                 <DropdownChapter key={chapter.id} contents={chapter} />
             )}

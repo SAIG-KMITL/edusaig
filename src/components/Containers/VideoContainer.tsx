@@ -29,7 +29,7 @@ export default function VideoContainer({
         <div>
             <div className="absolute top-[120px] w-[698px] h-[40px]">
                 <div className="flex">
-                    <Link href={`/course/${courseId.get('courseId')}`} className="px-6 py-2 flex h-full justify-center items-center bg-slate-200 rounded-full">
+                    <Link href={`/course/${courseId.get('courseId')}`} className="text-black px-6 py-2 flex h-full justify-center items-center bg-slate-200 rounded-full">
                         <Image
                             src="/icons/left-arrow.svg"
                             width={15}
@@ -51,7 +51,7 @@ export default function VideoContainer({
                         <Link className="mt-2 underline underline-offset-2" href={""}>book file</Link>
                     </div>
                     <div className="w-2/5 grid gap-4">
-                        <Link href={""} className="py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
+                        <Link href={""} className="text-black py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
                         <Image
                             src="/icons/book.svg"
                             width={15}
@@ -61,7 +61,7 @@ export default function VideoContainer({
                         />
                             Conclusion
                             </Link>
-                        <Link href={""} className="py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
+                        <Link href={""} className="text-black py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
                         <Image
                             src="/icons/teacher.svg"
                             width={15}
