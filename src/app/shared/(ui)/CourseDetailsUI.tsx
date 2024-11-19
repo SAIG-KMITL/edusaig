@@ -3,10 +3,14 @@
 import { CourseType } from "@/types/course.type"
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import CourseDetailsCard from "@/components/Cards/CourseDetailsCard";
+import { chapters } from "@/constants/chapter";
+import { courseModule } from "@/constants/courseModule";
 import Image from "next/image";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
+import { ChevronLeft } from "lucide-react";
+import { motion } from "framer-motion"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CourseDetailsUI({
     courses
@@ -15,6 +19,7 @@ export default function CourseDetailsUI({
 }) {
     const [course, setCourse] = useState<CourseType | null>(null);
     const params = useParams()
+    const router = useRouter()
 
     useEffect(() => {
         setCourse(courses.find((course) => course.id == params.id) ?? null)
@@ -29,17 +34,11 @@ export default function CourseDetailsUI({
     return (
         <div>
             <div className="flex justify-center mb-8">
-                <div className="w-[1080px] text-white md:flex mt-24">
-                    <div className="absolute top-[120px] w-[360px] h-[40px]">
+                <div className="w-[1080px] text-white md:flex mt-16">
+                    <div className="absolute top-[85px] w-[360px] h-[40px]">
                         <div className="flex">
-                            <Link href={`/course`} className="text-black px-6 py-2 flex h-full justify-center items-center bg-slate-200 rounded-full">
-                                <Image
-                                    src="/icons/left-arrow.svg"
-                                    width={15}
-                                    height={15}
-                                    alt="left-arrow icon"
-                                    className="mr-[6px]"
-                                />
+                            <Link href={`/course`} className="px-6 py-2 flex h-full justify-center items-center bg-royalPurple/20 hover:bg-royalPurple/30 rounded-full">
+                                <ChevronLeft className="mr-2 w-5 h-5"/>
                                 Back
                             </Link>
                         </div>
@@ -78,24 +77,29 @@ export default function CourseDetailsUI({
                                     {course.duration} mins
                                 </div>
                             </div>
-                            <div className="rounded-full bg-white text-black items-center justify-center flex py-3 mx-3 cursor-pointer">Enroll Now</div>
+                            <div className="flex">
+                                <motion.button whileTap={{scale:0.95}} whileHover={{ scale: 1.05 }} className="w-full flex justify-center p-3 rounded-xl bg-darkMagenta hover:bg-darkMagenta/90">
+                                    Enroll Now
+                                </motion.button>
+                            </div>
                         </div>
                     </div>
                     <div className="md:w-2/3 md:ml-[70px] flex 2xl:hidden justify-center">
                         <div className="grid grid-cols-1 gap-8">
                             <div>
                                 <div className="flex items-center">
-                                    <div className="text-2xl mr-8">{course.title}</div>
+                                    <div className="text-2xl mr-8 font-semibold">{course.title}</div>
                                     <div className="text-gray-400">by {course.teacher}</div>
                                 </div>
-                                <div className="border rounded-xl p-[25px] mt-1">
+                                <div className="border rounded-xl p-[25px] mt-1 bg-steelGray">
                                     {course.description}. Popular programming language courses, tutorials, programming certifications, and coding boot camps on the web offer a wealth of resources designed to keep you on top of your game.
                                 </div>
                             </div>
                             <div>
-                                <div className="text-2xl">Contents</div>
                                 <div className="border rounded-xl mt-1">
-                                    <SidebarChapter courseModuleId={course.id} />
+                                    <SidebarChapter courseModule={courseModule} chapters={chapters} onChapterSelect={function (id: string): void {
+                                        router.push(`/course/chapter/${id}`);
+                                    }} />
                                 </div>
                             </div>
                         </div>

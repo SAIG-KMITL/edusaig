@@ -1,80 +1,105 @@
-import { chapters } from "@/constants/chapter"
-import { useState, useEffect } from "react"
-import { ChapterType } from "@/types/chapter.type"
-import { useSearchParams } from "next/navigation"
-import { courses } from "@/constants/course"
-import { CourseType } from "@/types/course.type"
-import Link from "next/link"
-import Image from "next/image"
+"use client";
+
+import { ChapterType } from "@/types/chapter.type";
+import { CourseModuleType } from "@/types/course.type";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  BookMarked,
+  BookOpen,
+  CheckCircle,
+  ChevronLeft,
+  Download,
+  MessageCircle,
+  PlayCircle,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function VideoContainer({
-    chapterId
+  chapter,
+  courseModule,
+  onComplete,
 }: {
-    chapterId: string[] | undefined | string
+  chapter: ChapterType;
+  courseModule: CourseModuleType;
+  onComplete: () => void;
 }) {
-    const [detail, setDetail] = useState<ChapterType>()
-    const [course, setCourse] = useState<CourseType>()
-    const courseId = useSearchParams()
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl p-6 shadow-lg"
+    >
+      <div className="flex items-center mb-6">
+        <Link
+          href={`/course/${courseModule.course.id}`}
+          className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5 mr-2" />
+          Back to Course
+        </Link>
+        <h1 className="ml-4 text-2xl font-bold text-white">{chapter.title}</h1>
+      </div>
 
-    useEffect(() => {
-        setDetail(chapters.find((chapter) => chapter.id == chapterId))
-        setCourse(courses.find((item) => item.id == courseId.get('courseId')?.toString()))
-    }, [chapterId])
+      <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
+        <iframe
+          className="w-full h-full"
+          src={chapter.videoUrl}
+          allowFullScreen
+        />
+      </div>
 
-    if (!detail) {
-        return null;
-    }
+      <div className="mt-8 grid grid-cols-3 gap-8">
+        <div className="col-span-2">
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {chapter.content}
+          </h2>
+          <p className="text-silver mb-4">by {courseModule.course.teacher}</p>
+          <p className="text-white/80 leading-relaxed mb-6">
+            {chapter.description}
+          </p>
 
-    return (
-        <div>
-            <div className="absolute top-[120px] w-[698px] h-[40px]">
-                <div className="flex">
-                    <Link href={`/course/${courseId.get('courseId')}`} className="text-black px-6 py-2 flex h-full justify-center items-center bg-slate-200 rounded-full">
-                        <Image
-                            src="/icons/left-arrow.svg"
-                            width={15}
-                            height={15}
-                            alt="left-arrow icon"
-                            className="mr-[6px]"
-                        />
-                        Back
-                    </Link>
-                    <div className="flex items-center justify-center text-[24px] pl-8">{detail.title}</div>
-                </div>
-            </div>
-            <iframe className="aspect-video w-full rounded-3xl" src={detail.videoUrl} />
-            <div className="grid grid-cols-1 gap-8 pt-5 px-4">
-                <div className="flex">
-                    <div className="w-3/5">
-                        <div className="text-[24px]">{detail.content}</div>
-                        <div className="text-gray-500">by {course?.teacher}</div>
-                        <Link className="mt-2 underline underline-offset-2" href={""}>book file</Link>
-                    </div>
-                    <div className="w-2/5 grid gap-4">
-                        <Link href={""} className="text-black py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
-                        <Image
-                            src="/icons/book.svg"
-                            width={15}
-                            height={15}
-                            alt="book icon"
-                            className="mr-[6px]"
-                        />
-                            Conclusion
-                            </Link>
-                        <Link href={""} className="text-black py-2 sm:ml-8 rounded-full bg-slate-200 items-center justify-center flex">
-                        <Image
-                            src="/icons/teacher.svg"
-                            width={15}
-                            height={15}
-                            alt="teacher icon"
-                            className="mr-[6px]"
-                        />
-                            Ask Question
-                            </Link>
-                    </div>
-                </div>
-                <div className="text-[20px] pb-4">{detail.description}</div>
-            </div>
+          {/* Resources */}
+          <div className="flex gap-4">
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href="#"
+              className="flex items-center px-4 py-2 bg-electricViolet text-white rounded-lg hover:bg-electricViolet/90"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Materials
+            </motion.a>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onComplete}
+              className="flex items-center px-4 py-2 bg-skyBlue text-white rounded-lg hover:bg-skyBlue/90"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Mark as Complete
+            </motion.button>
+          </div>
         </div>
-    )
+
+        <div className="space-y-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full flex items-center justify-center px-4 py-3 bg-royalPurple text-white rounded-xl hover:bg-darkMagenta transition-colors"
+          >
+            <BookMarked className="w-5 h-5 mr-2" />
+            View Summary
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full flex items-center justify-center px-4 py-3 bg-royalPurple text-white rounded-xl hover:bg-darkMagenta transition-colors"
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            Ask Question
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
+  );
 }

@@ -14,10 +14,10 @@ export type CourseType = {
 
 export type CourseModuleType = {
   id: string;
-  courseId: string;
+  course: CourseType;
   title: string;
   description: string;
   orderIndex: number;
   createdAt: string;
   updatedAt: string;
-}
+};
