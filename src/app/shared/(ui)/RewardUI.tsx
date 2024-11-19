@@ -49,7 +49,7 @@ export default function RewardUI() {
           />
         </div>
       </div>
-      <div className="pb-9 bg-[#f1f1f1]">
+      <div className="pb-9">
         <div  className="w-[984px] mx-auto pt-9 pb-5 flex flex-row gap-12 gap-y-9 flex-wrap">
           {
             currentData.map((reward, index) => {

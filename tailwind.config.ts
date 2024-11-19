@@ -11,6 +11,13 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        steelGray: '#160430',
+        skyBlue: '#6BA1E1',
+        silver: '#B6B6B6',
+        royalPurple: '#583091',
+        darkMagenta: '#501794',
+        oceanBlue: '#3E70A1',
+        electricViolet: '#9747FF',
       },
       boxShadow: {
         "card": '0px 8px 24px 0px rgba(149, 157, 165, 0.2)',

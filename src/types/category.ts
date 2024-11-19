@@ -5,6 +5,6 @@ export type CategoryType = BaseTableData & {
   title: string;
   description: string;
   slug: string;
-  createdDate: string;
-  updatedDate: string;
+  createdAt: string;
+  updatedAt: string;
 };
