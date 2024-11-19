@@ -11,3 +11,13 @@ export type CourseType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type CourseModuleType = {
+  id: string;
+  courseId: string;
+  title: string;
+  description: string;
+  orderIndex: number;
+  createdAt: string;
+  updatedAt: string;
+}
