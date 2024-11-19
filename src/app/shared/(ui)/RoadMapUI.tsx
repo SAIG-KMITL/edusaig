@@ -3,7 +3,7 @@ import { roadmap } from "@/constants/roadmap";
 
 export const RoadMapUI = () => {
   return (
-    <div className="flex flex-1 flex-col min-h-screen bg-white justify-center items-center">
+    <div className="flex flex-1 flex-col min-h-screen justify-center items-center">
       <div className="flex items-center justify-start md:justify-center w-full pt-8 px-4 lg:px-8">
         <h1 className="text-blue-400 text-2xl font-bold">Start</h1>
       </div>
