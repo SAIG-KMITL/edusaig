@@ -14,7 +14,7 @@ export default function CourseUI() {
           </p>
         </div>
         <div className="flex">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-8 justify-center">
             {courses.map((course) => (
               <CourseCard key={course.id} data={course} />
             ))}

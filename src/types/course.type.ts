@@ -6,8 +6,10 @@ export type CourseType = {
   teacher: string;
   category: string;
   duration: number;
-  level: string;
+  level: CourseLevel;
   price: number;
   createdAt: string;
   updatedAt: string;
 };
+
+export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
