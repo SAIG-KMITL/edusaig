@@ -127,7 +127,7 @@ export default function EditChapterUI() {
   };
 
   return (
-    <div className="w-full p-12 h-screen">
+    <div className="w-full p-12">
       <div className="flex flex-row h-full drop-shadow-lg rounded-xl">
         <div className="w-full max-w-4xl mx-auto p-6">
           <motion.div
