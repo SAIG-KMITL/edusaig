@@ -18,6 +18,9 @@ export default {
         darkMagenta: '#501794',
         oceanBlue: '#3E70A1',
         electricViolet: '#9747FF',
+        beginner: '#6DBE45',
+        intermediate: "#FFCA3A",
+        advanced: '#FF6A00',
       },
       boxShadow: {
         "card": '0px 8px 24px 0px rgba(149, 157, 165, 0.2)',

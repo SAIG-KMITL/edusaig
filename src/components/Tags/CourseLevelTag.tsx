@@ -4,14 +4,14 @@ interface CourseLevelTagProps {
   level: CourseLevel
 }
 
-const color: { [key in CourseLevel]: string } = {
-  beginner: "bg-[#4CAF50]", 
-  intermediate: "bg-[#FFC107]", 
-  advanced: "bg-[#F44336]",
+const decorations: { [key in CourseLevel]: string } = {
+  beginner: "border-beginner text-beginner", 
+  intermediate: "border-intermediate text-intermediate", 
+  advanced: "border-advanced text-advanced",
 };
 
 export default function CourseLevelTag({ level }: CourseLevelTagProps) {
   return (
-    <span className={`py-1 px-2 rounded-sm text-xs font-light ${color["intermediate"]}`}>{level}</span>
+    <span className={`py-1 px-3 rounded-full text-xs font-light border ${decorations[level]}`}>{level}</span>
   );
 }
