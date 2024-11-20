@@ -45,7 +45,7 @@ function Navbar() {
               <Link
                 key={index}
                 href={button.link}
-                className={`hidden md:block px-4 lg:px-6 py-6 transition ${
+                className={`hidden md:block px-4 lg:px-6 py-6 h-[72px] transition ${
                   pathname.endsWith(button.link) && "font-bold text-lg"
                 } hover:bg-white hover:bg-opacity-5`}
               >
