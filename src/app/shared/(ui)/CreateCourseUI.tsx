@@ -1,32 +1,27 @@
 "use client";
 
-//import InputTheme from "@/components/Inputs/InputTheme";
+import { SelectTheme } from "@/components/Inputs/SelectTheme";
+import InputTheme from "@/components/Inputs/InputTheme";
+import TextareaTheme from "@/components/Inputs/TextareaTheme";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
+  BarChart2,
   CheckCircle,
   Clock,
+  DollarSign,
   FileText,
-  Hash,
+  Globe,
+  ImageIcon,
   Loader,
-  PlayCircle,
+  Tag,
   Type,
   Upload,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
-
-interface VideoFile extends File {
-  type: string;
-}
-
-interface FileDetails {
-  name: string;
-  size: number;
-  type: string;
-  url: string;
-}
 
 interface DragState {
   isDragging: boolean;
@@ -37,12 +32,57 @@ const formatFileSize = (bytes: number): string => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
 
-const validateVideoFile = (file: File | undefined): boolean => {
-  return Boolean(file && file.type.startsWith("video/"));
+const validateImageFile = (file: File | undefined): boolean => {
+  return Boolean(file && file.type.startsWith("image/"));
 };
 
+const categoryOptions = [
+  {
+    id: "1",
+    label: "Category1",
+  },
+  {
+    id: "2",
+    label: "Category2",
+  },
+  {
+    id: "3",
+    label: "Category3",
+  }
+];
+
+const levelOptions = [
+  {
+    id: "beginner",
+    label: "Beginner",
+  },
+  {
+    id: "intermediate",
+    label: "Intermediate",
+  },
+  {
+    id: "advanced",
+    label: "Advanced",
+  }
+];
+
+const statusOptions = [
+  {
+    id: "draft",
+    label: "Draft",
+  },
+  {
+    id: "published",
+    label: "Published",
+  },
+  {
+    id: "archived",
+    label: "Archived",
+  }
+];
+
 export default function CreateCourseUI() {
-  const [selectedFile, setSelectedFile] = useState<VideoFile | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -54,13 +94,13 @@ export default function CreateCourseUI() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
-    const file = event.target.files?.[0] as VideoFile;
-    if (validateVideoFile(file)) {
+    const file = event.target.files?.[0] as File;
+    if (validateImageFile(file)) {
       processFile(file);
     }
   };
 
-  const processFile = (file: VideoFile): void => {
+  const processFile = (file: File): void => {
     setSelectedFile(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
@@ -81,7 +121,7 @@ export default function CreateCourseUI() {
         }
         return prev + 10;
       });
-    }, 500);
+    }, 100);
   };
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>): void => {
@@ -101,8 +141,8 @@ export default function CreateCourseUI() {
     e.stopPropagation();
     setDragState({ isDragging: false, isOver: false });
 
-    const file = e.dataTransfer.files[0] as VideoFile;
-    if (validateVideoFile(file)) {
+    const file = e.dataTransfer.files[0] as File;
+    if (validateImageFile(file)) {
       processFile(file);
     }
   };
@@ -119,6 +159,19 @@ export default function CreateCourseUI() {
       fileInputRef.current.value = "";
     }
   };
+
+  const handleCategoryChange = (selectedOptionId: string) => {
+    console.log("Selected categoryId:", selectedOptionId);
+  };
+
+  const handleLevelChange = (selectedOptionId: string) => {
+    console.log("Selected levelId:", selectedOptionId);
+  };
+
+  const handleStatusChange = (selectedOptionId: string) => {
+    console.log("Selected statusId:", selectedOptionId);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -126,9 +179,9 @@ export default function CreateCourseUI() {
   };
 
   return (
-    <div className="flex gap-20">
-      <div className="flex flex-row h-full drop-shadow-lg rounded-xl">
-        <div className="w-full max-w-4xl mx-auto p-6">
+    <div className="w-full px-4 sm:px-6 lg:px-12 py-12">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:items-start h-full drop-shadow-lg rounded-xl">
+        <div className="w-full lg:flex-1 max-w-2xl px-6">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -145,11 +198,11 @@ export default function CreateCourseUI() {
                   shadow-lg cursor-pointer transition-colors group"
               >
                 <Upload className="w-5 h-5 mr-2" />
-                <span className="font-medium">Choose Video to Upload</span>
+                <span className="font-medium">Choose Image to Upload</span>
                 <input
                   type="file"
                   className="hidden"
-                  accept="video/*"
+                  accept="image/*"
                   onChange={handleFileSelect}
                   ref={fileInputRef}
                 />
@@ -176,7 +229,7 @@ export default function CreateCourseUI() {
                 >
                   <Upload className="w-12 h-12 text-silver mb-4" />
                   <p className="text-white text-lg font-medium mb-2">
-                    Drag and drop your video here
+                    Drag and drop your image here
                   </p>
                   <p className="text-silver text-sm">
                     or click the upload button above
@@ -231,19 +284,20 @@ export default function CreateCourseUI() {
                       animate={{ opacity: 1 }}
                       className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
                     >
-                      <video
+                      <Image
                         src={previewUrl}
-                        className="w-full h-full object-contain"
-                        controls
+                        fill
+                        alt="preview course thumbnail"
+                        className="w-full h-full object-cover"
                       />
                     </motion.div>
                   )}
 
-                  <div className="flex items-center justify-between p-4 bg-royalPurple/10 rounded-xl">
-                    <div className="flex items-center">
-                      <PlayCircle className="w-5 h-5 text-skyBlue mr-2" />
-                      <div>
-                        <p className="text-white font-medium">
+                  <div className="flex items-start justify-between gap-4 p-4 bg-royalPurple/10 rounded-xl">
+                    <div className="flex-1 flex items-start gap-2">
+                      <ImageIcon className="w-5 h-5 text-skyBlue" />
+                      <div className="flex-1 min-w-0">
+                        <p className="mb-1 text-white font-medium break-all">
                           {selectedFile.name}
                         </p>
                         <p className="text-silver text-sm">
@@ -257,7 +311,7 @@ export default function CreateCourseUI() {
                         whileTap={{ scale: 0.95 }}
                         className="px-4 py-2 bg-electricViolet text-white rounded-lg"
                       >
-                        Save Video
+                        Save Image
                       </motion.button>
                     )}
                   </div>
@@ -266,10 +320,86 @@ export default function CreateCourseUI() {
             </motion.div>
           </motion.div>
         </div>
-      <div>
 
+        <div className="w-full lg:flex-1 max-w-2xl flex flex-col break-words px-6 flex-grow-1">
+          <div className="flex justify-start text-white items-center font-semibold text-left text-2xl p-3 mt-5 rounded-xl">
+            <span>Create Course Details</span>
+          </div>
+
+          <div className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col">
+            <InputTheme
+              type="text"
+              label="Course Title"
+              placeholder="Enter course title"
+              leftIcon={<Type className="w-5 h-5" />}
+              helper="Give your course a descriptive title"
+              className="w-full"
+            />
+
+            <TextareaTheme
+              label="Course Description"
+              placeholder="Enter course description"
+              leftIcon={<FileText className="absolute top-[13px] w-5 h-5" />}
+              helper="Describe what this course covers"
+              className="w-full h-[88px] no-scrollbar"
+            />
+
+            <SelectTheme 
+              label="Course Category"
+              placeholder="Select course category"
+              leftIcon={<Tag className="w-5 h-5" />}
+              helper="Choose the category that best fits your course content"
+              options={categoryOptions}
+              onChange={handleCategoryChange}
+            />
+
+            <InputTheme
+              type="number"
+              label="Course Duration"
+              placeholder="Duration in minutes"
+              leftIcon={<Clock className="w-5 h-5" />}
+              helper="Estimated time to complete this course"
+              className="w-full"
+            />
+
+            <SelectTheme 
+              label="Course Level"
+              placeholder="Select course level"
+              leftIcon={<BarChart2 className="w-5 h-5" />}
+              helper="Choose the course difficulty"
+              options={levelOptions}
+              onChange={handleLevelChange}
+            />
+
+            <InputTheme
+              type="number"
+              label="Course Price"
+              placeholder="Enter the course price"
+              leftIcon={<DollarSign className="w-5 h-5" />}
+              helper="Specify the cost for enrolling in this course"
+              className="w-full"
+            />
+
+            <SelectTheme 
+              label="Course Status"
+              placeholder="Select course status"
+              leftIcon={<Globe className="w-5 h-5" />}
+              helper="Manage how and where the course appears to users"
+              options={statusOptions}
+              onChange={handleStatusChange}
+            />
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium
+      hover:bg-electricViolet/90 transition-colors"
+            >
+              Save Course
+            </motion.button>
+          </div>
+        </div>
       </div>
-    </div>
     </div>
   );
 }

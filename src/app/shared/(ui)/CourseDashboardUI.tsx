@@ -16,7 +16,7 @@ export default function CourseDashboardUI({ user }: CourseDashboardUI) {
   return (
     <div>
       <div className="bg-black/20 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex gap-10">
+        <div className="max-w-7xl mx-auto pm:px-6 lg:px-8 py-12 flex gap-10">
           <Image
             src={"/pictures/profile-picture-01.svg"}
             width={150}
