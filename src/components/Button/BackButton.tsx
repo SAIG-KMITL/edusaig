@@ -29,7 +29,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <button
       onClick={handleClick}
-      className={`flex justify-center items-center w-24 h-10 rounded-3xl space-x-3 bg-slate-500 ${className}`}
+      className={`flex justify-center items-center w-24 h-10 rounded-3xl space-x-3 bg-slate-100 ${className}`}
       {...props}
     >
       <Image

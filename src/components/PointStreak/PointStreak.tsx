@@ -17,10 +17,10 @@ export default function PointSteak({
       );
 
     return (
-        <div className="flex p-8 rounded-2xl bg-slate-300">
+        <div className="flex w-full p-8 rounded-2xl bg-slate-100 bg-opacity-5 backdrop-blur-md">
             <div className="flex w-5/12 h-full">
-                <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 space-y-4 border-r-4 border-slate-700">
-                    <h2 className="text-2xl font-normal text-black">My Points</h2>
+                <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 space-y-4 border-r-4 border-slate-100">
+                    <h2 className="text-2xl font-normal text-slate-100">My Points</h2>
                     <div className="flex space-x-2">
                         <Image
                             alt="Star Point"
@@ -28,18 +28,18 @@ export default function PointSteak({
                             width={24}
                             height={24}
                         />
-                        <p className="text-xl font-normal text-black">{point} point</p>
+                        <p className="text-xl font-normal text-slate-100">{point} point</p>
                     </div>    
                 </div>
                 <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 space-y-4">
-                    <h2 className="text-2xl font-normal text-black">Streak</h2>
-                    <p className="text-2xl font-normal text-black">{steak} days streak</p>
+                    <h2 className="text-2xl font-normal text-slate-100">Streak</h2>
+                    <p className="text-2xl font-normal text-slate-100">{steak} days streak</p>
                 </div>
             </div>
             <div className="flex justify-center items-center w-7/12 space-x-8">
                 {checkIcon.map((icon, index) => (
                 <div className="flex flex-col justify-center items-center space-y-4">
-                    <h4 className="text-lg font-light text-black">Day {index+1}</h4>
+                    <h4 className="text-lg font-light text-slate-100">Day {index+1}</h4>
                     <Image
                         key={index}
                         src={icon}
