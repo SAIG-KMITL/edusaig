@@ -14,4 +14,6 @@ export const registerSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(100, "Password is too long"),
+  role: z
+    .string()
 });
