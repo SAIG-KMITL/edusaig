@@ -49,15 +49,15 @@ export default function ProfileUI({ user }: ProfileUIProps) {
           <h1 className="text-[24px] font-semibold">My Course</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
             {courses.slice(0, 4).map((course) =>
-              <CourseCard data={course} />
+              <CourseCard key={course.id} data={course} />
             )}
           </div>
         </div>
         <div className="mt-4 grid gap-2">
           <h1 className="text-[24px] font-semibold">On Progress</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
-            {courses.slice(0,4).map((item) =>
-              <CourseCard data={item} />
+            {courses.slice(2,4).map((course) =>
+              <CourseCard key={course.id} data={course} />
             )}
           </div>
         </div>
