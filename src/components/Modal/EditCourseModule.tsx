@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../Inputs/Input";
 import { useParams } from "next/navigation";
 
-type eidtCourseModuleFormData = z.infer<typeof courseModuleSchema>;
+type editCourseModuleFormData = z.infer<typeof courseModuleSchema>;
 
 export default function EditCourseModule({
   courseModule,
@@ -25,10 +25,10 @@ export default function EditCourseModule({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<eidtCourseModuleFormData>({
+  } = useForm<editCourseModuleFormData>({
     resolver: zodResolver(courseModuleSchema),
     defaultValues: {
-      courseId: courseModule.id,
+      id: courseModule.id,
       title: courseModule.title,
       description: courseModule.description,
       orderIndex: courseModule.orderIndex,
@@ -46,11 +46,11 @@ export default function EditCourseModule({
           <div className="space-y-2">
             <Input
               type="text"
-              label="Course ID"
-              placeholder="Enter course ID"
+              label="ID"
+              placeholder="Enter ID"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               error={errors.title}
-              {...register("courseId")}
+              {...register("id")}
             />
           </div>
           <div className="space-y-2">

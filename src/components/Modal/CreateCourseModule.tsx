@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { Modal } from "./Modal";
-import { courseModuleSchema } from "@/schema/course-module.schema";
+import { createCourseModuleSchema } from "@/schema/course-module.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../Inputs/Input";
 import { useParams } from "next/navigation";
 
-type createCourseModuleFormData = z.infer<typeof courseModuleSchema>;
+type createCourseModuleFormData = z.infer<typeof createCourseModuleSchema>;
 
 export default function CreateCourseModule() {
   const onCreate = async () => {
@@ -22,7 +22,7 @@ export default function CreateCourseModule() {
     formState: { errors },
     reset,
   } = useForm<createCourseModuleFormData>({
-    resolver: zodResolver(courseModuleSchema),
+    resolver: zodResolver(createCourseModuleSchema),
     defaultValues: {
       courseId: id as string,
       title: "",
