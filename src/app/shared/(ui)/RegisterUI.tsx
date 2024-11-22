@@ -32,6 +32,7 @@ const RegisterUI = () => {
       fullname: "",
       email: "",
       password: "",
+      role:"student"
     },
   });
 
@@ -42,7 +43,8 @@ const RegisterUI = () => {
         data.username,
         data.fullname,
         data.email,
-        data.password
+        data.password,
+        data.role
       );
       if (response.error?.message) {
         Toast(response.error?.message, "error");
