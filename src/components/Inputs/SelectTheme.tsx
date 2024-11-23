@@ -113,7 +113,6 @@ export function SelectTheme({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            //className="absolute left-0 mt-2 w-56 p-3 bg-white rounded-lg shadow-lg z-50 border border-gray-200"
             className={`
               absolute z-[2] w-full overflow-hidden
               bg-steelGray
