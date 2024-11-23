@@ -1,5 +1,7 @@
+"use client";
+
 import useOutSideClick from "@/hooks/useOutsideClick";
-import { Icon, MoreVerticalIcon } from "lucide-react";
+import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 
