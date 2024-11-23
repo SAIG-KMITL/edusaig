@@ -50,7 +50,7 @@ export default function DropdownChapter(
                             <input type="checkbox" className=" flex justify-center items-center w-[20px] md:ml-4 sm:ml-12 ml-6"/>
                             <Link className="w-5/6 flex border rounded-3xl p-2 px-6 mb-1 hover:bg-slate-900 mt-2" href={{
                                 pathname: `/course/chapter/${dataChapter.id}`,
-                                query: { courseId: contents.courseId }
+                                query: { courseId: contents.course.id }
                             }}>
                                 {dataChapter.content}
                             </Link>
