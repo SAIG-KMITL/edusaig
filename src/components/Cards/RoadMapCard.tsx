@@ -4,7 +4,7 @@ import { CourseType } from "@/types/course.type";
 import { motion } from "framer-motion";
 import CourseCard from "./CourseCard";
 
-interface RoadMapCardProps {
+export interface RoadMapCardProps {
   number: number;
   data: CourseType;
   position: "left" | "right";
