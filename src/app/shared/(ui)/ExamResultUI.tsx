@@ -1,3 +1,5 @@
+"use client";
+
 import { exam, examAttempt } from "@/constants/exam";
 import Image from "next/image";
 import Link from "next/link";

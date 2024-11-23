@@ -7,6 +7,9 @@ import Pagination from "@/components/Paginations/Pagination";
 import { rewardOptions, rewards } from "@/constants/reward";
 import { useState } from "react";
 
+import PointStreak from "@/components/PointStreak/PointStreak";
+import { userPointStreak } from "@/constants/pointStreak";
+
 export default function RewardUI() {
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -35,7 +38,7 @@ export default function RewardUI() {
   return (
     <div className="pt-3">
       <div className="w-[984px] mx-auto flex">
-        <div className="p-6 pl-0 w-1/3">
+        {/* <div className="p-6 pl-0 w-1/3">
           <SearchInput
             placeholder="Search rewards by name"
             onSearch={handleSearch}
@@ -47,7 +50,8 @@ export default function RewardUI() {
             options={rewardOptions}
             onFilterChange={handleFilterChange}
           />
-        </div>
+        </div> */}
+        <PointStreak userPointStreak={userPointStreak}/>
       </div>
       <div className="pb-9">
         <div  className="w-[984px] mx-auto pt-9 pb-5 flex flex-row gap-12 gap-y-9 flex-wrap">

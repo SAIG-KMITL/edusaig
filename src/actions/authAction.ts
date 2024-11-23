@@ -11,14 +11,15 @@ export async function loginAction(email: string, password: string) {
 }
 
 export async function registerAction(
-  userName: string,
+  username: string,
   fullname: string,
   email: string,
-  password: string
+  password: string,
+  role: string
 ) {
   return baseApiAction<AuthResponseType>(`/auth/register`, {
     method: "POST",
-    body: { userName, fullname, email, password },
+    body: { username, fullname, email, password,role },
     requiresAuth: false,
   });
 }
