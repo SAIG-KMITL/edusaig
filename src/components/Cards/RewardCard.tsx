@@ -1,39 +1,69 @@
 import { RewardType } from "@/types/reward";
+import { motion } from "framer-motion";
+import { Coins } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
-interface RewardCardProps {
-  reward: RewardType
-}
-
-export default function RewardCard({ reward }: RewardCardProps) {
+const RewardCard = ({ reward }: { reward: RewardType }) => {
   return (
-    <Link 
-      href={`/reward/${reward.id}`}
-      className="w-[296px] p-2 flex flex-col gap-[6px] leading-[100%] rounded-lg bg-white shadow-card hover:cursor-pointer hover:shadow-card-hover transition-shadow duration-300 ease-out"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3 }}
     >
-        <Image 
-          src={reward.thumbnail}
-          width={560}
-          height={400}
-          alt="reward thumbnail"
-          className="w-[280px] h-[200px] object-cover rounded-lg"
-        />
-        <div className="flex flex-col items-start gap-1">
-          <div className="w-full flex flex-row justify-between items-baseline">
-            <p className="text-[14px]">{reward.name}</p>
-            <div className="flex flex-row items-center gap-1">
-              <p className="text-[14px]">{reward.points}</p>
-              <Image 
-                src="/icons/coin.svg"
-                width={20}
-                height={20}
-                alt="coin icon"
+      <Link
+        href={`/reward/${reward.id}`}
+        className="block overflow-hidden cursor-pointer"
+      >
+        <div className="w-[296px] relative gradient-border p-2 rounded-2xl bg-gradient-to-t from-white/5 to-white/25 hover:to-white/30 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="relative overflow-hidden rounded-lg">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Image
+                src={reward.thumbnail}
+                width={560}
+                height={400}
+                alt="reward thumbnail"
+                className="w-[296px] h-[200px] object-cover rounded-lg"
               />
-            </div>
+            </motion.div>
+            <motion.div
+              className="absolute top-3 right-3 bg-silver backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1"
+              whileHover={{ scale: 1.05 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <p className="text-sm font-bold text-steelGray">
+                {reward.points}
+              </p>
+              <Coins size={28} className="animate-pulse text-steelGray" />
+            </motion.div>
           </div>
-          <p className="px-3 py-[2px] rounded-full text-white text-[12px] bg-gray-400">{reward.type}</p>
+
+          <div className="p-4">
+            <motion.div
+              className="mb-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {reward.name}
+              </h3>
+              <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-oceanBlue to-skyBlue text-white">
+                {reward.type}
+              </span>
+            </motion.div>
+          </div>
         </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
-}
+};
+
+export default RewardCard;
