@@ -1,17 +1,20 @@
 import { CategoryType } from "./category";
+import { MetaType } from "./meta.type";
+import { UserResponseType } from "./user.type";
 
 export type CourseType = {
   id: string;
   title: string;
   description: string;
-  thumbnail: string;
-  teacher: string;
-  category: string;
+  thumbnailKey: string;
+  teacher: UserResponseType;
+  category: CategoryType;
   duration: number;
   level: CourseLevelType;
   price: number;
   createdAt: string;
   updatedAt: string;
+  status: CourseStatusType;
 };
 
 export type CourseLevelType = 'beginner' | 'intermediate' | 'advanced';
@@ -27,20 +30,6 @@ export type CourseModuleType = {
   createdAt: string;
   updatedAt: string;
 };
-
-export type CourseResponseType = {
-  id: string;
-  title: string;
-  description: string;
-  teacher: TeacherResponseType;
-  category: CategoryType;
-  duration: number;
-  level: CourseLevelType;
-  price: number;
-  status: CourseStatusType;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export type CourseModuleResponseType = {
   id: string;
@@ -72,3 +61,8 @@ export type TeacherResponseType = {
   updatedAt: string;
   fullname: string;
 }
+
+export type CoursesResponseType = {
+  data: CourseType[];
+  meta: MetaType;
+};

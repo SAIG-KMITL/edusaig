@@ -5,11 +5,11 @@ import { handleCloseModal } from "@/lib/modal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Toast } from "../Toast/Toast";
-import { CourseResponseType } from "@/types/course.type";
 import { deleteCourseAction } from "@/actions/courseAction";
+import { CourseType } from "@/types/course.type";
 
 interface DeleteCourseModalProps {
-  course: CourseResponseType | null;
+  course: CourseType | null;
   handleCourseDeselected: () => void;
 }
 

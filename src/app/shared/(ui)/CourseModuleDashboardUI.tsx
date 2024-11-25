@@ -8,14 +8,16 @@ import CreateCourseModuleModal from "@/components/Modals/CreateCourseModuleModal
 import CourseModuleEntry from "@/components/Button/CourseModuleEntry";
 import EditCourseModuleModal from "@/components/Modals/EditCourseModuleModal";
 import { useState } from "react";
-import { CourseModuleResponseType, CourseResponseType } from "@/types/course.type";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 import Link from "next/link";
 import { ChapterResponseType } from "@/types/chapter.type";
 import DeleteChapterModal from "@/components/Modals/DeleteChapterModal";
 import DeleteCourseModuleModal from "@/components/Modals/DeleteCourseModuleModal";
+import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 
 interface CourseModuleDashboardUIProps {
-  course: CourseResponseType;
+  course: CourseType;
   courseModules: CourseModuleResponseType[];
   chapters: ChapterResponseType[];
 }
@@ -66,7 +68,7 @@ export default function CourseModuleDashboardUI({ course, courseModules, chapter
             className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
           >
             <Image
-              src="https://img-b.udemycdn.com/course/750x422/3173974_b870_4.jpg"
+              src={fetchThumbnail(course.id) || THUMBNAIL_BASE_URL}
               fill
               alt="preview course thumbnail"
               className="w-full h-full object-cover"

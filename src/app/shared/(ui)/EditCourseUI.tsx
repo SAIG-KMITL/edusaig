@@ -28,13 +28,19 @@ import { editCourseSchema } from "@/schema/course.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editCourseAction } from "@/actions/courseAction";
 import { Toast } from "@/components/Toast/Toast";
-import { CourseLevelType, CourseResponseType, CourseStatusType } from "@/types/course.type";
+import {
+  CourseLevelType,
+  CourseStatusType,
+  CourseType,
+} from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type EditCourseFormData = z.infer<typeof editCourseSchema>;
 
 interface CreateCourseUIProps {
-  course: CourseResponseType;
+  course: CourseType;
   categories: CategoryType[];
 }
 
@@ -51,7 +57,7 @@ const validateImageFile = (file: File | undefined): boolean => {
   return Boolean(file && file.type.startsWith("image/"));
 };
 
-const levelOptions: { id: CourseLevelType, label: string }[] = [
+const levelOptions: { id: CourseLevelType; label: string }[] = [
   {
     id: "beginner",
     label: "Beginner",
@@ -63,10 +69,10 @@ const levelOptions: { id: CourseLevelType, label: string }[] = [
   {
     id: "advanced",
     label: "Advanced",
-  }
+  },
 ];
 
-const statusOptions: { id: CourseStatusType, label: string }[] = [
+const statusOptions: { id: CourseStatusType; label: string }[] = [
   {
     id: "draft",
     label: "Draft",
@@ -78,10 +84,13 @@ const statusOptions: { id: CourseStatusType, label: string }[] = [
   {
     id: "archived",
     label: "Archived",
-  }
+  },
 ];
 
-export default function EditCourseUI({ course, categories }: CreateCourseUIProps) {
+export default function EditCourseUI({
+  course,
+  categories,
+}: CreateCourseUIProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -128,7 +137,7 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
         data.level as CourseLevelType,
         data.price,
         data.status as CourseStatusType,
-        data.thumbnailKey,
+        data.thumbnailKey
       );
       if (response.error?.message) {
         Toast(response.error?.message, "error");
@@ -231,12 +240,14 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
     exit: { opacity: 0, y: -20 },
   };
 
-  const categoryOptions = categories.filter((category) => category.slug == "course").map((category) => {
-    return {
-      id: category.id,
-      label: category.title,
-    }
-  });
+  const categoryOptions = categories
+    .filter((category) => category.slug == "course")
+    .map((category) => {
+      return {
+        id: category.id,
+        label: category.title,
+      };
+    });
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-12">
@@ -281,19 +292,17 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
             >
               {!selectedFile ? (
                 <div
-                  className="h-full flex flex-col items-center justify-center p-6 border-2 
-                    border-dashed border-royalPurple/30 rounded-2xl transition-colors"
+                  className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                 >
-                  <Upload className="w-12 h-12 text-silver mb-4" />
-                  <p className="text-white text-lg font-medium mb-2">
-                    Drag and drop your image here
-                  </p>
-                  <p className="text-silver text-sm">
-                    or click the upload button above
-                  </p>
+                  <Image
+                    src={(fetchThumbnail(course.id) || THUMBNAIL_BASE_URL)}
+                    fill
+                    alt="preview course thumbnail"
+                    className="object-cover"
+                  />            
                 </div>
               ) : (
                 <div className="p-6 space-y-6">
@@ -338,21 +347,21 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
                     <span className="text-silver">{uploadProgress}%</span>
                   </div>
 
-                  {previewUrl && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
-                    >
-                      <Image
-                        src={previewUrl}
-                        fill
-                        alt="preview course thumbnail"
-                        className="w-full h-full object-cover"
-                      />
-                    </motion.div>
-                  )}
-
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
+                  >
+                    <Image
+                      src={
+                        previewUrl ??
+                        (fetchThumbnail(course.id) || THUMBNAIL_BASE_URL)
+                      }
+                      fill
+                      alt="preview course thumbnail"
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
                   <div className="flex items-start justify-between gap-4 p-4 bg-royalPurple/10 rounded-xl">
                     <div className="flex-1 flex items-start gap-2">
                       <ImageIcon className="w-5 h-5 text-skyBlue" />
@@ -377,7 +386,10 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
             <span>Edit Course Details</span>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col"
+          >
             <InputTheme
               type="text"
               label="Course Title"
@@ -386,7 +398,7 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
               helper="Give your course a descriptive title"
               className="w-full"
               error={errors.title}
-              {...register("title")}              
+              {...register("title")}
             />
 
             <TextareaTheme
@@ -399,7 +411,7 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
               {...register("description")}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Category"
               placeholder="Select course category"
               leftIcon={<Tag className="w-5 h-5" />}
@@ -424,7 +436,7 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
               })}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Level"
               placeholder="Select course level"
               leftIcon={<BarChart2 className="w-5 h-5" />}
@@ -449,7 +461,7 @@ export default function EditCourseUI({ course, categories }: CreateCourseUIProps
               })}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Status"
               placeholder="Select course status"
               leftIcon={<Globe className="w-5 h-5" />}

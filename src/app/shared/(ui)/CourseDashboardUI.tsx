@@ -8,19 +8,19 @@ import CourseCard from "@/components/Cards/CourseCard";
 import Link from "next/link";
 import { Award, Mail, PlusIcon, User } from "lucide-react";
 import { formatDate } from "@/utils/format";
-import { CourseResponseType, CourseType } from "@/types/course.type";
+import { CourseType } from "@/types/course.type";
 import { useState } from "react";
 import DeleteCourseModal from "@/components/Modals/DeleteCourseModal";
 
 interface CourseDashboardUI {
   user: UserResponseType;
-  courses: CourseResponseType[];
+  courses: CourseType[];
 }
 
 export default function CourseDashboardUI({ user, courses }: CourseDashboardUI) {
-  const [selectedCourse, setSelectedCourse] = useState<CourseResponseType | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseType | null>(null);
 
-  const handleCourseSelected = (course: CourseResponseType) => {
+  const handleCourseSelected = (course: CourseType) => {
     setSelectedCourse(course);
   }
 

@@ -12,7 +12,6 @@ export interface RoadMapCardProps {
 
 export const RoadMapCard = ({ number, data, position }: RoadMapCardProps) => {
   const isLeft = position === "left";
-
   return (
     <motion.div
       initial={{ opacity: 0, x: isLeft ? -50 : 50 }}

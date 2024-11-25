@@ -4,32 +4,19 @@ import SidebarChapter from "@/components/Navbar/SidebarChapter";
 import { chapters } from "@/constants/chapter";
 import { courseModule } from "@/constants/courseModule";
 import { CourseType } from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CourseDetailsUI({
-  courses,
+  course,
 }: {
-  courses: CourseType[];
+  course: CourseType;
 }) {
-  const [course, setCourse] = useState<CourseType | null>(null);
-  const params = useParams();
   const router = useRouter();
-
-  useEffect(() => {
-    setCourse(courses.find((course) => course.id == params.id) ?? null);
-  }, [params.id]);
-
-  if (!course) {
-    return null;
-  }
-
-  console.log(course);
-
   return (
     <div>
       <div className="flex justify-center mb-8">
@@ -48,7 +35,7 @@ export default function CourseDetailsUI({
           <div className="flex justify-center mb-6">
             <div>
               <Image
-                src={course.thumbnail}
+                src={fetchThumbnail(course.id)}
                 height={230}
                 width={400}
                 alt="thumbnail"
@@ -62,7 +49,7 @@ export default function CourseDetailsUI({
                   alt="book icon"
                   className="mr-3"
                 />
-                <div>{course.category}</div>
+                <div>{course.category.title}</div>
               </div>
               <div className="flex mx-3 mt-4 mb-5">
                 <Image
@@ -92,7 +79,9 @@ export default function CourseDetailsUI({
                   <div className="text-2xl mr-8 font-semibold">
                     {course.title}
                   </div>
-                  <div className="text-gray-400">by {course.teacher}</div>
+                  <div className="text-gray-400">
+                    by {course.teacher.fullname}
+                  </div>
                 </div>
                 <div className="border rounded-xl p-[25px] mt-1 bg-steelGray">
                   {course.description}. Popular programming language courses,

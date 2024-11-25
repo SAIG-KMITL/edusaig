@@ -1,8 +1,9 @@
-import { CourseLevelType, CourseResponseType, CourseStatusType } from "@/types/course.type";
+"use server";
+import { CourseLevelType, CoursesResponseType, CourseStatusType, CourseType } from "@/types/course.type";
 import { baseApiAction } from "./baseAction";
 
-export async function fetchCourseAction(id: string) {
-  return baseApiAction<CourseResponseType>(`/course/${id}`, {
+export async function fetchCoursesAction() {
+  return baseApiAction<CoursesResponseType>("/course?page=1&limit=10", {
     method: "GET",
     requiresAuth: true,
   });
@@ -28,7 +29,7 @@ export async function createCourseAction(
   price: number,
   status: CourseStatusType,
 ) {
-  return baseApiAction<CourseResponseType>(`/course`, {
+  return baseApiAction<CourseType>(`/course`, {
     method: "POST",
     body: { title, description, categoryId, duration, level, price, status },
     requiresAuth: true,
@@ -46,7 +47,7 @@ export async function editCourseAction(
   status: CourseStatusType,
   thumbnailKeys: string,
 ) {
-  return baseApiAction<CourseResponseType>(`/course/${id}`, {
+  return baseApiAction<CourseType>(`/course/${id}`, {
     method: "PATCH",
     body: { title, description, categoryId, duration, level, price, status, thumbnailKeys },
     requiresAuth: true,
@@ -56,6 +57,13 @@ export async function editCourseAction(
 export async function deleteCourseAction(id: string) {
   baseApiAction(`/course/${id}`, {
     method: "DELETE",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseAction(id: string) {
+  return baseApiAction<CourseType>(`/course/${id}`, {
+    method: "GET",
     requiresAuth: true,
   });
 }

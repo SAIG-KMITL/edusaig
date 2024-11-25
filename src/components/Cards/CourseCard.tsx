@@ -1,17 +1,20 @@
-import { CourseResponseType, CourseType } from "@/types/course.type";
+"use client";
+
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { CourseType } from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { PencilIcon, Trash, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import CourseLevelTag from "../Tags/CourseLevelTag";
 import ActionButton, { ActionButtonEntryType } from "../Button/ActionButton";
-import { PencilIcon, Trash, Wrench } from "lucide-react";
-import { courses } from "@/constants/course";
 import { handleOpenModal } from "@/lib/modal";
+import CourseLevelTag from "../Tags/CourseLevelTag";
 
 interface CourseCardProps {
-  course: CourseResponseType;
+  course: CourseType;
   showOptionButton?: boolean;
-  handleCourseSelected?: (course: CourseResponseType) => void;
+  handleCourseSelected?: (course: CourseType) => void;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, showOptionButton, handleCourseSelected }) => {
@@ -51,7 +54,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showOptionButton, handl
         ></Link>
         <div className="relative aspect-video h-48 w-full">
           <Image
-            src={"https://img-b.udemycdn.com/course/750x422/3173974_b870_4.jpg"}
+            src={fetchThumbnail(course.id) || THUMBNAIL_BASE_URL}
             alt={course.title}
             fill
             className="rounded-xl object-cover"
