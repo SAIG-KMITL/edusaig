@@ -27,6 +27,7 @@ export async function baseApiAction<T>(
   try {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      accept: "application/json",
     };
 
     if (requiresAuth) {

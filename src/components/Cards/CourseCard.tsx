@@ -1,10 +1,14 @@
+"use client";
+
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 import { CourseType } from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { PencilIcon, Trash, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import CourseLevelTag from "../Tags/CourseLevelTag";
 import ActionButton, { ActionButtonEntryType } from "../Button/ActionButton";
-import { PencilIcon, Trash, Wrench } from "lucide-react";
+import CourseLevelTag from "../Tags/CourseLevelTag";
 
 interface CourseCardProps {
   data: CourseType;
@@ -42,7 +46,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ data, showOptionButton }) => {
         ></Link>
         <div className="relative aspect-video h-48 w-full">
           <Image
-            src={data.thumbnail}
+            src={fetchThumbnail(data.id) || THUMBNAIL_BASE_URL}
             alt={data.title}
             fill
             className="rounded-xl object-cover"
@@ -64,12 +68,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ data, showOptionButton }) => {
               {data.title}
             </h2>
             <p className="text-sm  leading-[100%] text-silver">
-              {data.teacher}
+              {data.teacher.fullname}
             </p>
             <div className="-ml-3 flex flex-row gap-2">
               <CourseLevelTag level={data.level} />
               <span className="py-1 px-3 rounded-full border border-skyBlue text-xs text-skyBlue font-light">
-                {data.category}
+                {data.category.title}
               </span>
             </div>
           </div>
