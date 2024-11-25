@@ -1,6 +1,10 @@
 "use client";
 
+import { createChapterAction } from "@/actions/chapterAction";
 import InputTheme from "@/components/Inputs/InputTheme";
+import { Toast } from "@/components/Toast/Toast";
+import { createChapterSchema } from "@/schema/chapter.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
@@ -14,8 +18,18 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+type CreateChapterFormData = z.infer<typeof createChapterSchema>;
+
+interface CreateChapterUIProps {
+  courseId: string;
+  moduleId: string;
+}
 
 interface VideoFile extends File {
   type: string;
@@ -41,7 +55,7 @@ const validateVideoFile = (file: File | undefined): boolean => {
   return Boolean(file && file.type.startsWith("video/"));
 };
 
-export default function CreateChapterUI() {
+export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIProps) {
   const [selectedFile, setSelectedFile] = useState<VideoFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -52,6 +66,57 @@ export default function CreateChapterUI() {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<CreateChapterFormData>({
+    resolver: zodResolver(createChapterSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      content: "",
+      summary: "",
+      duration: undefined,
+      moduleId: moduleId,
+      isPreview: false
+    },
+  });
+
+  const onSubmit = async (data: CreateChapterFormData): Promise<void> => {
+    try {
+      setIsLoading(true);
+      const response = await createChapterAction(
+        data.title,
+        data.description,
+        data.content,
+        data.summary,
+        data.duration,
+        data.moduleId,
+        data.isPreview,
+      );
+      if (response.error?.message) {
+        Toast(response.error?.message, "error");
+      } else {
+        Toast("The chapter has been created.", "success");
+        router.push(`/dashboard/course/${courseId}/course-module`);
+      }
+      reset();
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Failed to create chapter",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0] as VideoFile;
@@ -273,7 +338,7 @@ export default function CreateChapterUI() {
             <span>Create Chapter Details</span>
           </div>
 
-          <div className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-3 text-left p-6 space-y-6 rounded-xl flex flex-col">
+          <form onSubmit={handleSubmit(onSubmit)} className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-3 text-left p-6 space-y-6 rounded-xl flex flex-col">
             <InputTheme
               type="text"
               label="Chapter Title"
@@ -281,6 +346,8 @@ export default function CreateChapterUI() {
               leftIcon={<Type className="w-5 h-5" />}
               helper="Give your chapter a descriptive title"
               className="w-full"
+              error={errors.title}
+              {...register("title")}
             />
 
             <InputTheme
@@ -290,6 +357,8 @@ export default function CreateChapterUI() {
               leftIcon={<FileText className="w-5 h-5" />}
               helper="Briefly describe what this chapter covers"
               className="w-full"
+              error={errors.description}
+              {...register("description")}
             />
 
             <InputTheme
@@ -299,6 +368,10 @@ export default function CreateChapterUI() {
               leftIcon={<Clock className="w-5 h-5" />}
               helper="Estimated time to complete this chapter"
               className="w-full"
+              error={errors.duration}
+              {...register("duration",{
+                valueAsNumber: true,
+              })}
             />
 
             <InputTheme
@@ -308,6 +381,19 @@ export default function CreateChapterUI() {
               leftIcon={<Hash className="w-5 h-5" />}
               helper="Main content or key points of the chapter"
               className="w-full"
+              error={errors.content}
+              {...register("content")}
+            />
+
+            <InputTheme
+              type="text"
+              label="Chapter Summary"
+              placeholder="Enter chapter summary"
+              leftIcon={<FileText className="w-5 h-5" />}
+              helper="Briefly summarize the key points or events of this chapter"
+              className="w-full"
+              error={errors.summary}
+              {...register("summary")}
             />
 
             <motion.div
@@ -320,6 +406,7 @@ export default function CreateChapterUI() {
                 name="isPreview"
                 className="w-5 h-5 rounded border-royalPurple/30 bg-steelGray/50 
         text-electricViolet focus:ring-electricViolet/50 cursor-pointer"
+                onChange={(e) => setValue("isPreview", e.target.checked)}
               />
               <label
                 htmlFor="isPreview"
@@ -330,6 +417,8 @@ export default function CreateChapterUI() {
             </motion.div>
 
             <motion.button
+              type="submit"
+              disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium
@@ -337,7 +426,7 @@ export default function CreateChapterUI() {
             >
               Save Chapter
             </motion.button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
