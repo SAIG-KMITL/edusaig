@@ -21,7 +21,22 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { CategoryType } from "@/types/category";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { editCourseSchema } from "@/schema/course.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { editCourseAction } from "@/actions/courseAction";
+import { Toast } from "@/components/Toast/Toast";
+import { CourseLevelType, CourseResponseType, CourseStatusType } from "@/types/course.type";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+type EditCourseFormData = z.infer<typeof editCourseSchema>;
+
+interface CreateCourseUIProps {
+  course: CourseResponseType;
+  categories: CategoryType[];
+}
 
 interface DragState {
   isDragging: boolean;
@@ -36,22 +51,7 @@ const validateImageFile = (file: File | undefined): boolean => {
   return Boolean(file && file.type.startsWith("image/"));
 };
 
-const categoryOptions = [
-  {
-    id: "1",
-    label: "Category1",
-  },
-  {
-    id: "2",
-    label: "Category2",
-  },
-  {
-    id: "3",
-    label: "Category3",
-  }
-];
-
-const levelOptions = [
+const levelOptions: { id: CourseLevelType, label: string }[] = [
   {
     id: "beginner",
     label: "Beginner",
@@ -66,7 +66,7 @@ const levelOptions = [
   }
 ];
 
-const statusOptions = [
+const statusOptions: { id: CourseStatusType, label: string }[] = [
   {
     id: "draft",
     label: "Draft",
@@ -81,7 +81,7 @@ const statusOptions = [
   }
 ];
 
-export default function EditCourseUI() {
+export default function EditCourseUI({ course, categories }: CreateCourseUIProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -92,6 +92,59 @@ export default function EditCourseUI() {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<EditCourseFormData>({
+    resolver: zodResolver(editCourseSchema),
+    defaultValues: {
+      title: course.title,
+      description: course.description,
+      categoryId: course.category.id,
+      duration: course.duration,
+      level: course.level,
+      price: course.price,
+      status: course.status,
+      thumbnailKey: course.id,
+    },
+  });
+
+  const onSubmit = async (data: EditCourseFormData): Promise<void> => {
+    console.log(course.id, data);
+    try {
+      setIsLoading(true);
+      const response = await editCourseAction(
+        course.id,
+        data.title,
+        data.description,
+        data.categoryId,
+        data.duration,
+        data.level as CourseLevelType,
+        data.price,
+        data.status as CourseStatusType,
+        data.thumbnailKey,
+      );
+      if (response.error?.message) {
+        Toast(response.error?.message, "error");
+      } else {
+        Toast("The course has been created.", "success");
+      }
+      reset();
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Failed to edit course",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0] as File;
@@ -161,15 +214,15 @@ export default function EditCourseUI() {
   };
 
   const handleCategoryChange = (selectedOptionId: string) => {
-    console.log("Selected categoryId:", selectedOptionId);
+    setValue("categoryId", selectedOptionId, { shouldValidate: true });
   };
 
   const handleLevelChange = (selectedOptionId: string) => {
-    console.log("Selected levelId:", selectedOptionId);
+    setValue("level", selectedOptionId, { shouldValidate: true });
   };
 
   const handleStatusChange = (selectedOptionId: string) => {
-    console.log("Selected statusId:", selectedOptionId);
+    setValue("status", selectedOptionId, { shouldValidate: true });
   };
 
   const containerVariants = {
@@ -177,6 +230,13 @@ export default function EditCourseUI() {
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
   };
+
+  const categoryOptions = categories.filter((category) => category.slug == "course").map((category) => {
+    return {
+      id: category.id,
+      label: category.title,
+    }
+  });
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-12">
@@ -305,15 +365,6 @@ export default function EditCourseUI() {
                         </p>
                       </div>
                     </div>
-                    {uploadStatus === "success" && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 bg-electricViolet text-white rounded-lg"
-                      >
-                        Save Image
-                      </motion.button>
-                    )}
                   </div>
                 </div>
               )}
@@ -326,7 +377,7 @@ export default function EditCourseUI() {
             <span>Edit Course Details</span>
           </div>
 
-          <div className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col">
+          <form onSubmit={handleSubmit(onSubmit)} className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col">
             <InputTheme
               type="text"
               label="Course Title"
@@ -334,6 +385,8 @@ export default function EditCourseUI() {
               leftIcon={<Type className="w-5 h-5" />}
               helper="Give your course a descriptive title"
               className="w-full"
+              error={errors.title}
+              {...register("title")}              
             />
 
             <TextareaTheme
@@ -342,6 +395,8 @@ export default function EditCourseUI() {
               leftIcon={<FileText className="absolute top-[13px] w-5 h-5" />}
               helper="Describe what this course covers"
               className="w-full h-[88px] no-scrollbar"
+              error={errors.description}
+              {...register("description")}
             />
 
             <SelectTheme 
@@ -350,7 +405,10 @@ export default function EditCourseUI() {
               leftIcon={<Tag className="w-5 h-5" />}
               helper="Choose the category that best fits your course content"
               options={categoryOptions}
-              onChange={handleCategoryChange}
+              initialValue={course.category.id}
+              onSelectedValueChange={handleCategoryChange}
+              error={errors.categoryId}
+              {...register("categoryId")}
             />
 
             <InputTheme
@@ -360,6 +418,10 @@ export default function EditCourseUI() {
               leftIcon={<Clock className="w-5 h-5" />}
               helper="Estimated time to complete this course"
               className="w-full"
+              error={errors.duration}
+              {...register("duration", {
+                valueAsNumber: true,
+              })}
             />
 
             <SelectTheme 
@@ -368,7 +430,10 @@ export default function EditCourseUI() {
               leftIcon={<BarChart2 className="w-5 h-5" />}
               helper="Choose the course difficulty"
               options={levelOptions}
-              onChange={handleLevelChange}
+              initialValue={course.level}
+              onSelectedValueChange={handleLevelChange}
+              error={errors.level}
+              {...register("level")}
             />
 
             <InputTheme
@@ -378,6 +443,10 @@ export default function EditCourseUI() {
               leftIcon={<DollarSign className="w-5 h-5" />}
               helper="Specify the cost for enrolling in this course"
               className="w-full"
+              error={errors.price}
+              {...register("price", {
+                valueAsNumber: true,
+              })}
             />
 
             <SelectTheme 
@@ -386,10 +455,17 @@ export default function EditCourseUI() {
               leftIcon={<Globe className="w-5 h-5" />}
               helper="Manage how and where the course appears to users"
               options={statusOptions}
-              onChange={handleStatusChange}
+              initialValue={course.status}
+              onSelectedValueChange={handleStatusChange}
+              error={errors.status}
+              {...register("status", {
+                onChange: (e) => console.log(e.target.value),
+              })}
             />
 
             <motion.button
+              type="submit"
+              disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium
@@ -397,7 +473,7 @@ export default function EditCourseUI() {
             >
               Save Course
             </motion.button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

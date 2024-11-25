@@ -8,15 +8,30 @@ import CourseCard from "@/components/Cards/CourseCard";
 import Link from "next/link";
 import { Award, Mail, PlusIcon, User } from "lucide-react";
 import { formatDate } from "@/utils/format";
+import { CourseResponseType, CourseType } from "@/types/course.type";
+import { useState } from "react";
+import DeleteCourseModal from "@/components/Modals/DeleteCourseModal";
 
 interface CourseDashboardUI {
   user: UserResponseType;
+  courses: CourseResponseType[];
 }
 
-export default function CourseDashboardUI({ user }: CourseDashboardUI) {
+export default function CourseDashboardUI({ user, courses }: CourseDashboardUI) {
+  const [selectedCourse, setSelectedCourse] = useState<CourseResponseType | null>(null);
+
+  const handleCourseSelected = (course: CourseResponseType) => {
+    setSelectedCourse(course);
+  }
+
+  const handleCourseDeselected = () => {
+    setSelectedCourse(null);
+  }
+
   return (
     <div>
-      <div className="bg-transparent/20 w-full h-[250px] flex items-center justify-center">
+      <DeleteCourseModal course={selectedCourse} handleCourseDeselected={handleCourseDeselected} />
+      <div className="bg-transparent/20 w-full h-[250px] flex items-center justify-center text-white">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex md:justify-between justify-center items-center">
           <div className="flex items-center gird gap-8">
             <Image
@@ -69,12 +84,12 @@ export default function CourseDashboardUI({ user }: CourseDashboardUI) {
               className="w-full h-full flex flex-col justify-center items-center"
             >
               <PlusIcon className="w-12 h-12 text-silver" />
-              <p className="text-lg font-medium text-white">Add a course</p>
+              <p className="text-lg font-medium text-white">Add Course</p>
             </Link>
           </motion.div>
           {courses.map((course) => (
             <div key={course.id}>
-              <CourseCard data={course} showOptionButton={true} />
+              <CourseCard course={course} showOptionButton={true} handleCourseSelected={handleCourseSelected}/>
             </div>
           ))}
         </div>
