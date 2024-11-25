@@ -1,10 +1,11 @@
 "use client";
 
 import { RoadMapCard } from "@/components/Cards/RoadMapCard";
-import { roadmap } from "@/constants/roadmap";
+import { RoadMapType } from "@/types/roadmap.type";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
-export default function RoadMapUI() {
+export default function RoadMapUI({ roadmap }: { roadmap: RoadMapType[] }) {
   return (
     <div className="flex flex-1 flex-col min-h-screen justify-center items-center">
       <motion.div
@@ -27,8 +28,8 @@ export default function RoadMapUI() {
         {roadmap.map((item, index) => (
           <RoadMapCard
             key={index}
-            number={item.number}
-            data={item.data}
+            number={item.priority}
+            data={item.courses[0]}
             position={index % 2 === 0 ? "right" : "left"}
           />
         ))}

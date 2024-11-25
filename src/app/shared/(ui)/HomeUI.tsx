@@ -1,7 +1,7 @@
 "use client";
 
 import CourseCard from "@/components/Cards/CourseCard";
-import { courses } from "@/constants/course";
+import { CoursesResponseType, CourseType } from "@/types/course.type";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -15,7 +15,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HomeUI() {
+type HomeProps = {
+  courses: CoursesResponseType;
+};
+
+export default function HomeUI({ courses }: HomeProps) {
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -159,7 +163,7 @@ export default function HomeUI() {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {courses.map((course) => (
+              {courses.data.map((course) => (
                 <motion.div
                   key={course.id}
                   whileHover={{ y: -5 }}
