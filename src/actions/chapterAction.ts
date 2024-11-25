@@ -19,7 +19,6 @@ export async function fetchChaptersAction(page?: number, limit?: number, search?
   });
 }
 
-
 export async function createChapterAction(
   title: string,
   description: string,
@@ -40,6 +39,17 @@ export async function editChapterAction(id: string, orderIndex: string, videoKey
   return baseApiAction<ChapterResponseType>(`/chapter/${id}`, {
     method: "PATCH",
     body: { orderIndex, videoKey },
+    requiresAuth: true,
+  });
+}
+
+export async function uploadChapterVideoAction(id: string, file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return baseApiAction<void>(`/chapter/${id}/video`, {
+    method: "PATCH",
+    body: formData,
     requiresAuth: true,
   });
 }

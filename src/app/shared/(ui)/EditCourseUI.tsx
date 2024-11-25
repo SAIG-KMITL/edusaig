@@ -8,6 +8,7 @@ import {
   AlertCircle,
   BarChart2,
   CheckCircle,
+  ChevronLeft,
   Clock,
   DollarSign,
   FileText,
@@ -26,7 +27,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { editCourseSchema } from "@/schema/course.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editCourseAction } from "@/actions/courseAction";
+import {
+  editCourseAction,
+  uploadCourseThumbnail,
+} from "@/actions/courseAction";
 import { Toast } from "@/components/Toast/Toast";
 import {
   CourseLevelType,
@@ -35,6 +39,8 @@ import {
 } from "@/types/course.type";
 import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type EditCourseFormData = z.infer<typeof editCourseSchema>;
@@ -103,6 +109,7 @@ export default function EditCourseUI({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const {
     register,
@@ -125,7 +132,6 @@ export default function EditCourseUI({
   });
 
   const onSubmit = async (data: EditCourseFormData): Promise<void> => {
-    console.log(course.id, data);
     try {
       setIsLoading(true);
       const response = await editCourseAction(
@@ -142,12 +148,38 @@ export default function EditCourseUI({
       if (response.error?.message) {
         Toast(response.error?.message, "error");
       } else {
-        Toast("The course has been created.", "success");
+        Toast("The course has been updated.", "success");
       }
-      reset();
+      router.refresh();
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to edit course",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUploadThumbnail = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setIsLoading(true);
+      const response = await uploadCourseThumbnail(course.id, selectedFile);
+
+      if (response.error?.message) {
+        Toast(response.error?.message, "error");
+      } else {
+        Toast("The course thumbnail has been updated.", "success");
+      }
+
+      router.refresh();
+    } catch (error) {
+      Toast(
+        error instanceof Error
+          ? error.message
+          : "Failed to upload course thumbnail",
         "error"
       );
     } finally {
@@ -260,24 +292,33 @@ export default function EditCourseUI({
             exit="exit"
             className="flex flex-col space-y-6"
           >
-            <div className="flex justify-end">
-              <motion.label
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="relative flex items-center justify-center p-4 w-72 
+            <div className="flex justify-between gap-4 flex-wrap">
+              <Link
+                href={`/dashboard/course`}
+                className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Courses
+              </Link>
+              <div className="flex justify-end">
+                <motion.label
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative flex items-center justify-center p-4 w-72 
                   bg-electricViolet hover:bg-electricViolet/90 text-white rounded-xl 
                   shadow-lg cursor-pointer transition-colors group"
-              >
-                <Upload className="w-5 h-5 mr-2" />
-                <span className="font-medium">Choose Image to Upload</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  ref={fileInputRef}
-                />
-              </motion.label>
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  <span className="font-medium">Choose Image to Upload</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    ref={fileInputRef}
+                  />
+                </motion.label>
+              </div>
             </div>
 
             <motion.div
@@ -298,11 +339,11 @@ export default function EditCourseUI({
                   onDrop={handleDrop}
                 >
                   <Image
-                    src={(fetchThumbnail(course.id) || THUMBNAIL_BASE_URL)}
+                    src={fetchThumbnail(course.id) || THUMBNAIL_BASE_URL}
                     fill
                     alt="preview course thumbnail"
                     className="object-cover"
-                  />            
+                  />
                 </div>
               ) : (
                 <div className="p-6 space-y-6">
@@ -373,6 +414,18 @@ export default function EditCourseUI({
                           {formatFileSize(selectedFile.size)}
                         </p>
                       </div>
+                      {uploadStatus === "success" && (
+                        <motion.button
+                          type="button"
+                          onClick={handleUploadThumbnail}
+                          disabled={isLoading}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-4 py-2 bg-electricViolet text-white rounded-lg"
+                        >
+                          Save Image
+                        </motion.button>
+                      )}
                     </div>
                   </div>
                 </div>

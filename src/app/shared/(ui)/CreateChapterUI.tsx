@@ -1,6 +1,6 @@
 "use client";
 
-import { createChapterAction } from "@/actions/chapterAction";
+import { createChapterAction, uploadChapterVideoAction } from "@/actions/chapterAction";
 import InputTheme from "@/components/Inputs/InputTheme";
 import { Toast } from "@/components/Toast/Toast";
 import { createChapterSchema } from "@/schema/chapter.schema";
@@ -85,14 +85,15 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
       summary: "",
       duration: undefined,
       moduleId: moduleId,
-      isPreview: false
+      isPreview: false,
+      videoUrl: "",
     },
   });
 
   const onSubmit = async (data: CreateChapterFormData): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await createChapterAction(
+      const chapterResponse = await createChapterAction(
         data.title,
         data.description,
         data.content,
@@ -101,13 +102,27 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
         data.moduleId,
         data.isPreview,
       );
-      if (response.error?.message) {
-        Toast(response.error?.message, "error");
-      } else {
-        Toast("The chapter has been created.", "success");
-        router.push(`/dashboard/course/${courseId}/course-module`);
+
+      if (chapterResponse.error?.message) {
+        Toast(chapterResponse.error.message, "error");
+        return;
       }
-      reset();
+    
+      if (chapterResponse.data && selectedFile) {
+        const uploadResponse = await uploadChapterVideoAction(
+          chapterResponse.data.id,
+          selectedFile
+        );
+    
+        if (uploadResponse.error?.message) {
+          Toast(uploadResponse.error.message, "error");
+          return;
+        }
+      }
+
+      Toast("The chapter has been created.", "success");
+      router.push(`/dashboard/course/${courseId}/course-module`);
+      reset();  
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to create chapter",
@@ -129,6 +144,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
     setSelectedFile(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+    setValue("videoUrl", url);
     setUploadStatus("idle");
     simulateUpload();
   };
@@ -178,6 +194,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
     }
     setSelectedFile(null);
     setPreviewUrl(null);
+    setValue("videoUrl", "");
     setUploadStatus("idle");
     setUploadProgress(0);
     if (fileInputRef.current) {
@@ -234,7 +251,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
             >
               {!selectedFile ? (
                 <div
-                  className="h-full flex flex-col items-center justify-center p-6 border-2 
+                  className="relative h-full flex flex-col items-center justify-center p-6 border-2 
                     border-dashed border-royalPurple/30 rounded-2xl transition-colors"
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -247,6 +264,23 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
                   <p className="text-silver text-sm">
                     or click the upload button above
                   </p>
+                  {errors.videoUrl && (
+                    <div>
+                      <div className="absolute right-1/2 translate-x-1/2 bottom-3 ">
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className={`text-sm text-red-500`}
+                        >
+                          {errors.videoUrl.message}
+                        </motion.p>
+                      </div>
+                      <div className="absolute right-3 top-3">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="p-6 space-y-6">
@@ -317,15 +351,6 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
                         </p>
                       </div>
                     </div>
-                    {uploadStatus === "success" && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 bg-electricViolet text-white rounded-lg"
-                      >
-                        Save Video
-                      </motion.button>
-                    )}
                   </div>
                 </div>
               )}
@@ -418,7 +443,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
 
             <motion.button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading  || uploadStatus == "uploading"}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium

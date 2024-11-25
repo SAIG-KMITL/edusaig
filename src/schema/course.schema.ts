@@ -20,6 +20,8 @@ export const createCourseSchema = z.object({
   status: z.
   string()
   .min(1, "Please select course status"),
+  thumbnailUrl: z.
+  string().min(1, "Please select course thumbnail") 
 });
 
 export const editCourseSchema = z.object({

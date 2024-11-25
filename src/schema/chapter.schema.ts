@@ -23,6 +23,9 @@ export const createChapterSchema = z.object({
     .min(1, "Please select module"),
   isPreview: z.
     boolean(),
+  videoUrl: z.
+    string()
+    .min(1, "Please select video")
 });
 
 export const editChapterSchema = z.object({

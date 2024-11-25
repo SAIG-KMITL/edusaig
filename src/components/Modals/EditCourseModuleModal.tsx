@@ -56,13 +56,13 @@ export default function EditCourseModuleModal({ courseId, courseModule, handleMo
         Toast(response.error?.message, "error");
       } else {
         reset();
-        Toast("The course module has been created.", "success");
+        Toast("The course module has been updated.", "success");
         handleCloseModal("edit-course-module-modal"); 
         router.refresh();
       }
     } catch (error) {
       Toast(
-        error instanceof Error ? error.message : "Failed to create course module",
+        error instanceof Error ? error.message : "Failed to update course module",
         "error"
       );
     } finally {

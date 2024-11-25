@@ -13,7 +13,7 @@ export async function uploadCourseThumbnail(id: string, file: File) {
   const formData = new FormData();
   formData.append('file', file);
 
-  return baseApiAction<File>(`/course/${id}/thumbnail`, {
+  return baseApiAction<void>(`/course/${id}/thumbnail`, {
     method: "PATCH",
     body: formData,
     requiresAuth: true,
@@ -45,11 +45,11 @@ export async function editCourseAction(
   level: CourseLevelType,
   price: number,
   status: CourseStatusType,
-  thumbnailKeys: string,
+  thumbnailKey: string,
 ) {
   return baseApiAction<CourseType>(`/course/${id}`, {
     method: "PATCH",
-    body: { title, description, categoryId, duration, level, price, status, thumbnailKeys },
+    body: { title, description, categoryId, duration, level, price, status, thumbnailKey },
     requiresAuth: true,
   }); 
 }

@@ -56,7 +56,7 @@ export default function CourseModuleDashboardUI({ course, courseModules, chapter
               className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 mr-2" />
-              Back to Course
+              Back to Courses
             </Link>
             <h1 className="ml-4 text-2xl font-bold text-white">
               {course.title}
