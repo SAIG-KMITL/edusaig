@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React from "react";
 
 interface PaginationProps {
@@ -34,57 +35,107 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const pageNumbers = getPageNumbers();
 
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { scale: 1.05 },
+    tap: { scale: 0.95 },
+  };
+
   const renderPageButton = (page: number, label?: string) => (
-    <button
+    <motion.button
       key={page}
       onClick={() => onPageChange(page)}
       disabled={currentPage === page}
-      className={`px-3 py-2 mx-1 rounded-xl border-2 ${
-        currentPage === page
-          ? "bg-blue-500 text-white border-blue-500"
-          : "bg-white text-gray-800 border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500"
-      } cursor-pointer`}
+      variants={buttonVariants}
+      initial="initial"
+      whileHover="hover"
+      whileTap="tap"
+      transition={{ duration: 0.2 }}
+      className={`relative px-4 py-2 mx-1 rounded-xl border-2 font-medium
+        ${
+          currentPage === page
+            ? "bg-gradient-to-r from-electricViolet to-darkMagenta text-white border-electricViolet"
+            : "bg-white/10 backdrop-blur-sm text-silver border-white/20 hover:border-electricViolet"
+        }
+        transition-all duration-300 cursor-pointer min-w-[40px]
+        ${currentPage === page ? "shadow-lg" : "hover:shadow-md"}
+      `}
     >
       {label || page}
-    </button>
+      {currentPage === page && (
+        <motion.div
+          layoutId="activePage"
+          className="absolute inset-0 bg-gradient-to-r from-electricViolet to-darkMagenta rounded-xl -z-10"
+          transition={{ duration: 0.3 }}
+        />
+      )}
+    </motion.button>
+  );
+
+  const renderNavigationButton = (
+    direction: "prev" | "next",
+    disabled: boolean
+  ) => (
+    <motion.button
+      onClick={() =>
+        onPageChange(direction === "prev" ? currentPage - 1 : currentPage + 1)
+      }
+      disabled={disabled}
+      variants={buttonVariants}
+      initial="initial"
+      whileHover="hover"
+      whileTap="tap"
+      transition={{ duration: 0.2 }}
+      className={`px-4 py-2 mx-1 rounded-xl border-2 
+        bg-white/10 backdrop-blur-sm text-silver border-white/20
+        hover:border-electricViolet hover:shadow-md
+        transition-all duration-300
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-white/20
+        disabled:hover:shadow-none
+      `}
+    >
+      {direction === "prev" ? (
+        <span className="sr-only">Previous</span>
+      ) : (
+        <span className="sr-only">Next</span>
+      )}
+      {direction === "prev" ? "←" : "→"}
+    </motion.button>
   );
 
   return (
-    <nav className="flex justify-center items-center mt-4">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-2 mx-1 rounded-xl border-2 bg-white text-gray-800 border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        &lt;
-      </button>
+    <motion.nav
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex justify-center items-center mt-4 p-2"
+    >
+      {renderNavigationButton("prev", currentPage === 1)}
 
-      {pageNumbers[0] > 1 && (
-        <>
-          {renderPageButton(1)}
-          {pageNumbers[0] > 2 && <span className="mx-2">...</span>}
-        </>
-      )}
+      <div className="flex items-center">
+        {pageNumbers[0] > 1 && (
+          <>
+            {renderPageButton(1)}
+            {pageNumbers[0] > 2 && (
+              <span className="mx-2 text-silver/60">•••</span>
+            )}
+          </>
+        )}
 
-      {pageNumbers.map((page) => renderPageButton(page))}
+        {pageNumbers.map((page) => renderPageButton(page))}
 
-      {pageNumbers[pageNumbers.length - 1] < totalPages && (
-        <>
-          {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-            <span className="mx-2">...</span>
-          )}
-          {renderPageButton(totalPages)}
-        </>
-      )}
+        {pageNumbers[pageNumbers.length - 1] < totalPages && (
+          <>
+            {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
+              <span className="mx-2 text-silver/60">•••</span>
+            )}
+            {renderPageButton(totalPages)}
+          </>
+        )}
+      </div>
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-2 mx-1 rounded-xl border-2 bg-white text-gray-800 border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        &gt;
-      </button>
-    </nav>
+      {renderNavigationButton("next", currentPage === totalPages)}
+    </motion.nav>
   );
 };
 

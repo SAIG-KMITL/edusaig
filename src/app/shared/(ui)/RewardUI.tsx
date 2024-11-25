@@ -36,7 +36,7 @@ export default function RewardUI() {
   };
 
   return (
-    <div className="pt-3">
+    <div className="min-h-screen pt-10">
       <div className="w-[984px] mx-auto flex">
         {/* <div className="p-6 pl-0 w-1/3">
           <SearchInput
@@ -51,15 +51,13 @@ export default function RewardUI() {
             onFilterChange={handleFilterChange}
           />
         </div> */}
-        <PointStreak userPointStreak={userPointStreak}/>
+        <PointStreak userPointStreak={userPointStreak} />
       </div>
       <div className="pb-9">
-        <div  className="w-[984px] mx-auto pt-9 pb-5 flex flex-row gap-12 gap-y-9 flex-wrap">
-          {
-            currentData.map((reward, index) => {
-              return <RewardCard key={index} reward={reward}/>
-            })
-          }
+        <div className="w-[984px] mx-auto pt-9 pb-5 flex flex-row gap-12 gap-y-9 flex-wrap">
+          {currentData.map((reward, index) => {
+            return <RewardCard key={index} reward={reward} />;
+          })}
         </div>
         <Pagination
           currentPage={currentPage}
@@ -69,5 +67,5 @@ export default function RewardUI() {
         />
       </div>
     </div>
-  )
+  );
 }
