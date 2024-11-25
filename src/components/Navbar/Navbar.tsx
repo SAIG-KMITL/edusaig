@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import LogoutButton from "../Button/LogoutButton";
 
 type NavbarTypeProps = {
   user: UserResponseType;
@@ -152,6 +153,18 @@ function Navbar({ user }: NavbarTypeProps) {
               </Link>
             )}
           </motion.div>
+          {user ? (
+            <motion.div
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
+              className="hidden md:flex"
+            >
+              <LogoutButton />
+            </motion.div>
+          ) : (
+            ""
+          )}
 
           {/* Mobile Menu Button */}
           {!isOpen && (
@@ -247,6 +260,14 @@ function Navbar({ user }: NavbarTypeProps) {
                     </Link>
                   )}
                 </motion.div>
+                {user ? (
+                  <div className="mx-4 mt-3">
+                    <div className="border-t opacity-75"/>
+                    <LogoutButton />
+                  </div>
+                ) : (
+                  ""
+                )}
               </motion.div>
             </motion.div>
           </>
