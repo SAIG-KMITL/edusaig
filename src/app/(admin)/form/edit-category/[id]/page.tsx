@@ -9,5 +9,5 @@ export default async function EditCategoryPage() {
     return null;
   }
 
-  return <EditCategoryUI categories={response.data} />;
+  return <EditCategoryUI categories={response.data.data} />;
 }

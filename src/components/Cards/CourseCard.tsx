@@ -1,8 +1,9 @@
 "use client";
 
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { handleOpenModal } from "@/lib/modal";
 import { CourseType } from "@/types/course.type";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
 import { PencilIcon, Trash, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,29 +12,40 @@ import ActionButton, { ActionButtonEntryType } from "../Button/ActionButton";
 import CourseLevelTag from "../Tags/CourseLevelTag";
 
 interface CourseCardProps {
-  data: CourseType;
+  course: CourseType;
   showOptionButton?: boolean;
+  handleCourseSelected?: (course: CourseType) => void;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ data, showOptionButton }) => {
+const CourseCard: React.FC<CourseCardProps> = ({
+  course,
+  showOptionButton,
+  handleCourseSelected,
+}) => {
+  if (!course) {
+    return null;
+  }
   const actionButtonEntries: ActionButtonEntryType[] = [
     {
       label: "Manage Course Module",
       icon: <Wrench className="w-[14px] h-[14px] mr-2" />,
       type: "link",
-      href: `/dashboard/course/${data.id}/course-module`,
+      href: `/dashboard/course/${course.id}/course-module`,
     },
     {
       label: "Edit Course",
       icon: <PencilIcon className="w-[14px] h-[14px] mr-2" />,
       type: "link",
-      href: `/dashboard/course/${data.id}/edit-course`,
+      href: `/dashboard/course/${course.id}/edit-course`,
     },
     {
-      label: "Delete Module",
+      label: "Delete Course",
       icon: <Trash className="w-[14px] h-[14px] mr-2" />,
       type: "button",
-      onClick: () => {},
+      onClick: () => {
+        handleCourseSelected?.(course);
+        handleOpenModal("delete-course-modal");
+      },
     },
   ];
 
@@ -41,19 +53,19 @@ const CourseCard: React.FC<CourseCardProps> = ({ data, showOptionButton }) => {
     <div className="relative">
       <div className="relative gradient-border p-2 rounded-2xl bg-gradient-to-t from-white/5 to-white/25 hover:to-white/30">
         <Link
-          href={`/course/${data.id}`}
+          href={`/course/${course.id}`}
           className="absolute top-0 bottom-0 left-0 right-0 z-[1]"
         ></Link>
         <div className="relative aspect-video h-48 w-full">
           <Image
-            src={fetchThumbnail(data.id) || THUMBNAIL_BASE_URL}
-            alt={data.title}
+            src={fetchThumbnail(course.id) || THUMBNAIL_BASE_URL}
+            alt={course.title}
             fill
             className="rounded-xl object-cover"
           />
           <div className="absolute right-2 bottom-2 flex flex-row-reverse gap-2">
-            <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`${data.duration} mins`}</span>
-            <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`$${data.price}`}</span>
+            <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`${course.duration} mins`}</span>
+            <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`$${course.price}`}</span>
           </div>
         </div>
         <div className="relative pt-2 flex flex-row items-start gap-2">
@@ -65,15 +77,15 @@ const CourseCard: React.FC<CourseCardProps> = ({ data, showOptionButton }) => {
           />
           <div className="flex-1 pt-1 flex flex-col gap-2 overflow-x-visible">
             <h2 className="text-lg font-semibold leading-[100%] text-white">
-              {data.title}
+              {course.title}
             </h2>
             <p className="text-sm  leading-[100%] text-silver">
-              {data.teacher.fullname}
+              {course.teacher.fullname}
             </p>
-            <div className="-ml-3 flex flex-row gap-2">
-              <CourseLevelTag level={data.level} />
+            <div className="-ml-3 flex flex-row gap-2 flex-wrap">
+              <CourseLevelTag level={course.level} />
               <span className="py-1 px-3 rounded-full border border-skyBlue text-xs text-skyBlue font-light">
-                {data.category.title}
+                {course.category.title}
               </span>
             </div>
           </div>

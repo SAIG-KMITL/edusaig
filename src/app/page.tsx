@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <>
       <Navbar user={user.data as UserResponseType} />
-      {coursesPopular.data && categories.data ? <HomeUI courses={coursesPopular.data} cats={categories.data}/> : <div>Loading...</div>}
+      {coursesPopular.data && categories.data ? <HomeUI courses={coursesPopular.data} cats={categories.data.data}/> : <div>Loading...</div>}
       <Footer />
     </>
   );

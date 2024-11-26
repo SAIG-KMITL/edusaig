@@ -51,7 +51,7 @@ export default function CourseUI({
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -81,7 +81,7 @@ export default function CourseUI({
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -111,7 +111,7 @@ export default function CourseUI({
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -123,7 +123,7 @@ export default function CourseUI({
               whileHover={{ y: -5 }}
               transition={{ duration: 0.2 }}
             >
-              <CourseCard key={course.id} data={course} />
+              <CourseCard key={course.id} course={course} />
             </motion.div>
           ))}
         </div>
