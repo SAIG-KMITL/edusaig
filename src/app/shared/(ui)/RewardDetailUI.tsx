@@ -4,6 +4,7 @@ import { createUserRewardAction } from "@/actions/userRewardAction";
 import { Toast } from "@/components/Toast/Toast";
 import { rewards } from "@/constants/reward";
 import { RewardType } from "@/types/reward";
+import { REWARD } from "@/utils/enums/reward";
 import { fetchThumbnailReward } from "@/utils/thumbnail/fetchThumbnail";
 import { motion } from "framer-motion";
 import { Coins } from "lucide-react";
@@ -51,17 +52,16 @@ export default function RewardDetailUI({ reward }: { reward: RewardType }) {
   const handleCreateUserReward = async (): Promise<void> => {
     try {
       const response = await createUserRewardAction(reward.id);
-      console.log(response);
 
       if (response.data) {
-        Toast("Reward redeemed successfully", "success");
+        Toast(REWARD.REDEEM_SUCCESS, "success");
       } else {
-        Toast(response.error?.message || "Failed to redeem reward", "error");
+        Toast(response.error?.message || REWARD.REDEEM_FAILED, "error");
       }
     } catch (error) {
       console.log(error);
       Toast(
-        error instanceof Error ? error.message : "Failed to redeem reward",
+        error instanceof Error ? error.message : REWARD.REDEEM_FAILED,
         "error"
       );
     }
