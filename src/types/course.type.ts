@@ -53,6 +53,11 @@ export type CourseModuleResponseType = {
   }
 }
 
+export type CourseModulesResponseType = {
+  data: CourseModuleResponseType[];
+  meta: MetaType;
+}
+
 export type TeacherResponseType = {
   id: string;
   email: string;

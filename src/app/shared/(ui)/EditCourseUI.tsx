@@ -17,7 +17,7 @@ import {
   CourseStatusType,
   CourseType,
 } from "@/types/course.type";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {

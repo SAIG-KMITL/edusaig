@@ -1,7 +1,6 @@
-import { fetchCourseAction, fetchCoursesAction } from "@/actions/courseAction";
+import {  fetchCoursesWithOwnershipAction } from "@/actions/courseAction";
 import { fetchUserAction } from "@/actions/userAction";
 import CourseDashboardUI from "@/app/shared/(ui)/CourseDashboardUI";
-import { CourseType } from "@/types/course.type";
 
 export default async function CourseDashboardPage() {
 
@@ -10,7 +9,7 @@ export default async function CourseDashboardPage() {
     return null;
   }
 
-  const courses = await fetchCoursesAction();
+  const courses = await fetchCoursesWithOwnershipAction();
   
   if(!courses.data?.data) {
     return null;

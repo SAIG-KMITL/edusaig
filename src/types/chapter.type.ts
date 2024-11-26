@@ -1,3 +1,5 @@
+import { MetaType } from "./meta.type";
+
 export type ChapterType = {
   id: string;
   courseModuleId: string;
@@ -27,3 +29,8 @@ export type ChapterResponseType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ChaptersResponseType = {
+  data: ChapterResponseType[];
+  meta: MetaType;
+}

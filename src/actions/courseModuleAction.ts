@@ -1,4 +1,4 @@
-import { CourseModuleResponseType } from "@/types/course.type";
+import { CourseModuleResponseType, CourseModulesResponseType } from "@/types/course.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCourseModuleAction(id: string) {
@@ -9,7 +9,21 @@ export async function fetchCourseModuleAction(id: string) {
 }
 
 export async function fetchCourseModulesAction() {
-  return baseApiAction<CourseModuleResponseType[]>(`/course-module`, {
+  return baseApiAction<CourseModulesResponseType>(`/course-module?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseModulesWithOwnershipAction() {
+  return baseApiAction<CourseModulesResponseType>(`/course-module/with-ownership?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseModuleWithOwnershipAction(id: string) {
+  return baseApiAction<CourseModulesResponseType>(`/course-module/with-ownership/${id}?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });

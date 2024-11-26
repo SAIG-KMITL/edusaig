@@ -1,4 +1,4 @@
-import { ChapterResponseType } from "@/types/chapter.type";
+import { ChapterResponseType, ChaptersResponseType } from "@/types/chapter.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchChapterAction(id: string) {
@@ -8,12 +8,29 @@ export async function fetchChapterAction(id: string) {
   });
 }
 
-export async function fetchChaptersAction(page?: number, limit?: number, search?: string) {
-  return baseApiAction<{ data: ChapterResponseType[] }>(`/chapter
-    ${page || limit || search ? "?" : ""}
-    ${page ? `page=${page}` : ""}
-    ${limit ? `limit=${limit}` : ""}
-    ${search ? `search=${search}` : ""}`, {
+export async function fetchChaptersAction() {
+  return baseApiAction<ChaptersResponseType>(`/chapter?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchChaptersByModuleAction(moduleId: string) {
+  return baseApiAction<ChapterResponseType[]>(`/chapter/module/${moduleId}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchChaptersWithOwnershipAction() {
+  return baseApiAction<ChaptersResponseType>(`/chapter/with-ownership?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchChapterWithOwnershipAction() {
+  return baseApiAction<ChapterResponseType>(`/chapter/with-ownership`, {
     method: "GET",
     requiresAuth: true,
   });

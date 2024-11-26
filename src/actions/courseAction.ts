@@ -8,7 +8,7 @@ import {
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCoursesAction() {
-  return baseApiAction<CoursesResponseType>("/course?page=1&limit=10", {
+  return baseApiAction<CoursesResponseType>("/course?page=1&limit=100", {
     method: "GET",
     requiresAuth: true,
   });
@@ -77,6 +77,27 @@ export async function deleteCourseAction(id: string) {
 
 export async function fetchCourseAction(id: string) {
   return baseApiAction<CourseType>(`/course/${id}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCoursesByTeacherAction(teacherId: string) {
+  return baseApiAction<CoursesResponseType>(`/course/by-teacher/${teacherId}?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCoursesWithOwnershipAction() {
+  return baseApiAction<CoursesResponseType>(`/course/with-ownership?limit=100`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseWithOwnershipAction(id: string) {
+  return baseApiAction<CourseType>(`/course/with-ownership/${id}`, {
     method: "GET",
     requiresAuth: true,
   });
