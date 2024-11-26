@@ -1,21 +1,28 @@
 "use client";
 
-import { BarChart2, ChevronLeft, Clock, DollarSign, PlusIcon, Tag } from "lucide-react";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { handleOpenModal } from "@/lib/modal";
-import CreateCourseModuleModal from "@/components/Modals/CreateCourseModuleModal";
 import CourseModuleEntry from "@/components/Button/CourseModuleEntry";
-import EditCourseModuleModal from "@/components/Modals/EditCourseModuleModal";
-import { useState } from "react";
-import { CourseModuleResponseType, CourseType } from "@/types/course.type";
-import Link from "next/link";
-import { ChapterResponseType } from "@/types/chapter.type";
+import CreateCourseModuleModal from "@/components/Modals/CreateCourseModuleModal";
 import DeleteChapterModal from "@/components/Modals/DeleteChapterModal";
 import DeleteCourseModuleModal from "@/components/Modals/DeleteCourseModuleModal";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import EditCourseModuleModal from "@/components/Modals/EditCourseModuleModal";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { handleOpenModal } from "@/lib/modal";
+import { ChapterResponseType } from "@/types/chapter.type";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 import { UserResponseType } from "@/types/user.type";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
+import { motion } from "framer-motion";
+import {
+  BarChart2,
+  ChevronLeft,
+  Clock,
+  DollarSign,
+  PlusIcon,
+  Tag,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 interface CourseModuleDashboardUIProps {
   user: UserResponseType;
@@ -24,9 +31,16 @@ interface CourseModuleDashboardUIProps {
   chapters: ChapterResponseType[];
 }
 
-export default function CourseModuleDashboardUI({ user, course, courseModules, chapters }: CourseModuleDashboardUIProps) {
-  const [selectedModule, setSelectedModule] = useState<CourseModuleResponseType | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState<ChapterResponseType | null>(null);
+export default function CourseModuleDashboardUI({
+  user,
+  course,
+  courseModules,
+  chapters,
+}: CourseModuleDashboardUIProps) {
+  const [selectedModule, setSelectedModule] =
+    useState<CourseModuleResponseType | null>(null);
+  const [selectedChapter, setSelectedChapter] =
+    useState<ChapterResponseType | null>(null);
 
   const handleCourseModuleSelected = (module: CourseModuleResponseType) => {
     setSelectedModule(module);
@@ -46,10 +60,20 @@ export default function CourseModuleDashboardUI({ user, course, courseModules, c
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-12">
-      <CreateCourseModuleModal courseId={course.id}/>
-      <EditCourseModuleModal courseId={course.id} courseModule={selectedModule} handleModuleDeselected={handleCourseModuleDeselected} />
-      <DeleteCourseModuleModal courseModule={selectedModule} handleCourseModuleDeselected={handleCourseModuleDeselected}/>
-      <DeleteChapterModal chapter={selectedChapter} handleChapterDeselected={handleChapterDeselected}/>
+      <CreateCourseModuleModal courseId={course.id} />
+      <EditCourseModuleModal
+        courseId={course.id}
+        courseModule={selectedModule}
+        handleModuleDeselected={handleCourseModuleDeselected}
+      />
+      <DeleteCourseModuleModal
+        courseModule={selectedModule}
+        handleCourseModuleDeselected={handleCourseModuleDeselected}
+      />
+      <DeleteChapterModal
+        chapter={selectedChapter}
+        handleChapterDeselected={handleChapterDeselected}
+      />
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-6 lg:items-start h-full drop-shadow-lg rounded-xl">
         <div className="w-full lg:flex-1 max-w-2xl lg:max-w-[420px] px-6 lg:sticky top-[120px]">
           <div className="flex items-center flex-wrap mb-3">
@@ -81,23 +105,21 @@ export default function CourseModuleDashboardUI({ user, course, courseModules, c
             animate={{ opacity: 1 }}
             className="mt-6 flex flex-col gap-2 border border-silver rounded-xl px-6 py-3 bg-steelGray text-sm text-white"
           >
-            <p className="text-silver font-light">
-              {course.description}
-            </p>
+            <p className="text-silver font-light">{course.description}</p>
             <div className="flex items-center gap-2">
-              <BarChart2 className="w-5 h-5 text-silver"/>
+              <BarChart2 className="w-5 h-5 text-silver" />
               <p className="-mb-[7px]">{course.level}</p>
             </div>
             <div className="flex items-center gap-2">
-              <Tag className="w-5 h-5 text-silver"/>
+              <Tag className="w-5 h-5 text-silver" />
               <p className="-mb-[7px]">{course.category.title}</p>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-silver"/>
+              <DollarSign className="w-5 h-5 text-silver" />
               <p className="-mb-[6px]">{course.price}</p>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-silver"/>
+              <Clock className="w-5 h-5 text-silver" />
               <p className="-mb-[7px]">{`${course.duration} mins`}</p>
             </div>
           </motion.div>
@@ -117,19 +139,21 @@ export default function CourseModuleDashboardUI({ user, course, courseModules, c
               <PlusIcon className="w-5 h-5" />
               <p>Add Module</p>
             </motion.button>
-            {courseModules.sort((a, b) => a.orderIndex - b.orderIndex).map((module, index) => {
-              return (
-                <CourseModuleEntry
-                  key={index}
-                  module={module}
-                  handleModuleSelected={handleCourseModuleSelected}
-                  handleChapterSelected={handleChapterSelected}
-                  chapters={chapters}
-                  isOwner={user.id == course.teacher.id}
-                  editMode={true}
-                />
-              );
-            })}
+            {courseModules
+              .sort((a, b) => a.orderIndex - b.orderIndex)
+              .map((module, index) => {
+                return (
+                  <CourseModuleEntry
+                    key={index}
+                    module={module}
+                    handleModuleSelected={handleCourseModuleSelected}
+                    handleChapterSelected={handleChapterSelected}
+                    chapters={chapters}
+                    isOwner={user.id == course.teacher.id}
+                    editMode={true}
+                  />
+                );
+              })}
           </div>
         </div>
       </div>

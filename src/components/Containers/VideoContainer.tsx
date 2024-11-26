@@ -1,7 +1,13 @@
 "use client";
 
 import { ChapterResponseType, ChapterType } from "@/types/chapter.type";
-import { CourseModuleResponseType, CourseModuleType, CourseType } from "@/types/course.type";
+import {
+  CourseModuleResponseType,
+  CourseModuleType,
+  CourseType,
+} from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
+import { fetchVideo } from "@/utils/resource/fetchVideo";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BookMarked,
@@ -45,7 +51,7 @@ export default function VideoContainer({
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
         <iframe
           className="w-full h-full"
-          src={"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
+          src={fetchVideo(chapter.id)}
           allowFullScreen
         />
       </div>
@@ -60,7 +66,6 @@ export default function VideoContainer({
             {chapter.description}
           </p>
 
-          {/* Resources */}
           <div className="flex gap-4">
             <motion.a
               whileHover={{ scale: 1.05 }}

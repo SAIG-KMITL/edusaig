@@ -2,6 +2,7 @@
 
 import { navbarButtons } from "@/constants/navbar";
 import { UserResponseType } from "@/types/user.type";
+import { ROLE } from "@/utils/enums/role";
 import { AnimatePresence, motion } from "framer-motion";
 import { MenuIcon, User, XIcon } from "lucide-react";
 import Image from "next/image";
@@ -77,7 +78,6 @@ function Navbar({ user }: NavbarTypeProps) {
         transition={{ type: "spring", stiffness: 100 }}
         className="h-[72px] flex bg-white bg-opacity-5 backdrop-blur-md items-center justify-between px-6 relative z-10"
       >
-        {/* Logo Section */}
         <motion.div
           whileHover={{ scale: 1.02 }}
           className="font-bold text-[26px] leading-[100%] text-white flex ml-5 cursor-pointer"
@@ -103,7 +103,6 @@ function Navbar({ user }: NavbarTypeProps) {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
         <div className="items-center font-medium md:flex text-white">
           {navbarButtons.map((button, index) => (
             <motion.div
@@ -129,19 +128,26 @@ function Navbar({ user }: NavbarTypeProps) {
             </motion.div>
           ))}
 
-          {/* Authentication Button */}
           <motion.div
             whileHover="hover"
             whileTap="tap"
             variants={buttonVariants}
           >
-            {user ? (
+            {user && user.role === ROLE.STUDENT ? (
               <Link
                 href="/profile"
                 className="hidden md:flex ml-6 px-5 py-2 rounded-lg transition mr-5 bg-white hover:bg-opacity-85 font-semibold text-electricViolet"
               >
                 <User className="w-5 h-5 mr-2" />
                 Profile
+              </Link>
+            ) : user && user.role === ROLE.TEACHER ? (
+              <Link
+                href="/dashboard/course"
+                className="hidden md:flex ml-6 px-5 py-2 rounded-lg transition mr-5 bg-white hover:bg-opacity-85 font-semibold text-electricViolet"
+              >
+                <User className="w-5 h-5 mr-2" />
+                Dashboard
               </Link>
             ) : (
               <Link
@@ -153,7 +159,6 @@ function Navbar({ user }: NavbarTypeProps) {
             )}
           </motion.div>
 
-          {/* Mobile Menu Button */}
           {!isOpen && (
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
               <MenuIcon
@@ -165,11 +170,9 @@ function Navbar({ user }: NavbarTypeProps) {
         </div>
       </motion.div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Overlay */}
             <motion.div
               initial="closed"
               animate="open"
@@ -179,7 +182,6 @@ function Navbar({ user }: NavbarTypeProps) {
               className="md:hidden fixed inset-0 bg-gray-900 z-10"
             />
 
-            {/* Mobile Menu Content */}
             <motion.div
               initial="closed"
               animate="open"
