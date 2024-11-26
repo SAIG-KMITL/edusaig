@@ -1,7 +1,7 @@
 "use client";
 
-import { ChapterType } from "@/types/chapter.type";
-import { CourseModuleType } from "@/types/course.type";
+import { ChapterResponseType, ChapterType } from "@/types/chapter.type";
+import { CourseModuleResponseType, CourseModuleType, CourseType } from "@/types/course.type";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BookMarked,
@@ -15,12 +15,14 @@ import {
 import Link from "next/link";
 
 export default function VideoContainer({
+  course,
   chapter,
   courseModule,
   onComplete,
 }: {
-  chapter: ChapterType;
-  courseModule: CourseModuleType;
+  course: CourseType;
+  chapter: ChapterResponseType;
+  courseModule: CourseModuleResponseType;
   onComplete: () => void;
 }) {
   return (
@@ -43,7 +45,7 @@ export default function VideoContainer({
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
         <iframe
           className="w-full h-full"
-          src={chapter.videoUrl}
+          src={"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
           allowFullScreen
         />
       </div>
@@ -53,7 +55,7 @@ export default function VideoContainer({
           <h2 className="text-2xl font-bold text-white mb-2">
             {chapter.content}
           </h2>
-          <p className="text-silver mb-4">by {courseModule.course.teacher}</p>
+          <p className="text-silver mb-4">by {course.teacher.fullname}</p>
           <p className="text-white/80 leading-relaxed mb-6">
             {chapter.description}
           </p>

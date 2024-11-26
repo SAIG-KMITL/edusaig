@@ -1,10 +1,10 @@
-import { CourseLevel } from "@/types/course.type";
+import { CourseLevelType } from "@/types/course.type";
 
 interface CourseLevelTagProps {
-  level: CourseLevel
+  level: CourseLevelType
 }
 
-const decorations: { [key in CourseLevel]: string } = {
+const decorations: { [key in CourseLevelType]: string } = {
   beginner: "border-beginner text-beginner", 
   intermediate: "border-intermediate text-intermediate", 
   advanced: "border-advanced text-advanced",
