@@ -9,22 +9,33 @@ import { useState } from "react";
 
 import PointStreak from "@/components/PointStreak/PointStreak";
 import { userPointStreak } from "@/constants/pointStreak";
+import { RewardResponseType, RewardType } from "@/types/reward";
+import { PointStreakType } from "@/types/pointStreak.type";
+import { fetchRewardsAction } from "@/actions/rewardAction";
 
-export default function RewardUI() {
-  const ITEMS_PER_PAGE = 9;
+export default function RewardUI({
+  rewards,
+  userPointStreak,
+}: {
+  rewards: RewardResponseType;
+  userPointStreak: PointStreakType;
+}) {
+  const ITEMS_PER_PAGE = rewards.meta?.pageSize || 9;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentData, setCurrentData] = useState<RewardType[]>(rewards.data);
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentData = rewards
-    .filter((reward) =>
-      reward.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .slice(startIndex, endIndex);
+  // const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  // const endIndex = startIndex + ITEMS_PER_PAGE;
+  // const currentData = rewards.data
+  //   .filter((reward) =>
+  //     reward.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  //   .slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    handlefetchRewards(page);
   };
 
   const handleSearch = (value: string) => {
@@ -33,6 +44,14 @@ export default function RewardUI() {
 
   const handleFilterChange = (selectedOptions: string[]) => {
     console.log("Selected filters:", selectedOptions);
+  };
+
+  const handlefetchRewards = async (page: number) => {
+    const response = await fetchRewardsAction(page);
+
+    if (response.data) {
+      setCurrentData(response.data.data);
+    }
   };
 
   return (
@@ -61,7 +80,7 @@ export default function RewardUI() {
         </div>
         <Pagination
           currentPage={currentPage}
-          totalItems={rewards.length}
+          totalItems={rewards.meta?.total || 0}
           onPageChange={handlePageChange}
           itemsPerPage={ITEMS_PER_PAGE}
         />
