@@ -67,3 +67,24 @@ export async function fetchCourseAction(id: string) {
     requiresAuth: true,
   });
 }
+
+export async function fetchCoursesByTeacherAction(teacherId: string) {
+  return baseApiAction<CoursesResponseType>(`/course/by-teacher/${teacherId}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCoursesWithOwnershipAction() {
+  return baseApiAction<CoursesResponseType>(`/course/with-ownership`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseWithOwnershipAction(id: string) {
+  return baseApiAction<CourseType>(`/course/with-ownership/${id}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
