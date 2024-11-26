@@ -14,7 +14,7 @@ type ApiResponse<T> = {
 
 type RequestConfig = {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  body?: object;
+  body?: object | FormData;
   requiresAuth?: boolean;
 };
 
@@ -26,9 +26,12 @@ export async function baseApiAction<T>(
 
   try {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       accept: "application/json",
     };
+
+    if (!(body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (requiresAuth) {
       const cookieStore = cookies();
@@ -49,10 +52,26 @@ export async function baseApiAction<T>(
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+          ? JSON.stringify(body)
+          : undefined,
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get("content-type");
+    let data;
+
+    if (contentType && contentType.includes("application/json")) {
+      try {
+        data = await response.json();
+      } catch (e) {
+        data = null;
+      }
+    } else {
+      data = await response.text();
+    }
 
     if (!response.ok) {
       return {
