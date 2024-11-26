@@ -1,9 +1,10 @@
 "use server";
 import { CategoryType } from "@/types/category";
+import { CategoriesResponseType } from "@/types/categpry.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCategoriesAction() {
-  return baseApiAction<CategoryType[]>("/category", {
+  return baseApiAction<CategoriesResponseType>("/category", {
     method: "GET",
     requiresAuth: false,
   });
