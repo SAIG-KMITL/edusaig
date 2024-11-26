@@ -8,6 +8,7 @@ import {
   AlertCircle,
   BarChart2,
   CheckCircle,
+  ChevronLeft,
   Clock,
   DollarSign,
   FileText,
@@ -21,7 +22,26 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { CategoryType } from "@/types/category";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { createCourseSchema } from "@/schema/course.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createCourseAction,
+  uploadCourseThumbnail,
+} from "@/actions/courseAction";
+import { Toast } from "@/components/Toast/Toast";
+import { CourseLevelType, CourseStatusType } from "@/types/course.type";
+import Link from "next/link";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+type CreateCourseFormData = z.infer<typeof createCourseSchema>;
+
+interface CreateCourseUIProps {
+  categories: CategoryType[];
+}
 
 interface DragState {
   isDragging: boolean;
@@ -36,22 +56,7 @@ const validateImageFile = (file: File | undefined): boolean => {
   return Boolean(file && file.type.startsWith("image/"));
 };
 
-const categoryOptions = [
-  {
-    id: "1",
-    label: "Category1",
-  },
-  {
-    id: "2",
-    label: "Category2",
-  },
-  {
-    id: "3",
-    label: "Category3",
-  }
-];
-
-const levelOptions = [
+const levelOptions: { id: CourseLevelType; label: string }[] = [
   {
     id: "beginner",
     label: "Beginner",
@@ -63,10 +68,10 @@ const levelOptions = [
   {
     id: "advanced",
     label: "Advanced",
-  }
+  },
 ];
 
-const statusOptions = [
+const statusOptions: { id: CourseStatusType; label: string }[] = [
   {
     id: "draft",
     label: "Draft",
@@ -78,10 +83,10 @@ const statusOptions = [
   {
     id: "archived",
     label: "Archived",
-  }
+  },
 ];
 
-export default function CreateCourseUI() {
+export default function CreateCourseUI({ categories }: CreateCourseUIProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -92,6 +97,72 @@ export default function CreateCourseUI() {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<CreateCourseFormData>({
+    resolver: zodResolver(createCourseSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      categoryId: undefined,
+      duration: undefined,
+      level: undefined,
+      price: undefined,
+      status: undefined,
+      thumbnailUrl: "",
+    },
+  });
+
+  const onSubmit = async (data: CreateCourseFormData): Promise<void> => {
+    try {
+      setIsLoading(true);
+      const courseResponse = await createCourseAction(
+        data.title,
+        data.description,
+        data.categoryId,
+        data.duration,
+        data.level as CourseLevelType,
+        data.price,
+        data.status as CourseStatusType
+      );
+
+      if (courseResponse.error?.message) {
+        Toast(courseResponse.error.message, "error");
+        return;
+      }
+
+      if (courseResponse.data && selectedFile) {
+        const uploadResponse = await uploadCourseThumbnail(
+          courseResponse.data.id,
+          selectedFile
+        );
+
+        if (uploadResponse.error?.message) {
+          Toast(uploadResponse.error.message, "error");
+          return;
+        }
+      }
+
+      Toast("The course has been created.", "success");
+      router.push("/dashboard/course");
+      reset();
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Failed to create course",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0] as File;
@@ -104,6 +175,7 @@ export default function CreateCourseUI() {
     setSelectedFile(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+    setValue("thumbnailUrl", url);
     setUploadStatus("idle");
     simulateUpload();
   };
@@ -153,6 +225,7 @@ export default function CreateCourseUI() {
     }
     setSelectedFile(null);
     setPreviewUrl(null);
+    setValue("thumbnailUrl", "");
     setUploadStatus("idle");
     setUploadProgress(0);
     if (fileInputRef.current) {
@@ -161,15 +234,15 @@ export default function CreateCourseUI() {
   };
 
   const handleCategoryChange = (selectedOptionId: string) => {
-    console.log("Selected categoryId:", selectedOptionId);
+    setValue("categoryId", selectedOptionId, { shouldValidate: true });
   };
 
   const handleLevelChange = (selectedOptionId: string) => {
-    console.log("Selected levelId:", selectedOptionId);
+    setValue("level", selectedOptionId, { shouldValidate: true });
   };
 
   const handleStatusChange = (selectedOptionId: string) => {
-    console.log("Selected statusId:", selectedOptionId);
+    setValue("status", selectedOptionId, { shouldValidate: true });
   };
 
   const containerVariants = {
@@ -177,6 +250,15 @@ export default function CreateCourseUI() {
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
   };
+
+  const categoryOptions = categories
+    .filter((category) => category.slug == "course")
+    .map((category) => {
+      return {
+        id: category.id,
+        label: category.title,
+      };
+    });
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-12">
@@ -189,24 +271,33 @@ export default function CreateCourseUI() {
             exit="exit"
             className="flex flex-col space-y-6"
           >
-            <div className="flex justify-end">
-              <motion.label
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="relative flex items-center justify-center p-4 w-72 
+            <div className="flex justify-between gap-4 flex-wrap">
+              <Link
+                href={`/dashboard/course`}
+                className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Courses
+              </Link>
+              <div className="flex justify-end">
+                <motion.label
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative flex items-center justify-center p-4 w-72 
                   bg-electricViolet hover:bg-electricViolet/90 text-white rounded-xl 
                   shadow-lg cursor-pointer transition-colors group"
-              >
-                <Upload className="w-5 h-5 mr-2" />
-                <span className="font-medium">Choose Image to Upload</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  ref={fileInputRef}
-                />
-              </motion.label>
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  <span className="font-medium">Choose Image to Upload</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    ref={fileInputRef}
+                  />
+                </motion.label>
+              </div>
             </div>
 
             <motion.div
@@ -221,7 +312,7 @@ export default function CreateCourseUI() {
             >
               {!selectedFile ? (
                 <div
-                  className="h-full flex flex-col items-center justify-center p-6 border-2 
+                  className="relative h-full flex flex-col items-center justify-center p-6 border-2 
                     border-dashed border-royalPurple/30 rounded-2xl transition-colors"
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -234,6 +325,23 @@ export default function CreateCourseUI() {
                   <p className="text-silver text-sm">
                     or click the upload button above
                   </p>
+                  {errors.thumbnailUrl && (
+                    <div>
+                      <div className="absolute right-1/2 translate-x-1/2 bottom-3 ">
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className={`text-sm text-red-500`}
+                        >
+                          {errors.thumbnailUrl.message}
+                        </motion.p>
+                      </div>
+                      <div className="absolute right-3 top-3">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="p-6 space-y-6">
@@ -305,15 +413,6 @@ export default function CreateCourseUI() {
                         </p>
                       </div>
                     </div>
-                    {uploadStatus === "success" && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 bg-electricViolet text-white rounded-lg"
-                      >
-                        Save Image
-                      </motion.button>
-                    )}
                   </div>
                 </div>
               )}
@@ -326,7 +425,10 @@ export default function CreateCourseUI() {
             <span>Create Course Details</span>
           </div>
 
-          <div className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-1 text-left p-6 space-y-6 rounded-xl flex flex-col"
+          >
             <InputTheme
               type="text"
               label="Course Title"
@@ -334,6 +436,8 @@ export default function CreateCourseUI() {
               leftIcon={<Type className="w-5 h-5" />}
               helper="Give your course a descriptive title"
               className="w-full"
+              error={errors.title}
+              {...register("title")}
             />
 
             <TextareaTheme
@@ -342,15 +446,19 @@ export default function CreateCourseUI() {
               leftIcon={<FileText className="absolute top-[13px] w-5 h-5" />}
               helper="Describe what this course covers"
               className="w-full h-[88px] no-scrollbar"
+              error={errors.description}
+              {...register("description")}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Category"
               placeholder="Select course category"
               leftIcon={<Tag className="w-5 h-5" />}
               helper="Choose the category that best fits your course content"
               options={categoryOptions}
-              onChange={handleCategoryChange}
+              onSelectedValueChange={handleCategoryChange}
+              error={errors.categoryId}
+              {...register("categoryId")}
             />
 
             <InputTheme
@@ -360,15 +468,21 @@ export default function CreateCourseUI() {
               leftIcon={<Clock className="w-5 h-5" />}
               helper="Estimated time to complete this course"
               className="w-full"
+              error={errors.duration}
+              {...register("duration", {
+                valueAsNumber: true,
+              })}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Level"
               placeholder="Select course level"
               leftIcon={<BarChart2 className="w-5 h-5" />}
               helper="Choose the course difficulty"
               options={levelOptions}
-              onChange={handleLevelChange}
+              onSelectedValueChange={handleLevelChange}
+              error={errors.level}
+              {...register("level")}
             />
 
             <InputTheme
@@ -378,18 +492,28 @@ export default function CreateCourseUI() {
               leftIcon={<DollarSign className="w-5 h-5" />}
               helper="Specify the cost for enrolling in this course"
               className="w-full"
+              error={errors.price}
+              {...register("price", {
+                valueAsNumber: true,
+              })}
             />
 
-            <SelectTheme 
+            <SelectTheme
               label="Course Status"
               placeholder="Select course status"
               leftIcon={<Globe className="w-5 h-5" />}
               helper="Manage how and where the course appears to users"
               options={statusOptions}
-              onChange={handleStatusChange}
+              onSelectedValueChange={handleStatusChange}
+              error={errors.status}
+              {...register("status", {
+                onChange: (e) => console.log(e.target.value),
+              })}
             />
 
             <motion.button
+              type="submit"
+              disabled={isLoading || uploadStatus == "uploading"}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium
@@ -397,7 +521,7 @@ export default function CreateCourseUI() {
             >
               Save Course
             </motion.button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

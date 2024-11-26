@@ -1,5 +1,8 @@
 import { chapters } from "@/constants/chapter";
-import { CourseModuleType } from "@/types/course.type";
+import {
+  CourseModuleResponseType,
+  CourseModuleType,
+} from "@/types/course.type";
 import { motion } from "framer-motion";
 import {
   ChevronDown,
@@ -12,25 +15,28 @@ import {
 import { useState } from "react";
 import ActionButton, { ActionButtonEntryType } from "./ActionButton";
 import { handleOpenModal } from "@/lib/modal";
-import { ChapterType } from "@/types/chapter.type";
+import { ChapterResponseType, ChapterType } from "@/types/chapter.type";
 
 interface CourseModuleEntryProps {
-  module: CourseModuleType;
-  handleModuleSelected: (module: CourseModuleType) => void;
+  module: CourseModuleResponseType;
+  handleModuleSelected: (module: CourseModuleResponseType) => void;
+  handleChapterSelected: (chapter: ChapterResponseType) => void;
+  chapters: ChapterResponseType[];
 }
 
 export default function CourseModuleEntry({
   module,
   handleModuleSelected,
+  handleChapterSelected,
+  chapters,
 }: CourseModuleEntryProps) {
   const [visible, setVisible] = useState<boolean>(false);
-
   const actionButtonEntries: ActionButtonEntryType[] = [
     {
       label: "Add Chapter",
       icon: <PlusIcon className="w-[14px] h-[14px] mr-2" />,
       type: "link",
-      href: "/dashboard/chapter/create-chapter",
+      href: `/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`,
     },
     {
       label: "Edit Module",
@@ -38,19 +44,22 @@ export default function CourseModuleEntry({
       type: "button",
       onClick: () => {
         handleModuleSelected(module);
-        handleOpenModal("edit-module-modal");
+        handleOpenModal("edit-course-module-modal");
       },
     },
     {
       label: "Delete Module",
       icon: <Trash className="w-[14px] h-[14px] mr-2" />,
       type: "button",
-      onClick: () => {},
+      onClick: () => {
+        handleModuleSelected(module);
+        handleOpenModal("delete-course-module-modal");
+      },
     },
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className="relative"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -68,7 +77,12 @@ export default function CourseModuleEntry({
             <ChevronDown className="w-5 h-5 text-white/60" />
           </motion.div>
         ) : (
-          <MenuIcon className="w-5 h-5 mt-[2px] text-white" />
+          <motion.div
+            animate={{ rotate: visible ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <MenuIcon className="w-5 h-5 mt-[2px] text-white" />
+          </motion.div>
         )}
         <div className="flex-1 flex justify-between items-start">
           <div className="flex flex-col items-start">
@@ -100,9 +114,29 @@ export default function CourseModuleEntry({
           hover:border-electricViolet/50
           `}
         >
-          {chapters.map((chapter, index) => {
-            return <ChapterEntry key={index} chapter={chapter} />;
-          })}
+          <motion.a
+            href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="m-2 px-6 py-3 bg-silver/50 text-white rounded-xl font-medium
+      hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <p>Add Chapter</p>
+          </motion.a>
+          {chapters
+            .sort((a, b) => a.orderIndex - b.orderIndex)
+            .filter((chapter) => chapter.moduleId == module.id)
+            .map((chapter, index) => {
+              return (
+                <ChapterEntry
+                  key={index}
+                  module={module}
+                  chapter={chapter}
+                  handleChapterSelected={handleChapterSelected}
+                />
+              );
+            })}
         </motion.div>
       )}
     </motion.div>
@@ -110,28 +144,37 @@ export default function CourseModuleEntry({
 }
 
 interface ChapterEntryProps {
-  chapter: ChapterType;
+  module: CourseModuleResponseType;
+  chapter: ChapterResponseType;
+  handleChapterSelected: (chapter: ChapterResponseType) => void;
 }
 
-export function ChapterEntry({ chapter }: ChapterEntryProps) {
+export function ChapterEntry({
+  module,
+  chapter,
+  handleChapterSelected,
+}: ChapterEntryProps) {
   const actionButtonEntries: ActionButtonEntryType[] = [
     {
       label: "Edit Chapter",
       icon: <PencilIcon className="w-[14px] h-[14px] mr-2" />,
       type: "link",
-      href: `/dashboard/chapter/edit-chapter/${chapter.id}`,
+      href: `/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/${chapter.id}/edit-chapter`,
     },
     {
       label: "Delete Chapter",
       icon: <Trash className="w-[14px] h-[14px] mr-2" />,
       type: "button",
-      onClick: () => {},
+      onClick: () => {
+        handleChapterSelected(chapter);
+        handleOpenModal("delete-chapter-modal");
+      },
     },
   ];
 
   return (
     <div
-      className={`py-2 px-6 flex justify-between items-center ${"border-b border-silver/10"} text-sm text-silver hover:bg-silver/10`}
+      className={`py-2 px-6 flex justify-between items-center ${"border-b border-silver/10"} text-sm rounded-xl text-silver hover:bg-silver/10`}
     >
       <div className="flex gap-2">
         <p className="text-silver/60">{`Chapter ${chapter.orderIndex}`}</p>
