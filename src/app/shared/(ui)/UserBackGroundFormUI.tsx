@@ -8,17 +8,15 @@ import Input from "@/components/Inputs/Input";
 export default function UserBackgroundFormUI() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [opportunity, setOpportunity] = useState<string>("");
-    const [blocks, setBlocks] = useState<{ skill: string }[]>([
-        { skill: "" },
-    ]);
+    const [blocks, setBlocks] = useState<string[]>([""]);
 
     const handleAddBlock = () => {
-        setBlocks([...blocks, { skill: "" }]);
+        setBlocks([...blocks, ""]);
     };
 
-    const handleInputChange = (index: number, field: "skill", value: string) => {
+    const handleInputChange = (index: number, value: string) => {
         const updatedBlocks = [...blocks];
-        updatedBlocks[index][field] = value;
+        updatedBlocks[index] = value;
         setBlocks(updatedBlocks);
     };
 
@@ -26,6 +24,11 @@ export default function UserBackgroundFormUI() {
         const updatedBlocks = blocks.filter((_, i) => i !== index);
         setBlocks(updatedBlocks);
     };
+
+    useEffect(() => {
+        console.log(opportunity);
+        console.log(blocks);
+    }, [opportunity, blocks]);
 
     return (
         <form className="flex flex-col space-y-2 lg:space-y-4 container my-4 lg:my-8 mx-auto p-4 lg:p-8 rounded-3xl bg-slate-100 bg-opacity-5 backdrop-blur-md">
@@ -59,8 +62,8 @@ export default function UserBackgroundFormUI() {
                             type="text"
                             label={`Skill ${index + 1}`}
                             placeholder="Enter Skill"
-                            value={block.skill}
-                            onChange={(e) => handleInputChange(index, "skill", e.target.value)}
+                            value={block}
+                            onChange={(e) => handleInputChange(index, e.target.value)}
                             labelClassName="text-xl font-semibold"
                             className="bg-white w-full"
                         />
