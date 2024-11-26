@@ -19,7 +19,7 @@ export default function SidebarChapter({
   chapters: ChapterResponseType[];
   isOwner: boolean;
   progresses: ProgressResponseType[];
-  hasEnrolled?: boolean; 
+  hasEnrolled?: boolean;
 }) {
   return (
     <motion.div
@@ -34,25 +34,27 @@ export default function SidebarChapter({
       </div>
 
       <div className="divide-y divide-royalPurple/20">
-        {courseModules.map((courseModule, index) => (
-          <motion.div
-            key={courseModule.id}
-            initial={false}
-            animate={{ opacity: 1 }}
-            className="p-4 hover:bg-royalPurple/20 transition-colors cursor-pointer"
-          >
-            <CourseModuleEntry
-              module={courseModule}
-              currentChapter={currentChapter}
-              chapters={chapters.filter(
-                (chapter) => chapter.moduleId == courseModule.id
-              )}
-              isOwner={isOwner}
-              progresses={progresses}
-              hasEnrolled={hasEnrolled}
-            />
-          </motion.div>
-        ))}
+        {courseModules
+          .sort((a, b) => a.orderIndex - b.orderIndex)
+          .map((courseModule, index) => (
+            <motion.div
+              key={courseModule.id}
+              initial={false}
+              animate={{ opacity: 1 }}
+              className="p-4 hover:bg-royalPurple/20 transition-colors cursor-pointer"
+            >
+              <CourseModuleEntry
+                module={courseModule}
+                currentChapter={currentChapter}
+                chapters={chapters.filter(
+                  (chapter) => chapter.moduleId == courseModule.id
+                )}
+                isOwner={isOwner}
+                progresses={progresses}
+                hasEnrolled={hasEnrolled}
+              />
+            </motion.div>
+          ))}
       </div>
     </motion.div>
   );
