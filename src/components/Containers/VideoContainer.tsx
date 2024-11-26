@@ -53,12 +53,13 @@ export default function VideoContainer({
           <h2 className="text-2xl font-bold text-white mb-2">
             {chapter.content}
           </h2>
-          <p className="text-silver mb-4">by {courseModule.course.teacher}</p>
+          <p className="text-silver mb-4">
+            by {courseModule.course.teacher.fullname}
+          </p>
           <p className="text-white/80 leading-relaxed mb-6">
             {chapter.description}
           </p>
 
-          {/* Resources */}
           <div className="flex gap-4">
             <motion.a
               whileHover={{ scale: 1.05 }}

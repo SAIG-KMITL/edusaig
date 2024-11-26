@@ -1,8 +1,17 @@
 "use client";
 
-import { SelectTheme } from "@/components/Inputs/SelectTheme";
+import {
+  createCourseAction,
+  uploadCourseThumbnail,
+} from "@/actions/courseAction";
 import InputTheme from "@/components/Inputs/InputTheme";
+import { SelectTheme } from "@/components/Inputs/SelectTheme";
 import TextareaTheme from "@/components/Inputs/TextareaTheme";
+import { Toast } from "@/components/Toast/Toast";
+import { createCourseSchema } from "@/schema/course.schema";
+import { CategoryType } from "@/types/category";
+import { CourseLevelType, CourseStatusType } from "@/types/course.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
@@ -21,20 +30,11 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
-import { CategoryType } from "@/types/category";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createCourseSchema } from "@/schema/course.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createCourseAction,
-  uploadCourseThumbnail,
-} from "@/actions/courseAction";
-import { Toast } from "@/components/Toast/Toast";
-import { CourseLevelType, CourseStatusType } from "@/types/course.type";
-import Link from "next/link";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type CreateCourseFormData = z.infer<typeof createCourseSchema>;
@@ -144,7 +144,6 @@ export default function CreateCourseUI({ categories }: CreateCourseUIProps) {
           courseResponse.data.id,
           selectedFile
         );
-
         if (uploadResponse.error?.message) {
           Toast(uploadResponse.error.message, "error");
           return;

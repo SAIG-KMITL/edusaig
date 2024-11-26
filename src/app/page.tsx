@@ -8,6 +8,8 @@ import HomeUI from "./shared/(ui)/HomeUI";
 export default async function Home() {
   const user = await fetchUserAction();
   const courses = await fetchCoursesAction();
+
+  console.log(courses.data);
   return (
     <>
       <Navbar user={user.data as UserResponseType} />

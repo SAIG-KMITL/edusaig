@@ -1,6 +1,9 @@
 "use client";
 
-import { createChapterAction, uploadChapterVideoAction } from "@/actions/chapterAction";
+import {
+  createChapterAction,
+  uploadChapterVideoAction,
+} from "@/actions/chapterAction";
 import InputTheme from "@/components/Inputs/InputTheme";
 import { Toast } from "@/components/Toast/Toast";
 import { createChapterSchema } from "@/schema/chapter.schema";
@@ -55,7 +58,10 @@ const validateVideoFile = (file: File | undefined): boolean => {
   return Boolean(file && file.type.startsWith("video/"));
 };
 
-export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIProps) {
+export default function CreateChapterUI({
+  courseId,
+  moduleId,
+}: CreateChapterUIProps) {
   const [selectedFile, setSelectedFile] = useState<VideoFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
@@ -90,9 +96,19 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
     },
   });
 
-  const onSubmit = async (data: CreateChapterFormData): Promise<void> => {
+  const onSubmit = async (data: CreateChapterFormData) => {
+    if (!selectedFile) {
+      Toast("Please select a video file", "error");
+      return;
+    }
+
     try {
       setIsLoading(true);
+
+      console.log(data);
+
+      console.log("Submit Function ");
+
       const chapterResponse = await createChapterAction(
         data.title,
         data.description,
@@ -100,29 +116,31 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
         data.summary,
         data.duration,
         data.moduleId,
-        data.isPreview,
+        data.isPreview
       );
 
-      if (chapterResponse.error?.message) {
-        Toast(chapterResponse.error.message, "error");
-        return;
-      }
-    
-      if (chapterResponse.data && selectedFile) {
-        const uploadResponse = await uploadChapterVideoAction(
-          chapterResponse.data.id,
-          selectedFile
+      if (!chapterResponse.data) {
+        throw new Error(
+          chapterResponse.error?.message || "Failed to create chapter"
         );
-    
-        if (uploadResponse.error?.message) {
-          Toast(uploadResponse.error.message, "error");
-          return;
-        }
       }
 
-      Toast("The chapter has been created.", "success");
+      const formData = new FormData();
+      formData.append("video", selectedFile);
+      formData.append("chapterId", chapterResponse.data.id);
+
+      const uploadResponse = await uploadChapterVideoAction(
+        chapterResponse.data.id,
+        selectedFile
+      );
+
+      if (uploadResponse.error) {
+        throw new Error(uploadResponse.error.message);
+      }
+
+      Toast("Chapter created successfully!", "success");
       router.push(`/dashboard/course/${courseId}/course-module`);
-      reset();  
+      reset();
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to create chapter",
@@ -363,7 +381,10 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
             <span>Create Chapter Details</span>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-3 text-left p-6 space-y-6 rounded-xl flex flex-col">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="overflow-auto bg-steelGray/30 border border-royalPurple/20 my-3 text-left p-6 space-y-6 rounded-xl flex flex-col"
+          >
             <InputTheme
               type="text"
               label="Chapter Title"
@@ -394,7 +415,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
               helper="Estimated time to complete this chapter"
               className="w-full"
               error={errors.duration}
-              {...register("duration",{
+              {...register("duration", {
                 valueAsNumber: true,
               })}
             />
@@ -443,7 +464,7 @@ export default function CreateChapterUI({ courseId, moduleId }: CreateChapterUIP
 
             <motion.button
               type="submit"
-              disabled={isLoading  || uploadStatus == "uploading"}
+              disabled={isLoading || uploadStatus == "uploading"}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-electricViolet text-white rounded-xl font-medium
