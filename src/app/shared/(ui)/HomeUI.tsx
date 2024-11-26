@@ -169,7 +169,7 @@ export default function HomeUI({ courses }: HomeProps) {
                   whileHover={{ y: -5 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CourseCard data={course} />
+                  <CourseCard course={course} />
                 </motion.div>
               ))}
             </div>
