@@ -6,6 +6,8 @@ import { Toast } from "@/components/Toast/Toast";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 import { ChapterResponseType } from "@/types/chapter.type";
 import { CourseModuleResponseType, CourseModuleType, CourseType } from "@/types/course.type";
+import { EnrollmentResponseType } from "@/types/enrollment.type";
+import { ProgressResponseType } from "@/types/progress.type";
 import { UserResponseType } from "@/types/user.type";
 import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { motion } from "framer-motion";
@@ -13,16 +15,18 @@ import { BarChart2, ChevronLeft, Clock, DollarSign, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { use, useState } from "react";
+import { useState } from "react";
 
 interface CourseDetailsProps {
   user: UserResponseType;
   course: CourseType;
+  enrollment?: EnrollmentResponseType;
   courseModules: CourseModuleResponseType[];
   chapters: ChapterResponseType[];
+  progresses: ProgressResponseType[];
 }
 
-export default function CourseDetailsUI({ user, course, courseModules, chapters }: CourseDetailsProps) {
+export default function CourseDetailsUI({ user, course, enrollment, courseModules, chapters, progresses }: CourseDetailsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -66,7 +70,7 @@ export default function CourseDetailsUI({ user, course, courseModules, chapters 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-12 text-white">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-6 lg:items-start h-full drop-shadow-lg rounded-xl">
-        <div className="w-full lg:flex-1 max-w-2xl lg:max-w-[420px] px-6 lg:sticky top-[120px]">
+        <div className="w-full lg:flex-1 max-w-2xl lg:max-w-[420px] px-6">
           <div className="flex items-center flex-wrap mb-3">
             <Link
               href={`/course`}
@@ -111,16 +115,19 @@ export default function CourseDetailsUI({ user, course, courseModules, chapters 
                 <p className="-mb-[7px]">{`${course.duration} mins`}</p>
               </div>
             </motion.div>
-            <motion.button
-              type="button"
-              onClick={handleEnroll}
-              disabled={isLoading}
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.05 }}
-              className="w-full flex justify-center p-3 rounded-xl bg-darkMagenta hover:bg-darkMagenta/90"
-            >
-              Enroll Now
-            </motion.button>
+            { !enrollment &&
+              <motion.button
+                type="button"
+                onClick={handleEnroll}
+                disabled={isLoading}
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                className="w-full flex justify-center p-3 rounded-xl bg-darkMagenta hover:bg-darkMagenta/90"
+              >
+                Enroll Now
+              </motion.button>
+            }
+            
           </div>
         </div>
         <div className="w-full lg:flex-1 max-w-2xl flex flex-col break-words px-6 flex-grow-1">
@@ -145,6 +152,8 @@ export default function CourseDetailsUI({ user, course, courseModules, chapters 
                     courseModules={courseModules}
                     chapters={chapters}
                     isOwner={course.teacher.id == user.id}
+                    progresses={progresses}
+                    hasEnrolled={enrollment != undefined}
                   />
                 </div>
               </div>

@@ -15,14 +15,16 @@ import DeleteChapterModal from "@/components/Modals/DeleteChapterModal";
 import DeleteCourseModuleModal from "@/components/Modals/DeleteCourseModuleModal";
 import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { UserResponseType } from "@/types/user.type";
 
 interface CourseModuleDashboardUIProps {
+  user: UserResponseType;
   course: CourseType;
   courseModules: CourseModuleResponseType[];
   chapters: ChapterResponseType[];
 }
 
-export default function CourseModuleDashboardUI({ course, courseModules, chapters }: CourseModuleDashboardUIProps) {
+export default function CourseModuleDashboardUI({ user, course, courseModules, chapters }: CourseModuleDashboardUIProps) {
   const [selectedModule, setSelectedModule] = useState<CourseModuleResponseType | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<ChapterResponseType | null>(null);
 
@@ -123,6 +125,8 @@ export default function CourseModuleDashboardUI({ course, courseModules, chapter
                   handleModuleSelected={handleCourseModuleSelected}
                   handleChapterSelected={handleChapterSelected}
                   chapters={chapters}
+                  isOwner={user.id == course.teacher.id}
+                  editMode={true}
                 />
               );
             })}

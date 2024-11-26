@@ -2,10 +2,11 @@ import {
   CourseModuleResponseType,
   CourseModuleType,
 } from "@/types/course.type";
-import { motion } from "framer-motion";
+import { motion, progress } from "framer-motion";
 import {
   CheckCircle,
   ChevronDown,
+  Lock,
   MenuIcon,
   MoreVerticalIcon,
   PencilIcon,
@@ -20,6 +21,7 @@ import { ChapterResponseType } from "@/types/chapter.type";
 import { useRouter } from "next/navigation";
 import { courseModule } from "@/constants/courseModule";
 import RadialProgress from "../Progresses/RadialProgress";
+import { ProgressResponseType } from "@/types/progress.type";
 
 interface CourseModuleEntryProps {
   module: CourseModuleResponseType;
@@ -28,6 +30,9 @@ interface CourseModuleEntryProps {
   currentChapter?: ChapterResponseType;
   chapters: ChapterResponseType[];
   isOwner: boolean;
+  editMode?: boolean;
+  hasEnrolled?: boolean;
+  progresses?: ProgressResponseType[];
 }
 
 export default function CourseModuleEntry({
@@ -37,6 +42,9 @@ export default function CourseModuleEntry({
   currentChapter,
   chapters,
   isOwner,
+  editMode,
+  hasEnrolled,
+  progresses,
 }: CourseModuleEntryProps) {
   const [visible, setVisible] = useState<boolean>(false);
   const actionButtonEntries: ActionButtonEntryType[] = [
@@ -66,7 +74,26 @@ export default function CourseModuleEntry({
     },
   ];
 
-  let isPlaying = chapters.some((chapter) => chapter.id == currentChapter?.id);
+  const hasChapterCompleted = (chapter: ChapterResponseType): boolean => {
+    return (
+      progresses
+        ?.filter((progress) => progress.chapter.id == chapter.id)
+        ?.some((progress) => progress.status == "completed") ?? false
+    );
+  };
+
+  const isPlaying = chapters.some(
+    (chapter) => chapter.id == currentChapter?.id
+  );
+  const percent = Math.round(
+    (chapters.filter((chapter) => hasChapterCompleted(chapter)).length /
+      chapters.length) *
+      100
+  );
+
+  if (!editMode && chapters.length == 0) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -77,7 +104,9 @@ export default function CourseModuleEntry({
     >
       <div
         onClick={() => setVisible(!visible)}
-        className={`w-full px-6 py-2 flex items-start gap-2 rounded-lg ${isPlaying ? "bg-skyBlue/20" : "bg-silver/10 hover:bg-silver/15"} hover:cursor-pointer`}
+        className={`w-full px-6 py-2 flex items-start gap-2 rounded-lg ${
+          isPlaying ? "bg-skyBlue/20" : "bg-silver/10 hover:bg-silver/15"
+        } hover:cursor-pointer`}
       >
         {visible ? (
           <motion.div
@@ -102,18 +131,26 @@ export default function CourseModuleEntry({
             </p>
           </div>
           {isOwner ? (
-            <ActionButton
-              entries={actionButtonEntries}
-              buttonClassName="-mr-2"
-              popupClassName="w-[150px]"
-            />
+            <div>
+              {editMode && (
+                <ActionButton
+                  entries={actionButtonEntries}
+                  buttonClassName="-mr-2"
+                  popupClassName="w-[150px]"
+                />
+              )}
+            </div>
           ) : (
-            <RadialProgress
-              value={74}
-              className={
-                "-mr-1 text-xs text-skyBlue bg-steelGray/60 border-4 border-steelGray/60"
-              }
-            />
+            <div>
+              {hasEnrolled && (
+                <RadialProgress
+                  value={percent}
+                  className={
+                    "-mr-1 text-xs text-skyBlue bg-steelGray/60 border-4 border-steelGray/60"
+                  }
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -133,7 +170,7 @@ export default function CourseModuleEntry({
           hover:border-electricViolet/50
           `}
         >
-          {isOwner && (
+          {isOwner && editMode && (
             <motion.a
               href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
               whileHover={{ scale: 1.02 }}
@@ -157,7 +194,11 @@ export default function CourseModuleEntry({
                   chapter={chapter}
                   handleChapterSelected={handleChapterSelected}
                   isOwner={isOwner}
-                  isPlaying={currentChapter ? (chapter.id == currentChapter.id) : false}
+                  editMode={editMode}
+                  isPlaying={
+                    currentChapter ? chapter.id == currentChapter.id : false
+                  }
+                  isCompleted={hasChapterCompleted(chapter)}
                 />
               );
             })}
@@ -172,7 +213,9 @@ interface ChapterEntryProps {
   chapter: ChapterResponseType;
   handleChapterSelected?: (chapter: ChapterResponseType) => void;
   isOwner: boolean;
+  editMode?: boolean;
   isPlaying?: boolean;
+  isCompleted?: boolean;
 }
 
 export function ChapterEntry({
@@ -180,7 +223,9 @@ export function ChapterEntry({
   chapter,
   handleChapterSelected,
   isOwner,
+  editMode,
   isPlaying,
+  isCompleted,
 }: ChapterEntryProps) {
   const router = useRouter();
   const actionButtonEntries: ActionButtonEntryType[] = [
@@ -201,33 +246,48 @@ export function ChapterEntry({
     },
   ];
 
+  const handleNavigate = () => {
+    if (!editMode) {
+      router.push(`/course/${module.course.id}/chapter/${chapter.id}`);
+    }
+  };
+
   return (
     <div
-      onClick={() =>
-        router.push(`/course/${module.course.id}/chapter/${chapter.id}`)
-      }
-      className={`py-2 px-6 flex justify-between items-center border-b border-silver/10 text-sm rounded-xl text-silver ${isPlaying ? "bg-skyBlue/10" : "hover:bg-silver/10"}`}
+      onClick={handleNavigate}
+      className={`py-2 px-6 flex justify-between items-center border-b border-silver/10 text-sm rounded-xl text-silver ${
+        isPlaying ? "bg-skyBlue/10" : "hover:bg-silver/10"
+      }`}
     >
       <div className="flex gap-2 items-center">
-        <div className={`w-8 h-8 ${isPlaying ? "bg-skyBlue/30" : "bg-royalPurple/30"} rounded-full flex items-center justify-center -ml-2 mr-2`}>
-          {
-            isPlaying ?
-            <Play className="w-8 h-8 p-2"/> :
+        <div
+          className={`w-8 h-8 ${
+            isPlaying ? "bg-skyBlue/30" : "bg-royalPurple/30"
+          } rounded-full flex items-center justify-center -ml-2 mr-2`}
+        >
+          {isPlaying ? (
+            <Play className="w-8 h-8 p-2" />
+          ) : (
             <span>{chapter.orderIndex}</span>
-          }
-          
+          )}
         </div>
         <p>{chapter.title}</p>
         <p className="text-silver/40">{`(${chapter.duration} mins)`}</p>
       </div>
       {isOwner ? (
-        <ActionButton
-          entries={actionButtonEntries}
-          icon={<MoreVerticalIcon className="w-4 h-4 text-silver/60" />}
-          popupClassName={"w-[150px]"}
-        />
+        <div>
+          {editMode && (
+            <ActionButton
+              entries={actionButtonEntries}
+              icon={<MoreVerticalIcon className="w-4 h-4 text-silver/60" />}
+              popupClassName={"w-[150px]"}
+            />
+          )}
+        </div>
       ) : (
-        <CheckCircle className="mr-[14px] w-5 h-5 text-skyBlue ml-auto" />
+        isCompleted && (
+          <CheckCircle className="mr-[14px] w-5 h-5 text-skyBlue ml-auto" />
+        )
       )}
     </div>
   );

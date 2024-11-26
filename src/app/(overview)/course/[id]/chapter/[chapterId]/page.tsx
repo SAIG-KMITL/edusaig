@@ -1,9 +1,10 @@
 import { fetchChaptersAction } from "@/actions/chapterAction";
 import { fetchCourseAction } from "@/actions/courseAction";
-import { fetchCourseModulesAction } from "@/actions/courseModuleAction";
+import { fetchCourseModulesAction, fetchCourseModulesByCourseAction } from "@/actions/courseModuleAction";
+import { fetchEnrollmentsAction } from "@/actions/enrollment.Action";
+import { fetchProgressesAction } from "@/actions/progress.Action";
 import { fetchUserAction } from "@/actions/userAction";
 import CourseChapterUI from "@/app/shared/(ui)/CourseChapterUI";
-import { chapters } from "@/constants/chapter";
 
 interface ChapterProps {
   params: { id: string, chapterId: string };
@@ -14,34 +15,44 @@ export default async function Chapter({ params }: ChapterProps) {
   const { id, chapterId } = await params;
   const userResponse = await fetchUserAction();
   const courseResponse = await fetchCourseAction(id);
-  const courseModuleResponse = await fetchCourseModulesAction();
+  const enrollmentsResponse = await fetchEnrollmentsAction();
+  const courseModuleResponse = await fetchCourseModulesByCourseAction(id);
   const chaptersResponse = await fetchChaptersAction();
+  const progressesResponse = await fetchProgressesAction();
 
+  let enrollment = enrollmentsResponse.data?.data.find((enrollment) => enrollment.course.id == id);
   let chapter = chaptersResponse.data?.data.find((chapter) => chapter.id == chapterId);
 
   if(!userResponse.data) {
     return null;
   }
 
-  if (!courseResponse.data) {
-    return <div>Course not found</div>;
+  if(!courseResponse.data) {
+    return  <div>Course not found</div>;
   }
 
-  if(!courseModuleResponse.data?.data) {
+  if(!courseModuleResponse.data) {
     return  <div>Course module not found</div>;
   }
+
 
   if(!chaptersResponse.data?.data || !chapter) {
     return  <div>Chapter not found</div>;;
   }
 
+  if(!progressesResponse.data?.data) {
+    return  <div>progresses not found</div>;;
+  }
+
   return (
     <CourseChapterUI 
       user={userResponse.data} 
-      course={courseResponse.data} 
-      courseModules={courseModuleResponse.data.data}
-      chapter={chapter}
-      chapters={chaptersResponse.data.data.filter((chapter) => courseModuleResponse.data?.data.some((courseModule) => courseModule.id == chapter.moduleId))}
+      enrollment={enrollment} 
+      course={courseResponse.data}
+      courseModules={courseModuleResponse.data}
+      currentChapter={chapter}
+      chapters={chaptersResponse.data.data.filter((chapter) => courseModuleResponse.data?.some((courseModule) => courseModule.id == chapter.moduleId))}
+      progresses={progressesResponse.data.data}
     />
   )
 }

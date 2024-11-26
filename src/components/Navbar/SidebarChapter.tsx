@@ -4,17 +4,22 @@ import { ChapterResponseType } from "@/types/chapter.type";
 import { CourseModuleResponseType } from "@/types/course.type";
 import { motion } from "framer-motion";
 import CourseModuleEntry from "../Button/CourseModuleEntry";
+import { ProgressResponseType } from "@/types/progress.type";
 
 export default function SidebarChapter({
   courseModules,
   currentChapter,
   chapters,
   isOwner,
+  progresses,
+  hasEnrolled,
 }: {
   courseModules: CourseModuleResponseType[];
   currentChapter?: ChapterResponseType;
   chapters: ChapterResponseType[];
   isOwner: boolean;
+  progresses: ProgressResponseType[];
+  hasEnrolled?: boolean; 
 }) {
   return (
     <motion.div
@@ -24,7 +29,7 @@ export default function SidebarChapter({
     >
       <div className="p-4 border-b border-royalPurple/20">
         <h2 className="text-xl font-bold text-white text-center">
-          Course Content
+          {`${!hasEnrolled ? "Preview " : ""}Course Content`}
         </h2>
       </div>
 
@@ -43,6 +48,8 @@ export default function SidebarChapter({
                 (chapter) => chapter.moduleId == courseModule.id
               )}
               isOwner={isOwner}
+              progresses={progresses}
+              hasEnrolled={hasEnrolled}
             />
           </motion.div>
         ))}
