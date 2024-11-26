@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 type HomeProps = {
   courses: CoursesResponseType;
-  cats: CategoriesResponseType;
+  cats: CategoryType[];
 };
 
 export default function HomeUI({ courses, cats }: HomeProps) {
@@ -149,7 +149,7 @@ export default function HomeUI({ courses, cats }: HomeProps) {
 
           <div className="mt-12">
             <div className="flex flex-wrap gap-3 justify-center">
-              {cats.data.map((category) => (
+              {cats.map((category) => (
                 <motion.button
                   onClick={() => select(category)}
                   key={category.id}
