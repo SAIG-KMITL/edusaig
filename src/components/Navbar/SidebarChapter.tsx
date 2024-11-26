@@ -1,18 +1,20 @@
 "use client";
 
-import { ChapterType } from "@/types/chapter.type";
-import { CourseModuleType } from "@/types/course.type";
+import { ChapterResponseType } from "@/types/chapter.type";
+import { CourseModuleResponseType } from "@/types/course.type";
 import { motion } from "framer-motion";
-import { CheckCircle } from "lucide-react";
+import CourseModuleEntry from "../Button/CourseModuleEntry";
 
 export default function SidebarChapter({
-  courseModule,
+  courseModules,
+  currentChapter,
   chapters,
-  onChapterSelect,
+  isOwner,
 }: {
-  courseModule: CourseModuleType[];
-  chapters: ChapterType[];
-  onChapterSelect: (id: string) => void;
+  courseModules: CourseModuleResponseType[];
+  currentChapter?: ChapterResponseType;
+  chapters: ChapterResponseType[];
+  isOwner: boolean;
 }) {
   return (
     <motion.div
@@ -27,25 +29,21 @@ export default function SidebarChapter({
       </div>
 
       <div className="divide-y divide-royalPurple/20">
-        {chapters.map((chapter, index) => (
+        {courseModules.map((courseModule, index) => (
           <motion.div
-            key={chapter.id}
+            key={courseModule.id}
             initial={false}
             animate={{ opacity: 1 }}
             className="p-4 hover:bg-royalPurple/20 transition-colors cursor-pointer"
-            onClick={() => onChapterSelect(chapter.id)}
           >
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-royalPurple/20 rounded-full flex items-center justify-center text-white mr-3">
-                {index + 1}
-              </div>
-              <div>
-                <h3 className="text-white font-medium">{chapter.title}</h3>
-                <p className="text-silver text-sm">{chapter.description}</p>
-                <p className="text-silver text-xs">{chapter.duration} min</p>
-              </div>
-              <CheckCircle className="w-5 h-5 text-skyBlue ml-auto" />
-            </div>
+            <CourseModuleEntry
+              module={courseModule}
+              currentChapter={currentChapter}
+              chapters={chapters.filter(
+                (chapter) => chapter.moduleId == courseModule.id
+              )}
+              isOwner={isOwner}
+            />
           </motion.div>
         ))}
       </div>

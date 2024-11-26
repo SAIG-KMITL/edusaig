@@ -2,29 +2,38 @@
 
 import VideoContainer from "@/components/Containers/VideoContainer";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
-import { chapters } from "@/constants/chapter";
-import { courseModule } from "@/constants/courseModule";
+import { ChapterResponseType } from "@/types/chapter.type";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
+import { UserResponseType } from "@/types/user.type";
 
-export default function CourseChapterUI() {
+interface CourseChapterUIProps {
+  user: UserResponseType;
+  course: CourseType;
+  courseModules: CourseModuleResponseType[];
+  chapter: ChapterResponseType;
+  chapters: ChapterResponseType[];
+}
+
+export default function CourseChapterUI({ user, course, courseModules, chapter, chapters } : CourseChapterUIProps) {
   return (
     <div className="min-h-screen">
       <div className="md:flex">
         <div className="md:w-2/3">
           <VideoContainer
-            chapter={chapters[0]}
-            courseModule={courseModule[0]}
+            course={course}
+            chapter={chapter}
+            courseModule={courseModules[0]}
             onComplete={function (): void {
               console.log("completed");
             }}
           />
         </div>
-        <div className="md:w-1/3 mb-16 rounded-3xl p-4">
+        <div className="md:w-1/3 mb-16 rounded-3xl p-4 pt-6">
           <SidebarChapter
-            courseModule={courseModule}
+            courseModules={courseModules}
+            currentChapter={chapter}
             chapters={chapters}
-            onChapterSelect={function (id: string): void {
-              console.log(id);
-            }}
+            isOwner={course.teacher.id == user.id}
           />
         </div>
       </div>

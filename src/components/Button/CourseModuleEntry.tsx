@@ -1,34 +1,42 @@
-import { chapters } from "@/constants/chapter";
 import {
   CourseModuleResponseType,
   CourseModuleType,
 } from "@/types/course.type";
 import { motion } from "framer-motion";
 import {
+  CheckCircle,
   ChevronDown,
   MenuIcon,
   MoreVerticalIcon,
   PencilIcon,
+  Play,
   PlusIcon,
   Trash,
 } from "lucide-react";
 import { useState } from "react";
 import ActionButton, { ActionButtonEntryType } from "./ActionButton";
 import { handleOpenModal } from "@/lib/modal";
-import { ChapterResponseType, ChapterType } from "@/types/chapter.type";
+import { ChapterResponseType } from "@/types/chapter.type";
+import { useRouter } from "next/navigation";
+import { courseModule } from "@/constants/courseModule";
+import RadialProgress from "../Progresses/RadialProgress";
 
 interface CourseModuleEntryProps {
   module: CourseModuleResponseType;
-  handleModuleSelected: (module: CourseModuleResponseType) => void;
-  handleChapterSelected: (chapter: ChapterResponseType) => void;
+  handleModuleSelected?: (module: CourseModuleResponseType) => void;
+  handleChapterSelected?: (chapter: ChapterResponseType) => void;
+  currentChapter?: ChapterResponseType;
   chapters: ChapterResponseType[];
+  isOwner: boolean;
 }
 
 export default function CourseModuleEntry({
   module,
   handleModuleSelected,
   handleChapterSelected,
+  currentChapter,
   chapters,
+  isOwner,
 }: CourseModuleEntryProps) {
   const [visible, setVisible] = useState<boolean>(false);
   const actionButtonEntries: ActionButtonEntryType[] = [
@@ -43,7 +51,7 @@ export default function CourseModuleEntry({
       icon: <PencilIcon className="w-[14px] h-[14px] mr-2" />,
       type: "button",
       onClick: () => {
-        handleModuleSelected(module);
+        handleModuleSelected?.(module);
         handleOpenModal("edit-course-module-modal");
       },
     },
@@ -52,11 +60,13 @@ export default function CourseModuleEntry({
       icon: <Trash className="w-[14px] h-[14px] mr-2" />,
       type: "button",
       onClick: () => {
-        handleModuleSelected(module);
+        handleModuleSelected?.(module);
         handleOpenModal("delete-course-module-modal");
       },
     },
   ];
+
+  let isPlaying = chapters.some((chapter) => chapter.id == currentChapter?.id);
 
   return (
     <motion.div
@@ -67,7 +77,7 @@ export default function CourseModuleEntry({
     >
       <div
         onClick={() => setVisible(!visible)}
-        className="w-full px-6 py-2 flex items-start gap-2 rounded-lg bg-silver/10 hover:bg-silver/15 hover:cursor-pointer"
+        className={`w-full px-6 py-2 flex items-start gap-2 rounded-lg ${isPlaying ? "bg-skyBlue/20" : "bg-silver/10 hover:bg-silver/15"} hover:cursor-pointer`}
       >
         {visible ? (
           <motion.div
@@ -91,11 +101,20 @@ export default function CourseModuleEntry({
               {module.description}
             </p>
           </div>
-          <ActionButton
-            entries={actionButtonEntries}
-            buttonClassName="-mr-2"
-            popupClassName="w-[150px]"
-          />
+          {isOwner ? (
+            <ActionButton
+              entries={actionButtonEntries}
+              buttonClassName="-mr-2"
+              popupClassName="w-[150px]"
+            />
+          ) : (
+            <RadialProgress
+              value={74}
+              className={
+                "-mr-1 text-xs text-skyBlue bg-steelGray/60 border-4 border-steelGray/60"
+              }
+            />
+          )}
         </div>
       </div>
       {visible && (
@@ -114,16 +133,19 @@ export default function CourseModuleEntry({
           hover:border-electricViolet/50
           `}
         >
-          <motion.a
-            href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="m-2 px-6 py-3 bg-silver/50 text-white rounded-xl font-medium
-      hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm"
-          >
-            <PlusIcon className="w-5 h-5" />
-            <p>Add Chapter</p>
-          </motion.a>
+          {isOwner && (
+            <motion.a
+              href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="m-2 px-6 py-3 bg-silver/50 text-white rounded-xl font-medium
+    hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm"
+            >
+              <PlusIcon className="w-5 h-5" />
+              <p>Add Chapter</p>
+            </motion.a>
+          )}
+
           {chapters
             .sort((a, b) => a.orderIndex - b.orderIndex)
             .filter((chapter) => chapter.moduleId == module.id)
@@ -134,6 +156,8 @@ export default function CourseModuleEntry({
                   module={module}
                   chapter={chapter}
                   handleChapterSelected={handleChapterSelected}
+                  isOwner={isOwner}
+                  isPlaying={currentChapter ? (chapter.id == currentChapter.id) : false}
                 />
               );
             })}
@@ -146,14 +170,19 @@ export default function CourseModuleEntry({
 interface ChapterEntryProps {
   module: CourseModuleResponseType;
   chapter: ChapterResponseType;
-  handleChapterSelected: (chapter: ChapterResponseType) => void;
+  handleChapterSelected?: (chapter: ChapterResponseType) => void;
+  isOwner: boolean;
+  isPlaying?: boolean;
 }
 
 export function ChapterEntry({
   module,
   chapter,
   handleChapterSelected,
+  isOwner,
+  isPlaying,
 }: ChapterEntryProps) {
+  const router = useRouter();
   const actionButtonEntries: ActionButtonEntryType[] = [
     {
       label: "Edit Chapter",
@@ -166,7 +195,7 @@ export function ChapterEntry({
       icon: <Trash className="w-[14px] h-[14px] mr-2" />,
       type: "button",
       onClick: () => {
-        handleChapterSelected(chapter);
+        handleChapterSelected?.(chapter);
         handleOpenModal("delete-chapter-modal");
       },
     },
@@ -174,17 +203,32 @@ export function ChapterEntry({
 
   return (
     <div
-      className={`py-2 px-6 flex justify-between items-center ${"border-b border-silver/10"} text-sm rounded-xl text-silver hover:bg-silver/10`}
+      onClick={() =>
+        router.push(`/course/${module.course.id}/chapter/${chapter.id}`)
+      }
+      className={`py-2 px-6 flex justify-between items-center border-b border-silver/10 text-sm rounded-xl text-silver ${isPlaying ? "bg-skyBlue/10" : "hover:bg-silver/10"}`}
     >
-      <div className="flex gap-2">
-        <p className="text-silver/60">{`Chapter ${chapter.orderIndex}`}</p>
+      <div className="flex gap-2 items-center">
+        <div className={`w-8 h-8 ${isPlaying ? "bg-skyBlue/30" : "bg-royalPurple/30"} rounded-full flex items-center justify-center -ml-2 mr-2`}>
+          {
+            isPlaying ?
+            <Play className="w-8 h-8 p-2"/> :
+            <span>{chapter.orderIndex}</span>
+          }
+          
+        </div>
         <p>{chapter.title}</p>
+        <p className="text-silver/40">{`(${chapter.duration} mins)`}</p>
       </div>
-      <ActionButton
-        entries={actionButtonEntries}
-        icon={<MoreVerticalIcon className="w-4 h-4 text-silver/60" />}
-        popupClassName={"w-[150px]"}
-      />
+      {isOwner ? (
+        <ActionButton
+          entries={actionButtonEntries}
+          icon={<MoreVerticalIcon className="w-4 h-4 text-silver/60" />}
+          popupClassName={"w-[150px]"}
+        />
+      ) : (
+        <CheckCircle className="mr-[14px] w-5 h-5 text-skyBlue ml-auto" />
+      )}
     </div>
   );
 }

@@ -3,10 +3,9 @@
 import { createEnrollmentAction } from "@/actions/enrollment.Action";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
 import { Toast } from "@/components/Toast/Toast";
-import { chapters } from "@/constants/chapter";
-import { courseModule } from "@/constants/courseModule";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
-import { CourseModuleType, CourseType } from "@/types/course.type";
+import { ChapterResponseType } from "@/types/chapter.type";
+import { CourseModuleResponseType, CourseModuleType, CourseType } from "@/types/course.type";
 import { UserResponseType } from "@/types/user.type";
 import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { motion } from "framer-motion";
@@ -14,15 +13,16 @@ import { BarChart2, ChevronLeft, Clock, DollarSign, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useState } from "react";
 
 interface CourseDetailsProps {
   user: UserResponseType;
   course: CourseType;
-  courseModules?: CourseModuleType[];
+  courseModules: CourseModuleResponseType[];
+  chapters: ChapterResponseType[];
 }
 
-export default function CourseDetailsUI({ user, course, courseModules }: CourseDetailsProps) {
+export default function CourseDetailsUI({ user, course, courseModules, chapters }: CourseDetailsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -142,11 +142,9 @@ export default function CourseDetailsUI({ user, course, courseModules }: CourseD
               <div>
                 <div className="border rounded-xl mt-1">
                   <SidebarChapter
-                    courseModule={courseModule}
+                    courseModules={courseModules}
                     chapters={chapters}
-                    onChapterSelect={function (id: string): void {
-                      router.push(`/course/chapter/${id}`);
-                    }}
+                    isOwner={course.teacher.id == user.id}
                   />
                 </div>
               </div>

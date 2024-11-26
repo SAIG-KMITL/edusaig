@@ -1,4 +1,4 @@
-import { CourseModuleResponseType } from "@/types/course.type";
+import { CourseModuleResponseType, CourseModulesResponseType } from "@/types/course.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCourseModuleAction(id: string) {
@@ -9,7 +9,7 @@ export async function fetchCourseModuleAction(id: string) {
 }
 
 export async function fetchCourseModulesAction() {
-  return baseApiAction<CourseModuleResponseType[]>(`/course-module`, {
+  return baseApiAction<CourseModulesResponseType>(`/course-module`, {
     method: "GET",
     requiresAuth: true,
   });
