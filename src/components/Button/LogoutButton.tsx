@@ -15,7 +15,7 @@ export default function LogoutButton() {
       <Link
         href="/login"
         onClick={toggleLogout}
-        className="flex gap-2 items-center justify-center border mt-4 p-2 md:mt-0 md:rounded-lg md:opacity-80"
+        className="flex gap-2 items-center justify-center border rounded-lg mx-2 mt-4 p-2 md:mt-0 md:rounded-lg md:opacity-80"
       >
         <LogOut className="w-5 h-5" />
         <p className="md:hidden block">Log out</p>
