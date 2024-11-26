@@ -13,13 +13,7 @@ import { RewardResponseType, RewardType } from "@/types/reward";
 import { PointStreakType } from "@/types/pointStreak.type";
 import { fetchRewardsAction } from "@/actions/rewardAction";
 
-export default function RewardUI({
-  rewards,
-  userPointStreak,
-}: {
-  rewards: RewardResponseType;
-  userPointStreak: PointStreakType;
-}) {
+export default function RewardUI({ rewards }: { rewards: RewardResponseType }) {
   const ITEMS_PER_PAGE = rewards.meta?.pageSize || 9;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
