@@ -15,6 +15,13 @@ export async function fetchCategoriesAction(page?: number, limit?: number, searc
   });
 }
 
+export async function fetchCatsAction(){
+  return baseApiAction<CategoriesResponseType>(`/category?page=1&limit=10`, {
+    method: "GET",
+    requiresAuth: false,
+  })
+}
+
 export async function fetchCategoryAction(id: string) {
   return baseApiAction<CategoryType>(`/category/${id}`, {
     method: "GET",
