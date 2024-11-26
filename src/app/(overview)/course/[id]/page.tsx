@@ -1,4 +1,5 @@
 import { fetchCourseAction } from "@/actions/courseAction";
+import { fetchUserAction } from "@/actions/userAction";
 import CourseDetailsUI from "@/app/shared/(ui)/CourseDetailsUI";
 
 interface CourseDetailsProps {
@@ -7,12 +8,17 @@ interface CourseDetailsProps {
 }
 
 export default async function CourseDetails({ params }: CourseDetailsProps) {
-  const id = params.id;
+  const { id } = await params;
+  const user = await fetchUserAction();
   const course = await fetchCourseAction(id);
+
+  if(!user.data) {
+    return null;
+  }
 
   if (!course.data) {
     return <div>Course not found</div>;
   }
 
-  return <CourseDetailsUI course={course.data} />;
+  return <CourseDetailsUI user={user.data} course={course.data} />;
 }

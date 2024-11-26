@@ -1,79 +1,131 @@
 "use client";
 
+import { createEnrollmentAction } from "@/actions/enrollment.Action";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
+import { Toast } from "@/components/Toast/Toast";
 import { chapters } from "@/constants/chapter";
 import { courseModule } from "@/constants/courseModule";
-import { CourseType } from "@/types/course.type";
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { CourseModuleType, CourseType } from "@/types/course.type";
+import { UserResponseType } from "@/types/user.type";
 import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
 import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import { BarChart2, ChevronLeft, Clock, DollarSign, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function CourseDetailsUI({
-  course,
-}: {
+interface CourseDetailsProps {
+  user: UserResponseType;
   course: CourseType;
-}) {
+  courseModules?: CourseModuleType[];
+}
+
+export default function CourseDetailsUI({ user, course, courseModules }: CourseDetailsProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+
+  const handleEnroll = async () => {
+    try {
+      setIsLoading(true);
+      console.log(user.id,
+        course.id,
+        false,
+        0,
+        "active",
+        new Date(),
+        null)
+      const response = await createEnrollmentAction(
+        user.id,
+        course.id,
+        false,
+        0,
+        "active",
+        new Date(),
+        null
+      );
+
+      if (response.error?.message) {
+        Toast(response.error.message, "error");
+        return;
+      }
+
+      Toast("Enrollment created successfully!", "success");
+      router.refresh();
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Unexpected error occurred during enrollment.",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div>
-      <div className="flex justify-center mb-8">
-        <div className="w-[1080px] text-white md:flex mt-16">
-          <div className="absolute top-[85px] w-[360px] h-[40px]">
-            <div className="flex">
-              <Link
-                href={`/course`}
-                className="px-6 py-2 flex h-full justify-center items-center bg-royalPurple/20 hover:bg-royalPurple/30 rounded-full"
-              >
-                <ChevronLeft className="mr-2 w-5 h-5" />
-                Back
-              </Link>
-            </div>
+    <div className="w-full px-4 sm:px-6 lg:px-12 py-12 text-white">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-6 lg:items-start h-full drop-shadow-lg rounded-xl">
+        <div className="w-full lg:flex-1 max-w-2xl lg:max-w-[420px] px-6 lg:sticky top-[120px]">
+          <div className="flex items-center flex-wrap mb-3">
+            <Link
+              href={`/course`}
+              className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 mr-2" />
+              Back
+            </Link>
           </div>
-          <div className="flex justify-center mb-6">
-            <div>
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative aspect-video rounded-xl overflow-hidden bg-black/50"
+            >
               <Image
-                src={fetchThumbnail(course.id)}
-                height={230}
-                width={400}
-                alt="thumbnail"
-                className="object-cover rounded-2xl"
+                src={fetchThumbnail(course.id) || THUMBNAIL_BASE_URL}
+                fill
+                alt="preview course thumbnail"
+                className="w-full h-full object-cover"
               />
-              <div className="flex mx-3 mt-5">
-                <Image
-                  src="/icons/book-white.svg"
-                  height={25}
-                  width={25}
-                  alt="book icon"
-                  className="mr-3"
-                />
-                <div>{course.category.title}</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col gap-2 border border-silver rounded-xl px-6 py-3 bg-steelGray text-sm text-white"
+            >
+              <div className="flex items-center gap-2">
+                <BarChart2 className="w-5 h-5 text-silver" />
+                <p className="-mb-[7px]">{course.level}</p>
               </div>
-              <div className="flex mx-3 mt-4 mb-5">
-                <Image
-                  src="/icons/clock-white.svg"
-                  height={25}
-                  width={25}
-                  alt="clock icon"
-                  className="mr-3"
-                />
-                <div className="">{course.duration} mins</div>
+              <div className="flex items-center gap-2">
+                <Tag className="w-5 h-5 text-silver" />
+                <p className="-mb-[7px]">{course.category.title}</p>
               </div>
-              <div className="flex">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="w-full flex justify-center p-3 rounded-xl bg-darkMagenta hover:bg-darkMagenta/90"
-                >
-                  Enroll Now
-                </motion.button>
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-silver" />
+                <p className="-mb-[6px]">{course.price}</p>
               </div>
-            </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-silver" />
+                <p className="-mb-[7px]">{`${course.duration} mins`}</p>
+              </div>
+            </motion.div>
+            <motion.button
+              type="button"
+              onClick={handleEnroll}
+              disabled={isLoading}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
+              className="w-full flex justify-center p-3 rounded-xl bg-darkMagenta hover:bg-darkMagenta/90"
+            >
+              Enroll Now
+            </motion.button>
           </div>
-          <div className="md:w-2/3 md:ml-[70px] flex justify-center">
-            <div className="grid grid-cols-1 gap-8">
+        </div>
+        <div className="w-full lg:flex-1 max-w-2xl flex flex-col break-words px-6 flex-grow-1">
+          <div className="flex justify-center">
+            <div className="w-full grid grid-cols-1 gap-8">
               <div>
                 <div className="flex items-center">
                   <div className="text-2xl mr-8 font-semibold">
@@ -84,10 +136,7 @@ export default function CourseDetailsUI({
                   </div>
                 </div>
                 <div className="border rounded-xl p-[25px] mt-1 bg-steelGray">
-                  {course.description}. Popular programming language courses,
-                  tutorials, programming certifications, and coding boot camps
-                  on the web offer a wealth of resources designed to keep you on
-                  top of your game.
+                  {course.description}
                 </div>
               </div>
               <div>
