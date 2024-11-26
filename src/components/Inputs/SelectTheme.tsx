@@ -19,7 +19,8 @@ interface SelectThemeProps {
   placeholder: string;
   options: SelectOption[];
   leftIcon?: React.ReactNode;
-  onChange?: (selectedOptionId: string) => void;
+  initialValue?: string | null;
+  onSelectedValueChange?: (selectedOptionId: string) => void;
 }
 
 export function SelectTheme({
@@ -32,10 +33,12 @@ export function SelectTheme({
   placeholder,
   options,
   leftIcon,
-  onChange,
+  initialValue,
+  onSelectedValueChange: onChange,
+  ...props
 }: SelectThemeProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(initialValue ?? null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popUpRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +69,7 @@ export function SelectTheme({
         </motion.label>
       )}
       <button
+        type="button"
         onClick={handleButtonClicked}
         ref={buttonRef}
         className={`
@@ -87,6 +91,7 @@ export function SelectTheme({
           ${className}
         `}
         disabled={isLoading}
+        {...props}
       >
         {leftIcon && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-silver">
