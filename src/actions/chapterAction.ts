@@ -9,7 +9,7 @@ export async function fetchChapterAction(id: string) {
 }
 
 export async function fetchChaptersAction() {
-  return baseApiAction<ChaptersResponseType>(`/chapter`, {
+  return baseApiAction<ChaptersResponseType>(`/chapter?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });
@@ -23,7 +23,7 @@ export async function fetchChaptersByModuleAction(moduleId: string) {
 }
 
 export async function fetchChaptersWithOwnershipAction() {
-  return baseApiAction<ChaptersResponseType>(`/chapter/with-ownership`, {
+  return baseApiAction<ChaptersResponseType>(`/chapter/with-ownership?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });

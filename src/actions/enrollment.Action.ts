@@ -2,7 +2,7 @@
 import { baseApiAction } from "./baseAction";
 import { EnrollmentResponseType, EnrollmentsResponseType, EnrollmentStatusType } from "@/types/enrollment.type";
 
-export async function fetchEnrollmentsAction(page?: number, limit?: number, search?: string) {
+export async function fetchEnrollmentsAction(page?: number, limit: number = 100, search?: string) {
   let url = '/enrollment';
   const queryParams: string[] = [];
 

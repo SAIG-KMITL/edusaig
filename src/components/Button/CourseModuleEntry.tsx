@@ -91,8 +91,10 @@ export default function CourseModuleEntry({
       100
   );
 
-  if (!editMode && chapters.length == 0) {
-    return null;
+  const handleEntryClick = () => {
+    if(editMode || chapters.length) {
+      setVisible(!visible);
+    }
   }
 
   return (
@@ -103,7 +105,7 @@ export default function CourseModuleEntry({
       exit={{ opacity: 0, y: -10 }}
     >
       <div
-        onClick={() => setVisible(!visible)}
+        onClick={handleEntryClick}
         className={`w-full px-6 py-2 flex items-start gap-2 rounded-lg ${
           isPlaying ? "bg-skyBlue/20" : "bg-silver/10 hover:bg-silver/15"
         } hover:cursor-pointer`}

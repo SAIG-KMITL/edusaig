@@ -1,4 +1,4 @@
-import { fetchChaptersAction } from "@/actions/chapterAction";
+import { fetchChaptersAction, fetchChaptersWithOwnershipAction } from "@/actions/chapterAction";
 import { fetchCourseAction } from "@/actions/courseAction";
 import { fetchCourseModulesAction, fetchCourseModulesByCourseAction } from "@/actions/courseModuleAction";
 import { fetchEnrollmentsAction } from "@/actions/enrollment.Action";
@@ -17,7 +17,7 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
   const courseResponse = await fetchCourseAction(id);
   const enrollmentsResponse = await fetchEnrollmentsAction();
   const courseModuleResponse = await fetchCourseModulesByCourseAction(id);
-  const chaptersResponse = await fetchChaptersAction();
+  const chaptersResponse = await fetchChaptersWithOwnershipAction();
   const progressesResponse = await fetchProgressesAction();
 
   let enrollment = enrollmentsResponse.data?.data.find((enrollment) => enrollment.course.id == id);

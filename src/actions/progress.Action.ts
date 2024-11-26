@@ -4,14 +4,14 @@ import { ProgressesResponseType, ProgressResponseType, ProgressStatusType } from
 import { baseApiAction } from "./baseAction";
 
 export async function fetchProgressesAction() {
-  return baseApiAction<ProgressesResponseType>(`/progress`, {
+  return baseApiAction<ProgressesResponseType>(`/progress?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });
 } 
 
 export async function fetchProgressAction(id: string) {
-  return baseApiAction<ProgressResponseType>(`/progress/${id}`, {
+  return baseApiAction<ProgressResponseType>(`/progress/${id}?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });

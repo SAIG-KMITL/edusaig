@@ -115,7 +115,7 @@ export default function CourseDetailsUI({ user, course, enrollment, courseModule
                 <p className="-mb-[7px]">{`${course.duration} mins`}</p>
               </div>
             </motion.div>
-            { !enrollment &&
+            { !enrollment && user.role == "student" &&
               <motion.button
                 type="button"
                 onClick={handleEnroll}
