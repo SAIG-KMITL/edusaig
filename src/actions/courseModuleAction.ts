@@ -15,6 +15,20 @@ export async function fetchCourseModulesAction() {
   });
 }
 
+export async function fetchCourseModulesWithOwnershipAction() {
+  return baseApiAction<CourseModulesResponseType>(`/course-module/with-ownership`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchCourseModuleWithOwnershipAction(id: string) {
+  return baseApiAction<CourseModulesResponseType>(`/course-module/with-ownership/${id}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
 export async function fetchCourseModulesByCourseAction(courseId: string) {
   return baseApiAction<CourseModuleResponseType[]>(`/course-module/course/${courseId}`, {
     method: "GET",
