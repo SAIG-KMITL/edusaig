@@ -6,9 +6,8 @@ import {
   CourseModuleType,
   CourseType,
 } from "@/types/course.type";
-import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
 import { fetchVideo } from "@/utils/resource/fetchVideo";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   BookMarked,
   BookOpen,
@@ -19,6 +18,9 @@ import {
   PlayCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import VideoSkeleton from "../Skeleton/VideoSkeleton";
+import VideoPlayer from "../Video/VideoPlayer";
 
 export default function VideoContainer({
   course,
@@ -49,11 +51,9 @@ export default function VideoContainer({
       </div>
 
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-        <iframe
-          className="w-full h-full"
-          src={fetchVideo(chapter.id)}
-          allowFullScreen
-        />
+        <Suspense fallback={<VideoSkeleton />}>
+          <VideoPlayer source={fetchVideo(chapter.id)} />
+        </Suspense>
       </div>
 
       <div className="mt-8 grid grid-cols-3 gap-8">
