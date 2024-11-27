@@ -1,7 +1,9 @@
+"use client";
+
 import CourseCard from "@/components/Cards/CourseCard";
-import { ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
 import { CourseType } from "@/types/course.type";
+import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default function CourseUI({
@@ -45,7 +47,7 @@ export default function CourseUI({
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {coursePopular?.slice(0, 4).map((course: any) => (
+            {coursePopular?.slice(0, 4).map((course: CourseType) => (
               <motion.div
                 key={course.id}
                 whileHover={{ y: -5 }}
@@ -75,7 +77,7 @@ export default function CourseUI({
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {courseNew?.slice(0, 4).map((course: any) => (
+            {courseNew?.slice(0, 4).map((course: CourseType) => (
               <motion.div
                 key={course.id}
                 whileHover={{ y: -5 }}
@@ -105,15 +107,17 @@ export default function CourseUI({
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {shuffle(courses).slice(0, 4).map((course) => (
-              <motion.div
-                key={course.id}
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <CourseCard key={course.id} course={course} />
-              </motion.div>
-            ))}
+            {shuffle(courses)
+              .slice(0, 4)
+              .map((course) => (
+                <motion.div
+                  key={course.id}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <CourseCard key={course.id} course={course} />
+                </motion.div>
+              ))}
           </div>
         </div>
         <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 border-t border-white/20">

@@ -1,8 +1,8 @@
 "use client";
 
 import CourseCard from "@/components/Cards/CourseCard";
+import { CategoryType } from "@/types/categpry.type";
 import { CoursesResponseType, CourseType } from "@/types/course.type";
-import { CategoriesResponseType, CategoryType } from "@/types/categpry.type";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -23,7 +23,7 @@ type HomeProps = {
 };
 
 export default function HomeUI({ courses, cats }: HomeProps) {
-  const [selectCat, setSelectCat] = useState<CategoryType>();
+  const [selectCat, setSelectCat] = useState<CategoryType | undefined>();
   const [courseFilter, setCourseFilter] = useState<CourseType[]>(courses.data);
 
   const select = (e: CategoryType) => {
@@ -31,10 +31,14 @@ export default function HomeUI({ courses, cats }: HomeProps) {
   };
 
   useEffect(() => {
-    setCourseFilter(
-      courses.data.filter((course) => course.category.id == selectCat?.id)
-    );
-  }, []);
+    if (selectCat) {
+      setCourseFilter(
+        courses.data.filter((course) => course.category.id === selectCat.id)
+      );
+    } else {
+      setCourseFilter(courses.data);
+    }
+  }, [selectCat, courses.data]);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -60,15 +64,6 @@ export default function HomeUI({ courses, cats }: HomeProps) {
       description: "Custom learning paths tailored to your goals",
     },
   ];
-
-  // const categories = [
-  //   "Programming",
-  //   "Design",
-  //   "Business",
-  //   "Marketing",
-  //   "Data Science",
-  //   "AI",
-  // ];
 
   const stats = [
     { number: "100+", label: "Expert Instructors" },
