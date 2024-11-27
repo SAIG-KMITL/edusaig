@@ -1,6 +1,7 @@
 export type PointStreakType = {
     point: number;
-    streak: UserStreakType[];
+    streak: number;
+    lastActivityDate: string;
 }
 
 export type UserStreakType = {

@@ -7,10 +7,12 @@ export default async function RewardPage() {
   const rewards = await fetchRewardsAction();
   const user = await fetchUserAction();
   const userStreak = await fetchUserStreakAction();
+  const streak = userStreak.data?.length ?? 0;
 
   const userPointStreak = {
-    streak: userStreak.data ?? [],
     point: user.data?.points ?? 0,
+    streak: streak,
+    lastActivityDate: userStreak.data?.[streak - 1]?.lastActivityDate ?? "",
   };
 
   if (!rewards.data) {

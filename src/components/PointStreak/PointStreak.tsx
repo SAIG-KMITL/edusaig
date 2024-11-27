@@ -7,13 +7,13 @@ import Image from "next/image";
 import { Toast } from "../Toast/Toast";
 import { useRouter } from "next/navigation";
 
-export default function PointSteak({
-  userPointStreak,
-}: {
+interface PointSteakProps {
   userPointStreak: PointStreakType;
-}) {
+}
+
+export default function PointSteak({ userPointStreak }: PointSteakProps) {
   const point = userPointStreak.point;
-  const steak = (userPointStreak.streak.length || 0) % 7;
+  const steak = (userPointStreak.streak || 0) % 7;
 
   const router = useRouter();
 
@@ -36,9 +36,7 @@ export default function PointSteak({
     // check if streak for today is already created
     const today = new Date().toDateString();
     const lastStreakDate = new Date(
-      userPointStreak.streak[
-        userPointStreak.streak.length - 1
-      ]?.lastActivityDate
+      userPointStreak.lastActivityDate
     ).toDateString();
 
     if (today === lastStreakDate) {
