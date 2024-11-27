@@ -17,11 +17,15 @@ interface CourseCardProps {
   handleCourseSelected?: (course: CourseType) => void;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({
+export default function CourseCard({
   course,
   showOptionButton,
   handleCourseSelected,
-}) => {
+}: {
+  course: CourseType;
+  showOptionButton?: boolean;
+  handleCourseSelected?: (course: CourseType) => void;
+}) {
   if (!course) {
     return null;
   }
@@ -104,5 +108,3 @@ const CourseCard: React.FC<CourseCardProps> = ({
     </div>
   );
 };
-
-export default CourseCard;

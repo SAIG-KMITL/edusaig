@@ -3,7 +3,6 @@
 import { RoadMapCard } from "@/components/Cards/RoadMapCard";
 import { RoadMapType } from "@/types/roadmap.type";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 
 export default function RoadMapUI({ roadmap }: { roadmap: RoadMapType[] }) {
   return (
