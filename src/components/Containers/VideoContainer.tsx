@@ -1,8 +1,13 @@
 "use client";
 
-import { ChapterType } from "@/types/chapter.type";
-import { CourseModuleType } from "@/types/course.type";
-import { AnimatePresence, motion } from "framer-motion";
+import { ChapterResponseType, ChapterType } from "@/types/chapter.type";
+import {
+  CourseModuleResponseType,
+  CourseModuleType,
+  CourseType,
+} from "@/types/course.type";
+import { fetchVideo } from "@/utils/resource/fetchVideo";
+import { motion } from "framer-motion";
 import {
   BookMarked,
   BookOpen,
@@ -13,14 +18,19 @@ import {
   PlayCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import VideoSkeleton from "../Skeleton/VideoSkeleton";
+import VideoPlayer from "../Video/VideoPlayer";
 
 export default function VideoContainer({
+  course,
   chapter,
   courseModule,
   onComplete,
 }: {
-  chapter: ChapterType;
-  courseModule: CourseModuleType;
+  course: CourseType;
+  chapter: ChapterResponseType;
+  courseModule: CourseModuleResponseType;
   onComplete: () => void;
 }) {
   return (
@@ -41,11 +51,9 @@ export default function VideoContainer({
       </div>
 
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-        <iframe
-          className="w-full h-full"
-          src={chapter.videoUrl}
-          allowFullScreen
-        />
+        <Suspense fallback={<VideoSkeleton />}>
+          <VideoPlayer source={fetchVideo(chapter.id)} />
+        </Suspense>
       </div>
 
       <div className="mt-8 grid grid-cols-3 gap-8">
@@ -53,12 +61,11 @@ export default function VideoContainer({
           <h2 className="text-2xl font-bold text-white mb-2">
             {chapter.content}
           </h2>
-          <p className="text-silver mb-4">by {courseModule.course.teacher}</p>
+          <p className="text-silver mb-4">by {course.teacher.fullname}</p>
           <p className="text-white/80 leading-relaxed mb-6">
             {chapter.description}
           </p>
 
-          {/* Resources */}
           <div className="flex gap-4">
             <motion.a
               whileHover={{ scale: 1.05 }}

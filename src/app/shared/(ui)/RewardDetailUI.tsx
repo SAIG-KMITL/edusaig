@@ -1,7 +1,11 @@
 "use client";
 
+import { createUserRewardAction } from "@/actions/userRewardAction";
+import { Toast } from "@/components/Toast/Toast";
 import { rewards } from "@/constants/reward";
 import { RewardType } from "@/types/reward";
+import { REWARD } from "@/utils/enums/reward";
+import { fetchThumbnailReward } from "@/utils/resource/fetchThumbnail";
 import { motion } from "framer-motion";
 import { Coins } from "lucide-react";
 import Image from "next/image";
@@ -27,13 +31,7 @@ const buttonVariants = {
   tap: { scale: 0.98 },
 };
 
-export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
-  const [reward, setReward] = useState<RewardType | null>(null);
-
-  useEffect(() => {
-    setReward(rewards.find((reward) => reward.id == rewardId) ?? null);
-  }, [rewardId]);
-
+export default function RewardDetailUI({ reward }: { reward: RewardType }) {
   if (!reward) {
     return null;
   }
@@ -48,6 +46,24 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
         return "bg-advanced";
       default:
         return "bg-skyBlue";
+    }
+  };
+
+  const handleCreateUserReward = async (): Promise<void> => {
+    try {
+      const response = await createUserRewardAction(reward.id);
+
+      if (response.data) {
+        Toast(REWARD.REDEEM_SUCCESS, "success");
+      } else {
+        Toast(response.error?.message || REWARD.REDEEM_FAILED, "error");
+      }
+    } catch (error) {
+      console.log(error);
+      Toast(
+        error instanceof Error ? error.message : REWARD.REDEEM_FAILED,
+        "error"
+      );
     }
   };
 
@@ -71,7 +87,7 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
               whileHover="hover"
             >
               <Image
-                src={reward.thumbnail}
+                src={fetchThumbnailReward(reward.id)}
                 width={468}
                 height={350}
                 alt="reward thumbnail"
@@ -133,6 +149,7 @@ export default function RewardDetailUI({ rewardId }: RewardDetailProps) {
             </motion.div>
 
             <motion.button
+              onClick={() => handleCreateUserReward()}
               variants={buttonVariants}
               initial="initial"
               whileHover="hover"

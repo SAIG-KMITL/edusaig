@@ -6,7 +6,7 @@ export default function BackgroundContainer({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-steelGray">
+    <div className="bg-steelGray min-h-screen">
       <svg
         width="1227"
         height="725"
@@ -99,9 +99,7 @@ export default function BackgroundContainer({
           </filter>
         </defs>
       </svg>
-      <div className="relative">
-        {children}
-      </div>
+      <div className="relative">{children}</div>
     </div>
   );
 }

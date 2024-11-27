@@ -2,6 +2,7 @@
 
 import CourseCard from "@/components/Cards/CourseCard";
 import { CoursesResponseType, CourseType } from "@/types/course.type";
+import { CategoriesResponseType, CategoryType } from "@/types/categpry.type";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -14,12 +15,27 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type HomeProps = {
   courses: CoursesResponseType;
+  cats: CategoryType[];
 };
 
-export default function HomeUI({ courses }: HomeProps) {
+export default function HomeUI({ courses, cats }: HomeProps) {
+  const [selectCat, setSelectCat] = useState<CategoryType>();
+  const [courseFilter, setCourseFilter] = useState<CourseType[]>(courses.data);
+
+  const select = (e: CategoryType) => {
+    setSelectCat(e);
+  };
+
+  useEffect(() => {
+    setCourseFilter(
+      courses.data.filter((course) => course.category.id == selectCat?.id)
+    );
+  }, []);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -45,14 +61,14 @@ export default function HomeUI({ courses }: HomeProps) {
     },
   ];
 
-  const categories = [
-    "Programming",
-    "Design",
-    "Business",
-    "Marketing",
-    "Data Science",
-    "AI",
-  ];
+  // const categories = [
+  //   "Programming",
+  //   "Design",
+  //   "Business",
+  //   "Marketing",
+  //   "Data Science",
+  //   "AI",
+  // ];
 
   const stats = [
     { number: "100+", label: "Expert Instructors" },
@@ -133,14 +149,15 @@ export default function HomeUI({ courses }: HomeProps) {
 
           <div className="mt-12">
             <div className="flex flex-wrap gap-3 justify-center">
-              {categories.map((category) => (
+              {cats.map((category) => (
                 <motion.button
-                  key={category}
+                  onClick={() => select(category)}
+                  key={category.id}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-2 rounded-full bg-royalPurple text-white hover:bg-darkMagenta transition-colors"
                 >
-                  {category}
+                  {category.title}
                 </motion.button>
               ))}
             </div>
@@ -163,13 +180,13 @@ export default function HomeUI({ courses }: HomeProps) {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {courses.data.map((course) => (
+              {courseFilter.map((course) => (
                 <motion.div
                   key={course.id}
                   whileHover={{ y: -5 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CourseCard data={course} />
+                  <CourseCard course={course} />
                 </motion.div>
               ))}
             </div>

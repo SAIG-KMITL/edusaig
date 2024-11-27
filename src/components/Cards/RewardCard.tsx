@@ -1,4 +1,5 @@
 import { RewardType } from "@/types/reward";
+import { fetchThumbnailReward } from "@/utils/resource/fetchThumbnail";
 import { motion } from "framer-motion";
 import { Coins } from "lucide-react";
 import Image from "next/image";
@@ -24,7 +25,7 @@ const RewardCard = ({ reward }: { reward: RewardType }) => {
               transition={{ duration: 0.3 }}
             >
               <Image
-                src={reward.thumbnail}
+                src={fetchThumbnailReward(reward.id)}
                 width={560}
                 height={400}
                 alt="reward thumbnail"
