@@ -15,9 +15,10 @@ import { fetchRewardsAction } from "@/actions/rewardAction";
 
 interface RewardUIProps {
   rewards: RewardResponseType;
+  userPointStreak: PointStreakType;
 }
 
-export default function RewardUI({ rewards }: RewardUIProps) {
+export default function RewardUI({ rewards, userPointStreak }: RewardUIProps) {
   const ITEMS_PER_PAGE = rewards.meta?.pageSize || 9;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");

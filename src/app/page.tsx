@@ -9,11 +9,11 @@ import {fetchCatsAction } from "@/actions/categoryAction";
 export default async function Home() {
   const user = await fetchUserAction();
   const coursesPopular = await fetchCourseMostEnrollAction();
-  const categories = await fetchCatsAction()
+  const categories = await fetchCategoriesAction()
   return (
     <>
       <Navbar user={user.data as UserResponseType} />
-      {coursesPopular.data && categories.data ? <HomeUI courses={coursesPopular.data} cats={categories.data}/> : <div>Loading...</div>}
+      {coursesPopular.data && categories.data ? <HomeUI courses={coursesPopular.data} cats={categories.data.data}/> : <div>Loading...</div>}
       <Footer />
     </>
   );
