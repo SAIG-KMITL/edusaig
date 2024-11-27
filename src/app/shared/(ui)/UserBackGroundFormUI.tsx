@@ -77,9 +77,15 @@ export default function UserBackgroundFormUI() {
                     </div>
                 ))}
             </div>
-            <button className="flex justify-center items-center w-full p-2 bg-blue-500 rounded-xl text-xl font-semibold">
-                Confirm
-            </button>
+            <div>
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex justify-center items-center w-full p-2 bg-blue-500 rounded-xl text-xl font-semibold hover:bg-blue-700 transition-all duration-300"
+                >
+                    {isLoading ? "Loading..." : "Confirm Your Background"}
+                </button>
+            </div>
         </form>
     );
 }
