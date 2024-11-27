@@ -1,6 +1,5 @@
 "use server";
 import { CategoryType } from "@/types/category";
-import { CategoriesResponseType } from "@/types/categpry.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCategoriesAction(page?: number, limit?: number, search?: string, slug?: "reward" | "course") {
@@ -13,13 +12,6 @@ export async function fetchCategoriesAction(page?: number, limit?: number, searc
     method: "GET",
     requiresAuth: false,
   });
-}
-
-export async function fetchCatsAction(){
-  return baseApiAction<CategoriesResponseType>(`/category?page=1&limit=10`, {
-    method: "GET",
-    requiresAuth: false,
-  })
 }
 
 export async function fetchCategoryAction(id: string) {
