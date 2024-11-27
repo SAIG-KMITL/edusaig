@@ -1,13 +1,15 @@
 "use client";
 
-import VideoContainer from "@/components/Containers/VideoContainer";
+import { createProgressAction } from "@/actions/progress.Action";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
+import { Toast } from "@/components/Toast/Toast";
 import { ChapterResponseType } from "@/types/chapter.type";
 import { CourseModuleResponseType, CourseType } from "@/types/course.type";
+import { EnrollmentResponseType } from "@/types/enrollment.type";
+import { ProgressResponseType } from "@/types/progress.type";
 import { UserResponseType } from "@/types/user.type";
-import { useState } from "react";
+import { fetchVideo } from "@/utils/resource/fetchVideo";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   BookMarked,
   CheckCircle,
@@ -15,11 +17,9 @@ import {
   Download,
   MessageCircle,
 } from "lucide-react";
-import { createProgressAction } from "@/actions/progress.Action";
-import { EnrollmentResponseType } from "@/types/enrollment.type";
-import { Toast } from "@/components/Toast/Toast";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ProgressResponseType } from "@/types/progress.type";
+import { useState } from "react";
 
 interface CourseChapterUIProps {
   user: UserResponseType;
@@ -53,8 +53,8 @@ export default function CourseChapterUI({
         "completed",
         currentChapter.duration,
         new Date(),
-        new Date(),
-      )
+        new Date()
+      );
 
       if (response.error?.message) {
         Toast(response.error?.message, "error");
@@ -73,37 +73,49 @@ export default function CourseChapterUI({
   };
 
   const handleNavigate = () => {
-    const chaptersInCurrentCourseModule = chapters.filter((chapter) => chapter.moduleId == currentChapter.moduleId);
-    
-    if(currentChapter.orderIndex != chaptersInCurrentCourseModule.length) {
-      const nextChapter = chaptersInCurrentCourseModule.find((chapter) => chapter.orderIndex == currentChapter.orderIndex + 1);
+    const chaptersInCurrentCourseModule = chapters.filter(
+      (chapter) => chapter.moduleId == currentChapter.moduleId
+    );
+
+    if (currentChapter.orderIndex != chaptersInCurrentCourseModule.length) {
+      const nextChapter = chaptersInCurrentCourseModule.find(
+        (chapter) => chapter.orderIndex == currentChapter.orderIndex + 1
+      );
 
       router.push(`/course/${course.id}/chapter/${nextChapter?.id}`);
     } else {
-      const currentCourseModule = courseModules.find((courseModule) => courseModule.id == currentChapter.moduleId);
+      const currentCourseModule = courseModules.find(
+        (courseModule) => courseModule.id == currentChapter.moduleId
+      );
 
-      if(currentCourseModule?.orderIndex != courseModules.length) {
-        const nextCourseModule = courseModules.find((courseModule) => courseModule.orderIndex == (currentCourseModule?.orderIndex ?? 0) + 1);
+      if (currentCourseModule?.orderIndex != courseModules.length) {
+        const nextCourseModule = courseModules.find(
+          (courseModule) =>
+            courseModule.orderIndex ==
+            (currentCourseModule?.orderIndex ?? 0) + 1
+        );
         const firstChapter = chapters
-        .filter((chapter) => chapter.moduleId == nextCourseModule?.id)
-        .find((chapters) => chapters.orderIndex == 1);
+          .filter((chapter) => chapter.moduleId == nextCourseModule?.id)
+          .find((chapters) => chapters.orderIndex == 1);
 
-        if(firstChapter) {
+        if (firstChapter) {
           router.push(`/course/${course.id}/chapter/${firstChapter?.id}`);
-        }
-        else {
+        } else {
           router.refresh();
         }
-      }
-      else {
+      } else {
         router.refresh();
       }
     }
-  }
+  };
 
   const hasChapterCompleted = (chapter: ChapterResponseType): boolean => {
-    return progresses?.filter((progress) => progress.chapter.id == chapter.id)?.some((progress) => progress.status == "completed") ?? false;
-  }
+    return (
+      progresses
+        ?.filter((progress) => progress.chapter.id == chapter.id)
+        ?.some((progress) => progress.status == "completed") ?? false
+    );
+  };
 
   return (
     <div className="min-h-screen">
@@ -130,9 +142,7 @@ export default function CourseChapterUI({
             <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
               <iframe
                 className="w-full h-full"
-                src={
-                  "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                }
+                src={fetchVideo(currentChapter.id)}
                 allowFullScreen
               />
             </div>
@@ -158,18 +168,20 @@ export default function CourseChapterUI({
                     <Download className="w-4 h-4 mr-2" />
                     Download Materials
                   </motion.a>
-                  { enrollment && !hasChapterCompleted(currentChapter) && user.role == "student" &&
-                    <motion.button
-                    disabled={isLoading}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleComplete}
-                    className="flex items-center px-4 py-2 bg-skyBlue text-white rounded-lg hover:bg-skyBlue/90"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Mark as Complete
-                  </motion.button>
-                  }
+                  {enrollment &&
+                    !hasChapterCompleted(currentChapter) &&
+                    user.role == "student" && (
+                      <motion.button
+                        disabled={isLoading}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleComplete}
+                        className="flex items-center px-4 py-2 bg-skyBlue text-white rounded-lg hover:bg-skyBlue/90"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Mark as Complete
+                      </motion.button>
+                    )}
                 </div>
               </div>
 

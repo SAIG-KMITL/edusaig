@@ -1,5 +1,10 @@
 "use server";
-import { CourseLevelType, CoursesResponseType, CourseStatusType, CourseType } from "@/types/course.type";
+import {
+  CourseLevelType,
+  CoursesResponseType,
+  CourseStatusType,
+  CourseType,
+} from "@/types/course.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchCoursesAction() {
@@ -11,7 +16,7 @@ export async function fetchCoursesAction() {
 
 export async function uploadCourseThumbnail(id: string, file: File) {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   return baseApiAction<void>(`/course/${id}/thumbnail`, {
     method: "PATCH",
@@ -27,13 +32,13 @@ export async function createCourseAction(
   duration: number,
   level: CourseLevelType,
   price: number,
-  status: CourseStatusType,
+  status: CourseStatusType
 ) {
   return baseApiAction<CourseType>(`/course`, {
     method: "POST",
     body: { title, description, categoryId, duration, level, price, status },
     requiresAuth: true,
-  }); 
+  });
 }
 
 export async function editCourseAction(
@@ -45,13 +50,22 @@ export async function editCourseAction(
   level: CourseLevelType,
   price: number,
   status: CourseStatusType,
-  thumbnailKey: string,
+  thumbnailKey: string
 ) {
   return baseApiAction<CourseType>(`/course/${id}`, {
     method: "PATCH",
-    body: { title, description, categoryId, duration, level, price, status, thumbnailKey },
+    body: {
+      title,
+      description,
+      categoryId,
+      duration,
+      level,
+      price,
+      status,
+      thumbnailKey,
+    },
     requiresAuth: true,
-  }); 
+  });
 }
 
 export async function deleteCourseAction(id: string) {
