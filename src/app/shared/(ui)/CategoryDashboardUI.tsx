@@ -1,15 +1,17 @@
 "use client";
 
 import { deleteCategoryAction } from "@/actions/categoryAction";
-import { FilterDropdown } from "@/components/Button/FilterButton";
 import { DashboardContainer } from "@/components/Containers/DashboardContainer";
-import SearchInput from "@/components/Inputs/SearchInput";
+import InputTheme from "@/components/Inputs/InputTheme";
+import { SelectTheme } from "@/components/Inputs/SelectTheme";
 import Pagination from "@/components/Paginations/Pagination";
-import DataTable, { Column } from "@/components/Tables/DataTable";
+import { buttonStyles, Column, DataTable } from "@/components/Tables/DataTable";
 import { Toast } from "@/components/Toast/Toast";
 import { categoryOptions } from "@/constants/category";
 import { CategoryType } from "@/types/category";
 import { CATEGORY } from "@/utils/enums/category";
+import { motion } from "framer-motion";
+import { BarChart2, Delete, Edit, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -54,7 +56,7 @@ export default function CategoriesPage({
       header: "Slug",
       accessorKey: "slug",
       cell: (value) => (
-        <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+        <span className="inline-flex items-center rounded-md bg-royalPurple px-2 py-1 text-xs font-medium text-white">
           {value as string}
         </span>
       ),
@@ -83,20 +85,26 @@ export default function CategoriesPage({
       cell: (value) => (
         <div className="flex justify-center gap-2">
           <Link href={`/form/edit-category/${value}`}>
-            <button
-              type="button"
-              className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-gray-50 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full p-3 bg-electricViolet text-white rounded-xl font-medium
+      hover:bg-electricViolet/90 transition-colors flex items-center justify-center gap-2"
             >
+              <Edit className="w-5 h-5" />
               Edit
-            </button>
+            </motion.button>
           </Link>
-          <button
-            type="button"
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-3 bg-darkMagenta text-white rounded-xl font-medium
+      hover:bg-electricViolet/90 transition-colors flex items-center justify-center gap-2"
             onClick={() => handleDeleteCategory(value as string)}
-            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
           >
+            <Delete className="w-5 h-5" />
             Delete
-          </button>
+          </motion.button>
         </div>
       ),
     },
@@ -114,36 +122,39 @@ export default function CategoriesPage({
     setCurrentPage(page);
   };
 
-  const handleSearch = (value: string) => {
-    setSearchQuery(value);
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
   };
 
-  const handleFilterChange = (selectedOptions: string[]) => {
-    console.log("Selected filters:", selectedOptions);
+  const handleFilterChange = (selectedOptionId: string) => {
+    console.log("Selected filter:", selectedOptionId);
   };
 
   const AddCategoryButton = (
     <Link href="/form/create-category">
-      <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 bg-blue-600 text-white gap-2">
-        Add Category
-      </button>
+      <button className={buttonStyles.primary}>Add Category</button>
     </Link>
   );
 
   return (
     <div className="my-10">
       <div className="flex">
-        <div className="p-6 w-1/4">
-          <SearchInput
-            placeholder="Search categories by title"
-            onSearch={handleSearch}
+        <div className="p-6 w-3/4">
+          <InputTheme
+            placeholder="Search categories"
+            value={searchQuery}
+            onChange={handleSearch}
+            leftIcon={<Search className="w-5 h-5" />}
+            className="placeholder:text-white"
           />
         </div>
         <div className="p-6 w-1/4">
-          <FilterDropdown
-            title="Filter Category"
+          <SelectTheme
+            placeholder="Filter Category"
+            leftIcon={<BarChart2 className="w-5 h-5" />}
             options={categoryOptions}
-            onFilterChange={handleFilterChange}
+            className="placeholder:text-white"
+            onSelectedValueChange={handleFilterChange}
           />
         </div>
       </div>
