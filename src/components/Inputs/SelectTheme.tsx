@@ -18,9 +18,11 @@ interface SelectThemeProps {
   helper?: string;
   placeholder: string;
   options: SelectOption[];
+  visibleOptions?: SelectOption[];
   leftIcon?: React.ReactNode;
   initialValue?: string | null;
   onSelectedValueChange?: (selectedOptionId: string) => void;
+  value?: string;
 }
 
 export function SelectTheme({
@@ -32,13 +34,15 @@ export function SelectTheme({
   helper,
   placeholder,
   options,
+  visibleOptions,
   leftIcon,
   initialValue,
   onSelectedValueChange: onChange,
+  value,
   ...props
 }: SelectThemeProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(initialValue ?? null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null | undefined>(initialValue ?? null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popUpRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +52,10 @@ export function SelectTheme({
     if(isOpen) {
       buttonRef.current?.blur();
     }
+    else if(visibleOptions?.length == 0) {
+      return ;
+    }
+
     setIsOpen(!isOpen);
   }
 
@@ -57,8 +65,12 @@ export function SelectTheme({
     setIsOpen(false);
   };
 
+  if(!visibleOptions) {
+    visibleOptions = [...options];
+  }
+
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block w-full">
       {label && (
         <motion.label
           initial={{ opacity: 0, y: -10 }}
@@ -98,8 +110,8 @@ export function SelectTheme({
               {leftIcon}
             </div>
         )}
-        {selectedOptionId ? 
-          options.find((option) => option.id == selectedOptionId)?.label :
+        {(value ?? selectedOptionId) ? 
+          options.find((option) => option.id == (value ?? selectedOptionId))?.label :
           placeholder
         }
         <motion.div
@@ -129,7 +141,7 @@ export function SelectTheme({
             `}
           >
             <ul className="text-sm max-h-[300px] overflow-y-auto">
-              {options.map((option) => (
+              {visibleOptions.map((option) => (
                 <li key={option.id} className="px-2 py-2 flex items-center hover:bg-white/20" onClick={() => handleChange(option.id)}>
                   <label className="flex items-center flex-1 cursor-pointer">
                     <span className="ml-2 text-sm text-white">
