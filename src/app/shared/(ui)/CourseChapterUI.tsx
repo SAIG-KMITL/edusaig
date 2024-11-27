@@ -2,7 +2,9 @@
 
 import { createProgressAction } from "@/actions/progress.Action";
 import SidebarChapter from "@/components/Navbar/SidebarChapter";
+import VideoSkeleton from "@/components/Skeleton/VideoSkeleton";
 import { Toast } from "@/components/Toast/Toast";
+import VideoPlayer from "@/components/Video/VideoPlayer";
 import { ChapterResponseType } from "@/types/chapter.type";
 import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 import { EnrollmentResponseType } from "@/types/enrollment.type";
@@ -19,8 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
+import { Suspense, useState } from "react";
 interface CourseChapterUIProps {
   user: UserResponseType;
   enrollment?: EnrollmentResponseType;
@@ -140,11 +141,9 @@ export default function CourseChapterUI({
             </div>
 
             <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-              <iframe
-                className="w-full h-full"
-                src={fetchVideo(currentChapter.id)}
-                allowFullScreen
-              />
+              <Suspense fallback={<VideoSkeleton />}>
+                <VideoPlayer source={fetchVideo(currentChapter.id)} />
+              </Suspense>
             </div>
 
             <div className="mt-8 grid grid-cols-3 gap-8">
@@ -159,15 +158,14 @@ export default function CourseChapterUI({
 
                 {/* Resources */}
                 <div className="flex gap-4">
-                  <motion.a
+                  <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    href="#"
                     className="flex items-center px-4 py-2 bg-electricViolet text-white rounded-lg hover:bg-electricViolet/90"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Materials
-                  </motion.a>
+                  </motion.button>
                   {enrollment &&
                     !hasChapterCompleted(currentChapter) &&
                     user.role == "student" && (
