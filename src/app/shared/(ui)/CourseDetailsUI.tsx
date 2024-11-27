@@ -5,11 +5,15 @@ import SidebarChapter from "@/components/Navbar/SidebarChapter";
 import { Toast } from "@/components/Toast/Toast";
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 import { ChapterResponseType } from "@/types/chapter.type";
-import { CourseModuleResponseType, CourseModuleType, CourseType } from "@/types/course.type";
+import {
+  CourseModuleResponseType,
+  CourseModuleType,
+  CourseType,
+} from "@/types/course.type";
 import { EnrollmentResponseType } from "@/types/enrollment.type";
 import { ProgressResponseType } from "@/types/progress.type";
 import { UserResponseType } from "@/types/user.type";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
 import { motion } from "framer-motion";
 import { BarChart2, ChevronLeft, Clock, DollarSign, Tag } from "lucide-react";
 import Image from "next/image";
@@ -26,20 +30,21 @@ interface CourseDetailsProps {
   progresses: ProgressResponseType[];
 }
 
-export default function CourseDetailsUI({ user, course, enrollment, courseModules, chapters, progresses }: CourseDetailsProps) {
+export default function CourseDetailsUI({
+  user,
+  course,
+  enrollment,
+  courseModules,
+  chapters,
+  progresses,
+}: CourseDetailsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleEnroll = async () => {
     try {
       setIsLoading(true);
-      console.log(user.id,
-        course.id,
-        false,
-        0,
-        "active",
-        new Date(),
-        null)
+      console.log(user.id, course.id, false, 0, "active", new Date(), null);
       const response = await createEnrollmentAction(
         user.id,
         course.id,
@@ -59,7 +64,9 @@ export default function CourseDetailsUI({ user, course, enrollment, courseModule
       router.refresh();
     } catch (error) {
       Toast(
-        error instanceof Error ? error.message : "Unexpected error occurred during enrollment.",
+        error instanceof Error
+          ? error.message
+          : "Unexpected error occurred during enrollment.",
         "error"
       );
     } finally {
@@ -115,7 +122,7 @@ export default function CourseDetailsUI({ user, course, enrollment, courseModule
                 <p className="-mb-[7px]">{`${course.duration} mins`}</p>
               </div>
             </motion.div>
-            { !enrollment && user.role == "student" &&
+            {!enrollment && user.role == "student" && (
               <motion.button
                 type="button"
                 onClick={handleEnroll}
@@ -126,8 +133,7 @@ export default function CourseDetailsUI({ user, course, enrollment, courseModule
               >
                 Enroll Now
               </motion.button>
-            }
-            
+            )}
           </div>
         </div>
         <div className="w-full lg:flex-1 max-w-2xl flex flex-col break-words px-6 flex-grow-1">

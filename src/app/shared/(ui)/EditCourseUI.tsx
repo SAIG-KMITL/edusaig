@@ -1,8 +1,24 @@
 "use client";
 
-import { SelectTheme } from "@/components/Inputs/SelectTheme";
+import {
+  editCourseAction,
+  fetchCoursesAction,
+  uploadCourseThumbnail,
+} from "@/actions/courseAction";
 import InputTheme from "@/components/Inputs/InputTheme";
+import { SelectTheme } from "@/components/Inputs/SelectTheme";
 import TextareaTheme from "@/components/Inputs/TextareaTheme";
+import { Toast } from "@/components/Toast/Toast";
+import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { editCourseSchema } from "@/schema/course.schema";
+import { CategoryType } from "@/types/category";
+import {
+  CourseLevelType,
+  CourseStatusType,
+  CourseType,
+} from "@/types/course.type";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
@@ -21,26 +37,11 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
-import { CategoryType } from "@/types/category";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { editCourseSchema } from "@/schema/course.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  editCourseAction,
-  uploadCourseThumbnail,
-} from "@/actions/courseAction";
-import { Toast } from "@/components/Toast/Toast";
-import {
-  CourseLevelType,
-  CourseStatusType,
-  CourseType,
-} from "@/types/course.type";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
-import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type EditCourseFormData = z.infer<typeof editCourseSchema>;
@@ -111,6 +112,14 @@ export default function EditCourseUI({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
+  const fetchCoursesAction = async () => {
+    try {
+      await fetchCoursesAction();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -150,7 +159,14 @@ export default function EditCourseUI({
       } else {
         Toast("The course has been updated.", "success");
       }
+
+      await fetchCoursesAction();
+
+      await handleUploadThumbnail();
+
       router.refresh();
+
+      router.push(`/dashboard/course`);
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to edit course",
@@ -173,8 +189,6 @@ export default function EditCourseUI({
       } else {
         Toast("The course thumbnail has been updated.", "success");
       }
-
-      router.refresh();
     } catch (error) {
       Toast(
         error instanceof Error

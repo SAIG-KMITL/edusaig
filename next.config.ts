@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "100mb",
+    },
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

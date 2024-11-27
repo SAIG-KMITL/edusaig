@@ -1,14 +1,14 @@
 "use client";
 
 import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
+import { handleOpenModal } from "@/lib/modal";
 import { CourseType } from "@/types/course.type";
-import { fetchThumbnail } from "@/utils/thumbnail/fetchThumbnail";
+import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
 import { PencilIcon, Trash, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ActionButton, { ActionButtonEntryType } from "../Button/ActionButton";
-import { handleOpenModal } from "@/lib/modal";
 import CourseLevelTag from "../Tags/CourseLevelTag";
 
 interface CourseCardProps {
@@ -17,8 +17,12 @@ interface CourseCardProps {
   handleCourseSelected?: (course: CourseType) => void;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ course, showOptionButton, handleCourseSelected }) => {
-  if(!course) {
+const CourseCard: React.FC<CourseCardProps> = ({
+  course,
+  showOptionButton,
+  handleCourseSelected,
+}) => {
+  if (!course) {
     return null;
   }
   const actionButtonEntries: ActionButtonEntryType[] = [
