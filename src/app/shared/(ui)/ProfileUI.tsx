@@ -1,16 +1,32 @@
+"use client";
+
 import CourseCard from "@/components/Cards/CourseCard";
-import CourseTable from "@/components/Tables/CourseTable";
-import { courses } from "@/constants/course";
+import { CourseType } from "@/types/course.type";
+import { EnrollmentResponseType } from "@/types/enrollment.type";
 import { UserResponseType } from "@/types/user.type";
 import { formatDate } from "@/utils/format";
-import { Award, Bookmark, BookmarkCheck, Mail, User } from "lucide-react";
+import { Award, Mail, User } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 type ProfileUIProps = {
   user: UserResponseType;
+  enrolls: EnrollmentResponseType[];
+  courses: CourseType[];
 };
 
-export default function ProfileUI({ user }: ProfileUIProps) {
+export default function ProfileUI({ user, enrolls,courses }: ProfileUIProps) {
+  const [myCourse, setMyCourse] = useState<CourseType[]>();
+  const [myCourseProgress, setMyCourseProgress] =
+    useState<EnrollmentResponseType[]>();
+
+  useEffect(() => {
+    setMyCourse(courses.filter(course => course.teacher.id === user.id))
+    setMyCourseProgress(enrolls.filter(enroll => enroll.user.id === user.id))
+  }, []);
+
+  console.log(enrolls);
+
   return (
     <div className="text-white">
       <div className="bg-transparent/20 w-full h-[250px] flex md:justify-between justify-center items-center">
@@ -56,16 +72,16 @@ export default function ProfileUI({ user }: ProfileUIProps) {
         <div className="mt-4 grid gap-2">
           <h1 className="text-[24px] font-semibold">My Course</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
-            {courses.slice(0, 4).map((course) => (
-              <CourseCard key={course.id} data={course} />
+            {myCourse?.map((course) => (
+              <CourseCard key={course.id} course={course} />
             ))}
           </div>
         </div>
         <div className="mt-4 grid gap-2">
           <h1 className="text-[24px] font-semibold">On Progress</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
-            {courses.slice(2, 4).map((course) => (
-              <CourseCard key={course.id} data={course} />
+            {myCourseProgress?.map((course) => (
+              <CourseCard key={course.id} course={course.course} />
             ))}
           </div>
         </div>
