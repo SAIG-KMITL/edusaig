@@ -5,7 +5,7 @@ import { Toast } from "@/components/Toast/Toast";
 import { rewards } from "@/constants/reward";
 import { RewardType } from "@/types/reward";
 import { REWARD } from "@/utils/enums/reward";
-import { fetchThumbnailReward } from "@/utils/thumbnail/fetchThumbnail";
+import { fetchThumbnailReward } from "@/utils/resource/fetchThumbnail";
 import { motion } from "framer-motion";
 import { Coins } from "lucide-react";
 import Image from "next/image";

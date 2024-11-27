@@ -82,6 +82,19 @@ export async function fetchCourseAction(id: string) {
   });
 }
 
+export async function fetchCourseMostEnrollAction(){
+  return baseApiAction<CoursesResponseType>(`/course/most-enroll?page=1&limit=10`,{
+    method: "GET",
+    requiresAuth:true
+  })
+}
+
+export async function fetchCourseNewArrivalsAction(){
+  return baseApiAction<CoursesResponseType>(`/course/new-arrivals?page=1&limit=10`,{
+    method: "GET",
+    requiresAuth:true
+  })
+}
 export async function fetchCoursesByTeacherAction(teacherId: string) {
   return baseApiAction<CoursesResponseType>(`/course/by-teacher/${teacherId}?limit=100`, {
     method: "GET",

@@ -1,20 +1,64 @@
 import emptyCheck from "@/../public/ulits/empty-check.svg";
 import fillCheck from "@/../public/ulits/fill-check.svg";
 import starPoint from "@/../public/ulits/star-point.svg";
+import { createUserStreakAction } from "@/actions/userStreakAction";
 import { PointStreakType } from "@/types/pointStreak.type";
 import Image from "next/image";
+import { Toast } from "../Toast/Toast";
+import { useRouter } from "next/navigation";
 
-export default function PointSteak({
-  userPointStreak,
-}: {
-  userPointStreak: PointStreakType[];
-}) {
-  const point = userPointStreak[0].point;
-  const steak = userPointStreak[0].streak;
+interface PointSteakProps {
+  userPointStreak: PointStreakType;
+}
+
+export default function PointSteak({ userPointStreak }: PointSteakProps) {
+  const point = userPointStreak.point;
+  const steak = (userPointStreak.streak || 0) % 7;
+
+  const router = useRouter();
 
   const checkIcon = Array.from({ length: 7 }, (_, index) =>
     index < steak ? fillCheck : emptyCheck
   );
+
+  const handleCreateStreak = async (index: number) => {
+    // check if previous streak exist or not
+    if (index > 0 && checkIcon[index - 1] === emptyCheck) {
+      Toast("Please complete the previous streak first", "error");
+      return;
+    }
+
+    if (index < steak) {
+      Toast("Streak already created", "error");
+      return;
+    }
+
+    // check if streak for today is already created
+    const today = new Date().toDateString();
+    const lastStreakDate = new Date(
+      userPointStreak.lastActivityDate
+    ).toDateString();
+
+    if (today === lastStreakDate) {
+      Toast("You can only create one streak per day", "error");
+      return;
+    }
+
+    // create streak
+    try {
+      const response = await createUserStreakAction();
+
+      if (response.data) {
+        Toast("Streak created successfully", "success");
+        router.push("/reward");
+      }
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Failed to create streak",
+        "error"
+      );
+    }
+  };
 
   return (
     <div className="flex w-full p-8 rounded-2xl bg-slate-100 bg-opacity-5 backdrop-blur-md">
@@ -38,6 +82,7 @@ export default function PointSteak({
           <div
             className="flex flex-col justify-center items-center space-y-4"
             key={index}
+            onClick={() => handleCreateStreak(index)}
           >
             <h4 className="text-lg font-light text-slate-100">
               Day {index + 1}
