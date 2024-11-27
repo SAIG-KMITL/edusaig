@@ -8,5 +8,5 @@ export default async function CategoryDashboard() {
     return null;
   }
 
-  return <CategoryDashboardUI categories={response.data} />;
+  return <CategoryDashboardUI categories={response.data.data} />;
 }

@@ -1,12 +1,22 @@
-"use client";
-
 import CourseCard from "@/components/Cards/CourseCard";
-import { courses } from "@/constants/course";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { CourseType } from "@/types/course.type";
 import Link from "next/link";
 
-export default function CourseUI() {
+export default function CourseUI({
+  courses,
+  coursePopular,
+  courseNew,
+}: {
+  courses: CourseType[];
+  coursePopular: CourseType[] | undefined;
+  courseNew: CourseType[] | undefined;
+}) {
+  const shuffle = (array: CourseType[]) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <div className="flex flex-col mb-6 lg:mb-10">
@@ -35,13 +45,13 @@ export default function CourseUI() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {courses.slice(0, 4).map((course) => (
+            {coursePopular?.slice(0, 4).map((course: any) => (
               <motion.div
                 key={course.id}
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -65,13 +75,13 @@ export default function CourseUI() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {courses.slice(0, 4).map((course) => (
+            {courseNew?.slice(0, 4).map((course: any) => (
               <motion.div
                 key={course.id}
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -95,13 +105,13 @@ export default function CourseUI() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {courses.slice(0, 4).map((course) => (
+            {shuffle(courses).slice(0, 4).map((course) => (
               <motion.div
                 key={course.id}
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
-                <CourseCard key={course.id} data={course} />
+                <CourseCard key={course.id} course={course} />
               </motion.div>
             ))}
           </div>
@@ -113,7 +123,7 @@ export default function CourseUI() {
               whileHover={{ y: -5 }}
               transition={{ duration: 0.2 }}
             >
-              <CourseCard key={course.id} data={course} />
+              <CourseCard key={course.id} course={course} />
             </motion.div>
           ))}
         </div>

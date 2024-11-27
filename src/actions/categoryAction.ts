@@ -1,9 +1,15 @@
 "use server";
 import { CategoryType } from "@/types/category";
+import { CategoriesResponseType } from "@/types/categpry.type";
 import { baseApiAction } from "./baseAction";
 
-export async function fetchCategoriesAction() {
-  return baseApiAction<CategoryType[]>("/category", {
+export async function fetchCategoriesAction(page?: number, limit?: number, search?: string, slug?: "reward" | "course") {
+  return baseApiAction<{ data: CategoryType[] }>(`/category
+    ${page || limit || search || slug ? "?" : ""}
+    ${page ? `page=${page}` : ""}
+    ${limit ? `limit=${limit}` : ""}
+    ${search ? `search=${search}` : ""}
+    ${slug ? `slug=${slug}` : ""}`, {
     method: "GET",
     requiresAuth: false,
   });
