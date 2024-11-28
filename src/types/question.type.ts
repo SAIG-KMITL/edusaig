@@ -12,7 +12,12 @@ export type QuestionType = {
   updatedAt: string;
 
   options: QuestionOptionType[];
-}
+};
+
+export type QuestionResponseType = {
+  data: QuestionType[];
+  meta: MetaType;
+};
 
 export type QuestionOptionType = {
   id: string;
@@ -22,15 +27,19 @@ export type QuestionOptionType = {
   explanation: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
+export type QuestionOptionResponseType = {
+  data: QuestionOptionType[];
+  meta: MetaType;
+};
 
 export type PreTestQuestionResponseType = {
   data: QuestionType[];
   meta: MetaType;
-}
+};
 
 export type PreTestQuestionOptionsResponseType = {
   data: QuestionOptionType[];
   meta: MetaType;
-}
+};

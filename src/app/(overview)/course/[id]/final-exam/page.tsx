@@ -4,14 +4,13 @@ import { fetchQuestionsAction } from "@/actions/questionAction";
 import { fetchQuestionOptionsAction } from "@/actions/questionOptionAction";
 import { fetchExamAnswersAction } from "@/actions/examAnswerAction";
 import { fetchExamAttemptsAction } from "@/actions/examAttemptAction";
-// import { exam } from "@/constants/exam";
 
-interface ChapterProps {
-  params: { id: string; chapterId: string };
+interface ExamProps {
+  params: { id: string;};
   searchParams: Record<string, string>;
 }
 
-export default async function ExamRecommendPage({ params }: ChapterProps) {
+export default async function FinalExamPage({ params }: ExamProps) {
   const { id } = await params;
 
   const exam = await fetchExamAction(id);
@@ -39,9 +38,9 @@ export default async function ExamRecommendPage({ params }: ChapterProps) {
   return (
     <FinalExamUI
       exam={exam.data}
-      questions={questions.data}
-      question_options={question_options.data}
-      exam_answers={exam_answers.data}
+      questions={questions.data.data}
+      question_options={question_options.data.data}
+      exam_answers={exam_answers.data.data}
       exam_attempts={exam_attempts.data}
     />
   );

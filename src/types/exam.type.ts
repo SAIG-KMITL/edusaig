@@ -17,7 +17,12 @@ export type ExamType = {
   updatedAt: string;
 
   questions: QuestionType[];
-}
+};
+
+export type ExamResponseType = {
+  data: ExamType[];
+  meta: MetaType;
+};
 
 export type ExamAnswerType = {
   id: string;
@@ -31,6 +36,11 @@ export type ExamAnswerType = {
   updatedAt: string;
 };
 
+export type ExamAnswerResponseType = {
+  data: ExamAnswerType[];
+  meta: MetaType;
+};
+
 export type ExamAttempt = {
   id: string;
   examId: string | null;
@@ -42,16 +52,16 @@ export type ExamAttempt = {
   submittedAt: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export type ExamAttemptResponseType = {
   data: ExamAttempt[];
   meta: MetaType;
-}
+};
 
 export type ExamAttemptPretestType = {
   id: string;
-  pretest: PretestType
+  pretest: PretestType;
   pretestId: string;
   user: UserResponseType;
   userId: string;
@@ -59,12 +69,12 @@ export type ExamAttemptPretestType = {
   status: string;
   startedAt: string;
   submittedAt: string;
-}
+};
 
 export type ExamAttemptPretestResponseType = {
   data: ExamAttemptPretestType[];
   meta: MetaType;
-}
+};
 
 export type ExamAnswerResponse = {
   id: string;
@@ -76,4 +86,4 @@ export type ExamAnswerResponse = {
   points: number;
   createdAt: string;
   updatedAt: string;
-}
+};

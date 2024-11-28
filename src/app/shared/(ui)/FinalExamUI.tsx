@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState, useEffect } from "react";
 import Image from "next/image";
-
 import fillCheck from "@/../public/ulits/fill-check.svg";
 import emptyCheck from "@/../public/ulits/empty-check.svg";
 import { ExamAnswerType, ExamAttempt, ExamType } from "@/types/exam.type";
 import HeaderPage from "@/components/HeaderPage/HeaderPage";
 import { QuestionOptionType, QuestionType } from "@/types/question.type";
+import { createExamAttemptAction } from "@/actions/examAttemptAction";
+import { Toast } from "@/components/Toast/Toast";
 
 interface finalExamUIProps {
   exam: ExamType;
@@ -25,20 +26,10 @@ export default function FinalExamUI({
   exam_answers,
   exam_attempts,
 }: finalExamUIProps) {
-  const courseName = "Java Course";
-  const finalExam_questions = questions.filter(
-    (question) => question.examId === exam.id
-  );
-
-  const finalExam_question_options = question_options.filter(option => option.questionId === finalExam_questions[questionIndex].examId)
-
   const [questionIndex, setQuestionIndex] = useState<number>(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>(
-    Array(finalExam_questions.length).fill(null)
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
+    Array(exam.questions.length).fill(null)
   );
-
-  console.log({"fi":finalExam_question_options})
-  console.log(finalExam_questions)
 
   const router = useRouter();
 
@@ -53,23 +44,46 @@ export default function FinalExamUI({
       return newSelectedAnswer;
     });
 
-    if (questionIndex < finalExam_questions.length - 1) {
+    if (questionIndex < exam.questions.length - 1) {
       setQuestionIndex(questionIndex + 1);
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    router.push(`/course/${exam.courseModuleId}/exam-recommend`);
+    try {
+      let cor = 0;
+      for (let i = 0; i < exam.questions.length; i++) {
+        const selectedOption = selectedAnswers[i];
+
+        if (exam.questions[i].options[selectedOption].isCorrect) {
+          cor++;
+        }
+
+        const CountExam = exam_attempts.filter(
+          (exam) => exam.examId === exam.id
+        );
+        if (CountExam.length === exam.maxAttempts) {
+          router.push(`/course/${exam.courseModuleId}/exam-recommend`);
+          return Toast("You have used up your rights", "error");
+        } else {
+          await createExamAttemptAction(exam.id, cor, "completed");
+          router.push(`/course/${exam.courseModuleId}/exam-recommend`);
+          return Toast("Final-Exam submitted", "success");
+        }
+      }
+    } catch (error: any) {
+      Toast("ERROR : ", error.message);
+    }
   };
 
-  const checkIcon = finalExam_questions.map((_, index) =>
+  const checkIcon = exam.questions.map((_, index) =>
     selectedAnswers[index] !== null ? fillCheck : emptyCheck
   );
 
   return (
     <div className="flex flex-col justify-center items-center w-auto mx-4 lg:mx-24 sm:mx-12 py-4 space-y-8">
-      <HeaderPage namePage={courseName} />
+      <HeaderPage namePage={exam.title} />
       <div className="w-full h-[810px] lg:h-[720px] my-4 lg:my-24 sm:my-12 rounded-3xl bg-slate-100 bg-opacity-5 backdrop-blur-md">
         <div className="flex flex-col justify-center items-center w-full h-[200px] lg:h-[150px] space-y-4 rounded-3xl bg-slate-100">
           <h2 className="text-black">{exam.title}</h2>
@@ -98,10 +112,10 @@ export default function FinalExamUI({
           className="flex flex-col w-full h-[610px] text-white lg:h-[570px] space-y-8 py-8"
         >
           <p className="flex justify-center items-center w-full h-24">
-            {questionIndex + 1}.) {finalExam_questions[questionIndex].question}
+            {questionIndex + 1}.) {exam.questions[questionIndex].question}
           </p>
           <div className="flex-wrap grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-6 h-full px-12 md:px-24">
-            {finalExam_question_options.map((option, index) => (
+            {exam.questions[questionIndex].options.map((option, index) => (
               <button
                 key={option.id}
                 type="button"
@@ -128,7 +142,7 @@ export default function FinalExamUI({
                   Back
                 </button>
               )}
-              {questionIndex < finalExam_questions.length - 1 && (
+              {questionIndex < exam.questions.length - 1 && (
                 <button
                   type="button"
                   onClick={() => setQuestionIndex(questionIndex + 1)}

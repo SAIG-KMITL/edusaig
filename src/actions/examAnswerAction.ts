@@ -1,7 +1,13 @@
-import { ExamAnswerResponse, ExamAnswerType } from "@/types/exam.type";
+import { ExamAnswerResponse, ExamAnswerType,ExamAnswerResponseType } from "@/types/exam.type";
 import { baseApiAction } from "./baseAction";
 
-export async function createExamAnswerAction(examAttemptId: string, selectedOptionId: string, answerText: string, isCorrect: boolean, points: number) {
+export async function createExamAnswerAction(
+  examAttemptId: string,
+  selectedOptionId: string,
+  answerText: string,
+  isCorrect: boolean,
+  points: number
+) {
   return baseApiAction<ExamAnswerResponse>("/exam-answer", {
     method: "POST",
     requiresAuth: true,
@@ -10,7 +16,7 @@ export async function createExamAnswerAction(examAttemptId: string, selectedOpti
 }
 
 export async function fetchExamAnswersAction() {
-  return baseApiAction<ExamAnswerType[]>(`/exam-answer`, {
+  return baseApiAction<ExamAnswerResponseType>(`/exam-answer`, {
     method: "GET",
     requiresAuth: true,
   });
@@ -23,9 +29,15 @@ export async function fetchExamAnswerAction(id: string) {
   });
 }
 
-export async function updateExamAnswerAction(id: string) {
-  return baseApiAction<ExamAnswerType>(`/exam-answer/${id}`, {
+export async function updateExamAnswerAction(
+  examAttemptId: string,
+  answerText: string,
+  isCorrect: boolean,
+  points: number
+) {
+  return baseApiAction<ExamAnswerType>(`/exam-answer/${examAttemptId}`, {
     method: "PATCH",
+    body: { examAttemptId, answerText, isCorrect, points },
     requiresAuth: true,
   });
 }

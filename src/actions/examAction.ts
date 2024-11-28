@@ -1,8 +1,8 @@
-import { ExamType } from "@/types/exam.type";
+import { ExamType,ExamResponseType } from "@/types/exam.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchExamsAction() {
-  return baseApiAction<ExamType[]>(`/exam`, {
+  return baseApiAction<ExamResponseType>(`/exam`, {
     method: "GET",
     requiresAuth: true,
   });
@@ -41,9 +41,27 @@ export async function createExamAction(
   });
 }
 
-export async function updateExamAction(id: string) {
+export async function updateExamAction(
+  id: string,
+  title: string,
+  description: string,
+  timeLimit: string,
+  passingScore: number,
+  maxAttempts: number,
+  shuffleQuestions: boolean,
+  status: string
+) {
   return baseApiAction<ExamType>(`/exam/${id}`, {
     method: "PATCH",
+    body: {
+      title,
+      description,
+      timeLimit,
+      passingScore,
+      maxAttempts,
+      shuffleQuestions,
+      status,
+    },
     requiresAuth: true,
   });
 }
@@ -55,9 +73,29 @@ export async function deleteExamAction(id: string) {
   });
 }
 
-// export async function generateExamAction(examId:string) {
-//     return baseApiAction<ExamType>(`/exam/generate/${examId}`, {
-//         method: "POST",
-//         requiresAuth: true
-//     })
-// }
+export async function generateExamAction(
+  examId: string,
+  courseModuleId: string,
+  title: string,
+  description: string,
+  timeLimit: string,
+  passingScore: number,
+  maxAttempts: number,
+  shuffleQuestions: boolean,
+  status: string
+) {
+  return baseApiAction<ExamType>(`/exam/generate/${examId}`, {
+    method: "POST",
+    body: {
+      courseModuleId,
+      title,
+      description,
+      timeLimit,
+      passingScore,
+      maxAttempts,
+      shuffleQuestions,
+      status,
+    },
+    requiresAuth: true,
+  });
+}
