@@ -21,6 +21,7 @@ export type RewardResponseType = {
 
 export type RewardOptions = "badge" | "certificate" | "item";
 
+export type RewardStatus = "active" | "inactive";
 
 export type UserRewardType = {
   id: string;

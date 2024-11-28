@@ -1,31 +1,17 @@
-import { ExamAnswerType } from "@/types/exam.type";
+import { ExamAnswerResponse, ExamAnswerType } from "@/types/exam.type";
 import { baseApiAction } from "./baseAction";
+
+export async function createExamAnswerAction(examAttemptId: string, selectedOptionId: string, answerText: string, isCorrect: boolean, points: number) {
+  return baseApiAction<ExamAnswerResponse>("/exam-answer", {
+    method: "POST",
+    requiresAuth: true,
+    body: { examAttemptId, selectedOptionId, answerText, isCorrect, points },
+  });
+}
 
 export async function fetchExamAnswersAction() {
   return baseApiAction<ExamAnswerType[]>(`/exam-answer`, {
     method: "GET",
-    requiresAuth: true,
-  });
-}
-
-export async function createExamAnswerAction(
-    examAttemptId: string,
-    questionId: string,
-    selectedOptionId: string,
-    answerText: string,
-    isCorrect: boolean,
-    points: number,
-) {
-  return baseApiAction<ExamAnswerType>(`/exam-answer`, {
-    method: "POST",
-    body: {
-        examAttemptId,
-        questionId,
-        selectedOptionId,
-        answerText,
-        isCorrect,
-        points
-    },
     requiresAuth: true,
   });
 }

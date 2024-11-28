@@ -1,5 +1,13 @@
-import { QuestionType } from "@/types/question.type";
+import { PreTestQuestionResponseType,QuestionType } from "@/types/question.type";
 import { baseApiAction } from "./baseAction";
+
+
+export async function fetchQuestionsByPretestAction(pretestId: string) {
+  return baseApiAction<PreTestQuestionResponseType>(`/question/pretest/${pretestId}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
 
 export async function fetchQuestionsAction() {
   return baseApiAction<QuestionType[]>(`/question`, {
