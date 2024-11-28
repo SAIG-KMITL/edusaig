@@ -8,8 +8,15 @@ export async function fetchQuestionOptionsAction(questionId: string) {
   });
 }
 
-export async function fetchPretestQuestionOptionsAction(pretestId: string) {
-  return baseApiAction<PreTestQuestionOptionsResponseType>(`/question-option/pretest/${pretestId}`, {
+export async function fetchQuestionOptionsByIdAction(id: string) {
+  return baseApiAction<PreTestQuestionOptionsResponseType>(`/question-option/pretest/${id}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
+
+export async function fetchQuestionOptionsPretestAction() {
+  return baseApiAction<PreTestQuestionOptionsResponseType>(`/question-option/pretest`, {
     method: "GET",
     requiresAuth: true,
   });

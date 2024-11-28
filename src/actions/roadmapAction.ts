@@ -15,3 +15,13 @@ export async function fetchRoadmapByUserAction() {
     requiresAuth: true,
   });
 }
+
+
+export async function createRoadmapByAiAction(preTestDescription: string) {
+  console.log(preTestDescription);
+  return baseApiAction<RoadMapType>(`/roadmap`, {
+    method: "POST",
+    requiresAuth: true,
+    body: { preTestDescription },
+  });
+}

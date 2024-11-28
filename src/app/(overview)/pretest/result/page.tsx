@@ -1,5 +1,5 @@
 import { fetchExamAttemptByPretestAction } from "@/actions/examAttemptAction";
-import { fetchQuestionsByPretestAction } from "@/actions/questionAction";
+import { fetchQuestionPretestAction } from "@/actions/questionAction";
 import { fetchRoadmapByUserAction } from "@/actions/roadmapAction";
 import PreTestResultUI from "@/app/shared/(ui)/PreTestResultUI";
 
@@ -10,26 +10,26 @@ export default async function page() {
     return null;
   }
 
-  const questions = await fetchQuestionsByPretestAction(
-    examAttempt.data?.data[0]?.pretestId as string
-  );
+  const questions = await fetchQuestionPretestAction();
+  console.log("Questions: ", questions);
 
   if (!questions.data?.data) {
     return null;
   }
 
   const roadmap = await fetchRoadmapByUserAction();
+  console.log("Roadmap: ", roadmap);
 
   if (!roadmap.data) {
-    return null;
+    return <div>Loading ...</div>;
   }
 
   return (
     <PreTestResultUI
       title={examAttempt.data?.data[0]?.pretest.title}
-      examAttempt={examAttempt.data}
+      examAttempt={examAttempt.data.data[0]}
       questions={questions.data.data}
-      roadmap={roadmap.data}
+      roadmap={roadmap.data.data}
     />
   );
 }

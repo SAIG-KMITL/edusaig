@@ -3,8 +3,8 @@ import {
   fetchExamAttemptByPretestAction,
 } from "@/actions/examAttemptAction";
 import { fetchPretestsAction } from "@/actions/pretestAction";
-import { fetchQuestionsByPretestAction } from "@/actions/questionAction";
-import { fetchPretestQuestionOptionsAction } from "@/actions/questionOptionAction";
+import { fetchQuestionsByPretestIdAction } from "@/actions/questionAction";
+import { fetchQuestionOptionsByIdAction } from "@/actions/questionOptionAction";
 import PreTestUI from "@/app/shared/(ui)/PreTestUI";
 
 export default async function PreTestPage() {
@@ -28,19 +28,16 @@ export default async function PreTestPage() {
     }
   }
 
-  const questions = await fetchQuestionsByPretestAction(
-    pretest.data?.data[0]?.id as string
-  );
+  const questions = await fetchQuestionsByPretestIdAction(pretestId);
 
   if (!questions.data?.data) {
+    console.log("No questions found");
     return null;
   }
 
   const questionsWithOptions = await Promise.all(
     questions.data?.data.map(async (question) => {
-      const option = await fetchPretestQuestionOptionsAction(
-        question.id as string
-      );
+      const option = await fetchQuestionOptionsByIdAction(question.id);
       if (option.data) {
         question.options = option.data.data;
       }
