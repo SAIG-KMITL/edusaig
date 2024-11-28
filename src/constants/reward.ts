@@ -260,12 +260,20 @@ export const rewards: RewardType[] = [
 ];
 
 export const rewardOptions: RewardOptions[] = [
-  { id: "1", label: "Food & Beverage", count: 3 },
-  { id: "2", label: "Entertainment", count: 4 },
-  { id: "3", label: "Gift", count: 1 },
-  { id: "4", label: "Wellness", count: 3 },
-  { id: "5", label: "Travel", count: 1 },
-  { id: "6", label: "Education", count: 4 },
-  { id: "7", label: "Charity", count: 1 },
-  { id: "8", label: "Merchandise", count: 3 }
-]
+  {
+    id: "badge",
+    label: "Badge",
+    count: 10,
+  },
+  {
+    id: "certificate",
+    label: "Certificate",
+    count: 1,
+  },
+  {
+    id: "item",
+    label: "Item",
+    count: 1,
+  },
+];
+
