@@ -1,6 +1,9 @@
+import { MetaType } from "./meta.type";
+
 export type QuestionType = {
   id: string;
-  examId: string;
+  examId: string | null;
+  pretestId: string | null;
   question: string;
   type: string;
   points: number;
@@ -19,4 +22,15 @@ export type QuestionOptionType = {
   explanation: string;
   createdAt: string;
   updatedAt: string;
+}
+
+
+export type PreTestQuestionResponseType = {
+  data: QuestionType[];
+  meta: MetaType;
+}
+
+export type PreTestQuestionOptionsResponseType = {
+  data: QuestionOptionType[];
+  meta: MetaType;
 }
