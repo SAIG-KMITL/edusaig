@@ -2,12 +2,22 @@
 
 import emptyCheck from "@/../public/ulits/empty-check.svg";
 import fillCheck from "@/../public/ulits/fill-check.svg";
-import { createExamAttemptAction } from "@/actions/examAttemptAction";
+import { createExamAnswerAction } from "@/actions/examAnswerAction";
+import {
+  createExamAttemptAction,
+  updateExamAttemptAction,
+  updateExamAttemptBySubmitAction,
+} from "@/actions/examAttemptAction";
 import HeaderPage from "@/components/HeaderPage/HeaderPage";
 import { Toast } from "@/components/Toast/Toast";
-import { CourseModuleResponseType, CourseType } from "@/types/course.type";
+import {
+  CourseModuleResponseType,
+  CourseModuleType,
+  CourseType,
+} from "@/types/course.type";
 import { ExamAnswerType, ExamAttempt, ExamType } from "@/types/exam.type";
 import { QuestionOptionType, QuestionType } from "@/types/question.type";
+import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -15,30 +25,25 @@ import { FormEvent, useEffect, useState } from "react";
 interface finalExamUIProps {
   exams: ExamType[];
   questions: QuestionType[];
-  question_options: QuestionOptionType[];
-  exam_answers: ExamAnswerType[];
+  exam_attempt_id: string;
   exam_attempts: ExamAttempt[];
-  courseModuleId: CourseModuleResponseType[];
+  courseModule: CourseModuleResponseType;
   course: CourseType;
 }
 
 export default function FinalExamUI({
   exams,
   questions,
-  question_options,
-  exam_answers,
+  exam_attempt_id,
   exam_attempts,
-  courseModuleId,
+  courseModule,
   course,
 }: finalExamUIProps) {
   const [exam, setExam] = useState<ExamType>();
-  const [courseModule, setCourseModule] = useState<CourseModuleResponseType>();
+  // const [courseModule, setCourseModule] = useState<CourseModuleType>();
 
   useEffect(() => {
     console.log("Selected Answers Updated:", selectedAnswers);
-    setCourseModule(
-      courseModuleId.find((moduleId) => moduleId.courseId === course.id)
-    );
     if (courseModule) {
       setExam(exams.find((exam) => exam.courseModuleId === courseModule.id));
     }
@@ -46,14 +51,13 @@ export default function FinalExamUI({
 
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
-    Array(exam?.questions.length).fill(null)
+    Array(questions.length).fill(null)
   );
+  const router = useRouter();
 
   if (!exam) {
     return null;
   }
-
-  const router = useRouter();
 
   const handleOptionClicked = (optionIndex: number) => {
     setSelectedAnswers((prevSelectedAnswer) => {
@@ -62,7 +66,7 @@ export default function FinalExamUI({
       return newSelectedAnswer;
     });
 
-    if (questionIndex < exam.questions.length - 1) {
+    if (questionIndex < questions.length - 1) {
       setQuestionIndex(questionIndex + 1);
     }
   };
@@ -71,32 +75,50 @@ export default function FinalExamUI({
     e.preventDefault();
     try {
       let cor = 0;
-      for (let i = 0; i < exam.questions.length; i++) {
+
+      const CountExam = exam_attempts.length;
+
+      if (CountExam === exam.maxAttempts) {
+        router.push(`/course/${course.id}/exam-recommend`);
+        return Toast("You have used up your rights", "error");
+      }
+
+      for (let i = 0; i < questions.length; i++) {
         const selectedOption = selectedAnswers[i];
 
-        if (exam.questions[i].options[selectedOption].isCorrect) {
-          cor++;
+        if (questions[i].options[selectedOption].isCorrect) {
+          cor += questions[i].points;
         }
 
-        const CountExam = exam_attempts.filter(
-          (exam) => exam.examId === exam.id
+        const response = await createExamAnswerAction(
+          exam_attempt_id,
+          questions[i].options[selectedOption].id,
+          questions[i].options[selectedOption].optionText,
+          questions[i].options[selectedOption].isCorrect,
+          questions[i].options[selectedOption].isCorrect
+            ? questions[i].points
+            : 0
         );
-
-        if (CountExam.length === exam.maxAttempts) {
-          router.push(`/course/${course.id}/exam-recommend`);
-          return Toast("You have used up your rights", "error");
-        } else {
-          await createExamAttemptAction(exam.id, cor, "completed");
-          router.push(`/course/${course.id}/exam-recommend`);
-          return Toast("Final-Exam submitted", "success");
-        }
+        console.log(response);
       }
+
+      const response = await updateExamAttemptAction(
+        exam_attempt_id,
+        cor,
+        ExamAttemptStatus.COMPLETED
+      );
+
+      const update = await updateExamAttemptBySubmitAction(exam_attempt_id);
+
+      router.push(`/course/${course.id}/exam-recommend`);
+      return Toast("Final-Exam submitted", "success");
     } catch (error: any) {
+      console.log(error);
       Toast("ERROR : ", error.message);
     }
   };
 
-  const checkIcon = exam.questions.map((_, index) =>
+  const checkIcon = questions.map((_, index) =>
     selectedAnswers[index] !== null ? fillCheck : emptyCheck
   );
 
@@ -131,10 +153,10 @@ export default function FinalExamUI({
           className="flex flex-col w-full h-[610px] text-white lg:h-[570px] space-y-8 py-8"
         >
           <p className="flex justify-center items-center w-full h-24">
-            {questionIndex + 1}.) {exam.questions[questionIndex].question}
+            {questionIndex + 1}.) {questions[questionIndex].question}
           </p>
           <div className="flex-wrap grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-6 h-full px-12 md:px-24">
-            {exam.questions[questionIndex].options.map((option, index) => (
+            {questions[questionIndex].options.map((option, index) => (
               <button
                 key={option.id}
                 type="button"
@@ -161,7 +183,7 @@ export default function FinalExamUI({
                   Back
                 </button>
               )}
-              {questionIndex < exam.questions.length - 1 && (
+              {questionIndex < questions.length - 1 && (
                 <button
                   type="button"
                   onClick={() => setQuestionIndex(questionIndex + 1)}

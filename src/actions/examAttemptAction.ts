@@ -2,6 +2,7 @@ import {
   ExamAttempt,
   ExamAttemptPretestResponseType,
   ExamAttemptPretestType,
+  ExamAttemptResponseType,
 } from "@/types/exam.type";
 import { baseApiAction } from "./baseAction";
 import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
@@ -48,7 +49,7 @@ export async function updateExamAttemptPretestBySubmitAction(id: string) {
 }
 
 export async function fetchExamAttemptsAction() {
-  return baseApiAction<ExamAttempt[]>(`/exam-attempt`, {
+  return baseApiAction<ExamAttemptResponseType>(`/exam-attempt`, {
     method: "GET",
     requiresAuth: true,
   });
@@ -107,3 +108,11 @@ export async function fetchExamAttemptSubmitAction(
     requiresAuth: true,
   });
 }
+
+export async function updateExamAttemptBySubmitAction(id: string) {
+  return baseApiAction<ExamAttempt>(`/exam-attempt/submit/${id}`, {
+    method: "PATCH",
+    requiresAuth: true,
+  });
+}
+

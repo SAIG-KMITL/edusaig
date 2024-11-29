@@ -101,7 +101,7 @@ export async function deleteQuestionOptionAction(id: string) {
 }
 
 export async function fetchQuestionOptionExamAction(questionId: string) {
-  return baseApiAction<QuestionOptionType>(
+  return baseApiAction<QuestionOptionResponseType>(
     `/question-option/question/${questionId}`,
     {
       method: "GET",
