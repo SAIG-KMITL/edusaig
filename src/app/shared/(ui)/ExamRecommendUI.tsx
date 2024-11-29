@@ -7,46 +7,53 @@ import { QuestionOptionType } from "@/types/question.type";
 import { ExamAnswerType } from "@/types/exam.type";
 import HeaderPage from "@/components/HeaderPage/HeaderPage";
 import { ExamAttempt, ExamType } from "@/types/exam.type";
-import { CourseType } from "@/types/course.type";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 
 interface ExamRecommendUIProps {
-  exam: ExamType;
+  exams: ExamType[];
   questions: QuestionType[];
   course: CourseType;
   question_options: QuestionOptionType[];
   exam_answers: ExamAnswerType[];
   exam_attempts: ExamAttempt[];
+  courseModuleResponse: CourseModuleResponseType[]
 }
 
 export default function ExamRecommendUI({
-  exam,
+  exams,
   exam_attempts,
   course,
   questions,
   question_options,
   exam_answers,
+  courseModuleResponse,
 }: ExamRecommendUIProps) {
   const router = useRouter();
 
   const [summaryPoints, setSummaryPoints] = useState<number>(0);
-
+    const [courseModule, setCourseModule] = useState<CourseModuleResponseType>();
+    const [exam, setExam] = useState<ExamType>()
   useEffect(() => {
     const filterpts = exam_attempts.filter((exam) => exam.examId === exam.id);
     const points = filterpts.findLast((arr) => arr);
     if (points) {
       setSummaryPoints(points.score);
     }
+    setCourseModule(courseModuleResponse.find(moduleId=>moduleId.courseId === course.id))
+    if (courseModule){
+        setExam(exams.find(exam => exam.courseModuleId === courseModule.id))
+    }
   },[]);
 
   const handleBackToCourse = () => {
-    router.push(`/course/${exam.courseModuleId}`);
+    router.push(`/course/${course.id}`);
   };
 
   return (
     <div className="flex flex-col justify-center items-center w-auto mx-4 lg:mx-24 sm:mx-12 py-4 space-y-8">
       <HeaderPage namePage={course.title} />
       <div className="flex justify-start items-center w-full">
-        <h2 className="text-2xl font-medium text-slate-100">{exam.title}</h2>
+        <h2 className="text-2xl font-medium text-slate-100">{exam?.title}</h2>
       </div>
       <div
         className="flex flex-col lg:grid lg:grid-cols-4 gap-8 w-full max-h-[960px] lg:max-h-[720px] 
@@ -56,7 +63,7 @@ export default function ExamRecommendUI({
           <div className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl bg-slate-50">
             <h4>Score</h4>
             <p>
-              {summaryPoints}/{exam.questions.length}
+              {summaryPoints}/{exam?.questions.length}
             </p>
           </div>
           <div className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl bg-slate-50">
@@ -82,7 +89,7 @@ export default function ExamRecommendUI({
             </div>
 
             <div className="flex flex-col gap-2">
-              {exam.questions.map((question, index) => {
+              {exam?.questions.map((question, index) => {
                 const selectedOption = question.options[index].isCorrect;
 
                 return (
