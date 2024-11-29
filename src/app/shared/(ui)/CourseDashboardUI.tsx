@@ -1,6 +1,5 @@
 "use client";
 
-import { courses } from "@/constants/course";
 import { UserResponseType } from "@/types/user.type";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -89,7 +88,7 @@ export default function CourseDashboardUI({ user, courses }: CourseDashboardUI) 
           </motion.div>
           {courses.map((course) => (
             <div key={course.id}>
-              <CourseCard course={course} showOptionButton={true} handleCourseSelected={handleCourseSelected}/>
+              <CourseCard course={course} devMode={true} handleCourseSelected={handleCourseSelected}/>
             </div>
           ))}
         </div>
