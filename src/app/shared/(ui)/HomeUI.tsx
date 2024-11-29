@@ -99,7 +99,7 @@ export default function HomeUI({ courses, cats }: HomeProps) {
                 their careers through our comprehensive courses.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link href={'/roadmap'} className="px-8 py-3 bg-electricViolet text-white rounded-lg font-medium hover:bg-darkMagenta transition-colors">
+                <Link href={`/roadmap`} className="px-8 py-3 bg-electricViolet text-white rounded-lg font-medium hover:bg-darkMagenta transition-colors">
                   Get Started
                 </Link>
                 <Link href={`/course`} className="px-8 py-3 bg-royalPurple/30 text-white rounded-lg font-medium hover:bg-royalPurple/50 transition-colors">
