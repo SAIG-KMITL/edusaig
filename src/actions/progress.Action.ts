@@ -1,6 +1,10 @@
 "use server";
 
-import { ProgressesResponseType, ProgressResponseType, ProgressStatusType } from "@/types/progress.type";
+import {
+  ProgressesResponseType,
+  ProgressResponseType,
+  ProgressStatusType,
+} from "@/types/progress.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchProgressesAction() {
@@ -8,14 +12,21 @@ export async function fetchProgressesAction() {
     method: "GET",
     requiresAuth: true,
   });
-} 
+}
+
+export async function fetchProgressByUserAction() {
+  return baseApiAction<ProgressesResponseType>(`/progress/user`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}
 
 export async function fetchProgressAction(id: string) {
   return baseApiAction<ProgressResponseType>(`/progress/${id}?limit=100`, {
     method: "GET",
     requiresAuth: true,
   });
-} 
+}
 
 export async function createProgressAction(
   enrollmentId: string,
@@ -23,7 +34,7 @@ export async function createProgressAction(
   status: ProgressStatusType,
   watchTime: number,
   lastAccessedAt: Date,
-  completedAt: Date | null,
+  completedAt: Date | null
 ) {
   return baseApiAction<ProgressResponseType>(`/progress`, {
     method: "POST",
