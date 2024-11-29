@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import authEffect from "@/../public/ulits/auth-effect.svg";
+import { div } from "framer-motion/client";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -57,32 +58,40 @@ const LoginUI = () => {
     }
   };
 
+  const EdusaigLogo: React.FunctionComponent = () => {
+    return (
+      <div className="flex flex-row items-center gap-3">
+        <Image
+          src="/icons/logo.svg"
+          width={32}
+          height={32}
+          alt="logo"
+          className="pb-2 pointer-events-auto"
+        />
+        <p className="flex flex-row items-baseline pointer-events-auto">
+          EDUSA
+          <Image
+            src="/icons/wand.svg"
+            width={24}
+            height={24}
+            alt="wand icon"
+            className="pointer-events-auto"
+          />
+          G
+        </p>
+      </div>
+    );
+  };
+
   return (
     <div className="relative flex justify-center items-center h-screen">
 
       <motion.div
         whileHover={{ scale: 1.05 }}
-        className="hover:scale-105 absolute top-4 left-4 font-bold text-[26px] leading-[100%] text-white flex ml-5 cursor-pointer"
+        className="hover:scale-105 absolute top-4 left-4 font-bold text-[26px] leading-[100%] text-white flex ml-5 cursor-pointer z-20"
       >
-        <Link href="/" className="flex flex-row items-center gap-3">
-          <Image
-            src="/icons/logo.svg"
-            width={32}
-            height={32}
-            alt="logo"
-            className="pb-2 pointer-events-auto"
-          />
-          <p className="flex flex-row items-baseline pointer-events-auto">
-            EDUSA
-            <Image
-              src="/icons/wand.svg"
-              width={24}
-              height={24}
-              alt="wand icon"
-              className="pointer-events-auto"
-            />
-            G
-          </p>
+        <Link href="/" className="flex flex-row items-center gap-2">
+          <EdusaigLogo/>
         </Link>
       </motion.div>
 
