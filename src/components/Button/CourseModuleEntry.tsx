@@ -107,11 +107,10 @@ export default function CourseModuleEntry({
   const isPlaying = chapters.some(
     (chapter) => chapter.id == currentChapter?.id
   );
-  const percent = Math.round(
+  const percent = chapters.length ? Math.round(
     (chapters.filter((chapter) => hasChapterCompleted(chapter)).length /
-      chapters.length) *
-      100
-  );
+      chapters.length) * 100       
+  ) : 100;
 
   const handleEntryClick = () => {
     if (editMode || chapters.length) {
