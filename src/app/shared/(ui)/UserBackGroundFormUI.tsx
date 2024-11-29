@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonStanding, PlusIcon, Trophy } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import LoadingModal from "@/components/Modal/LoadingModal";
 
 type CreateUserBackgroundFormData = z.infer<typeof createUserBackgroundSchema>;
 
@@ -186,6 +187,8 @@ export default function UserBackgroundFormUI({
   };
 
   return (
+    <>
+    <LoadingModal status={isLoading}/>
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10"
@@ -258,5 +261,6 @@ export default function UserBackgroundFormUI({
         Confirm
       </motion.button>
     </form>
+    </>
   );
 }
