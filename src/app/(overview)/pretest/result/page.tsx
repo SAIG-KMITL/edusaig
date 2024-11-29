@@ -2,6 +2,7 @@ import { fetchExamAttemptByPretestAction } from "@/actions/examAttemptAction";
 import { fetchQuestionPretestAction } from "@/actions/questionAction";
 import { fetchRoadmapByUserAction } from "@/actions/roadmapAction";
 import PreTestResultUI from "@/app/shared/(ui)/PreTestResultUI";
+import LoadingModal from "@/components/Modal/LoadingModal";
 
 export default async function page() {
   const examAttempt = await fetchExamAttemptByPretestAction();
@@ -17,7 +18,7 @@ export default async function page() {
 
   const roadmap = await fetchRoadmapByUserAction();
   if (!roadmap.data) {
-    return <div>Loading ...</div>;
+    return <LoadingModal status={true}/>;
   }
 
   return (

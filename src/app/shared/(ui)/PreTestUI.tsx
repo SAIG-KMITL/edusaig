@@ -7,6 +7,7 @@ import {
 } from "@/actions/examAttemptAction";
 import { createPretestEvaluateAction } from "@/actions/pretestAction";
 import { createRoadmapByAiAction } from "@/actions/roadmapAction";
+import LoadingModal from "@/components/Modal/LoadingModal";
 import { Toast } from "@/components/Toast/Toast";
 import { courses } from "@/constants/course";
 import { exam } from "@/constants/exam";
@@ -119,6 +120,7 @@ export default function PreTestUI(exam: PreTestUIProps) {
 
   return (
     <div>
+      <LoadingModal status={loading}/>
       <div className="absolute top-[80px] text-white sm:left-10 flex items-center">
         <Link
           href={`/course`}
