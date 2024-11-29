@@ -86,3 +86,10 @@ export async function fetchQuestionExamAction(examId: string) {
     requiresAuth: true,
   });
 }
+
+export async function fetchQuestionExamByExamIdAction(examId: string) {
+  return baseApiAction<QuestionResponseType>(`/question/exam/${examId}`, {
+    method: "GET",
+    requiresAuth: true,
+  });
+}

@@ -13,10 +13,6 @@ export const createChapterSchema = z.object({
     string()
     .min(1, "Content cannot be empty")
     .max(100, "Content is too long"),
-  summary: z.
-  string()
-    .min(1, "Summary cannot be empty")
-    .max(100, "Summary is too long"),
   duration: z.number().min(0),
   moduleId: z.
     string()

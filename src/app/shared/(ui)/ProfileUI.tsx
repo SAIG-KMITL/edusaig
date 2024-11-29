@@ -16,14 +16,14 @@ type ProfileUIProps = {
 };
 
 export default function ProfileUI({ user, enrolls, courses }: ProfileUIProps) {
-  const [myCourse, setMyCourse] = useState<CourseType[]>();
   const [myCourseProgress, setMyCourseProgress] =
     useState<EnrollmentResponseType[]>();
 
   useEffect(() => {
-    setMyCourse(courses.filter((course) => course.teacher.id === user.id));
     setMyCourseProgress(enrolls.filter((enroll) => enroll.user.id === user.id));
   }, []);
+
+  console.log("My Course Progress : ", myCourseProgress);
 
   return (
     <div className="text-white">
@@ -62,14 +62,14 @@ export default function ProfileUI({ user, enrolls, courses }: ProfileUIProps) {
         </div>
       </div>
       <div className="mx-14">
-        <div className="mt-4 grid gap-2">
+        {/* <div className="mt-4 grid gap-2">
           <h1 className="text-[24px] font-semibold">My Course</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
             {myCourse?.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
           </div>
-        </div>
+        </div> */}
         <div className="mt-4 grid gap-2">
           <h1 className="text-[24px] font-semibold">On Progress</h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">

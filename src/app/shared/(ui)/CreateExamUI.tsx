@@ -8,6 +8,8 @@ import { CreateQuestionOptionType } from "@/types/question.type";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Toast } from "@/components/Toast/Toast";
 
 type QuestionOption = {
   id: string;
@@ -30,6 +32,7 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [timeLimit, setTimeLimit] = useState<number>(0);
   const [passingScore, setPassingScore] = useState<number>(0);
+  const router = useRouter();
 
   const [currentQuestion, setCurrentQuestion] = useState<string>("");
   const [currentPoints, setCurrentPoints] = useState<number>(10);
@@ -162,37 +165,58 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
   };
 
   const createExam = async () => {
-    const response = await createExamAction({
-      title,
-      description,
-      timeLimit: Number(timeLimit),
-      passingScore,
-      maxAttempts: 1,
-      shuffleQuestions: false,
-      status: "published",
-      courseModuleId: moduleId,
-    });
-
-    if (response) {
-      questions.forEach(async (question, index) => {
-        if (response.data) {
+    try {
+      const response = await createExamAction({
+        title,
+        description,
+        timeLimit: Number(timeLimit),
+        passingScore,
+        maxAttempts: 1,
+        shuffleQuestions: false,
+        status: "published",
+        courseModuleId: moduleId,
+      });
+  
+      if (!response || !response.data) {
+        throw new Error("Failed to create exam");
+      }
+  
+      for (const [index, question] of questions.entries()) {
+        try {
           const questionResponse = await createQuestion(
             question,
             response.data.id,
             index + 1
           );
-          if (questionResponse) {
-            question.options.forEach(async (option) => {
-              const optionResponse = await createQuestionOption({
-                questionId: questionResponse.data?.id ?? "",
+  
+          if (!questionResponse || !questionResponse.data) {
+            throw new Error(`Failed to create question ${index + 1}`);
+          }
+  
+          for (const option of question.options) {
+            try {
+              await createQuestionOption({
+                questionId: questionResponse.data.id,
                 optionText: option.optionText,
                 isCorrect: option.isCorrect,
                 explanation: option.explanation,
               });
-            });
+            } catch (optionError) {
+              console.error(`Failed to create option for question ${index + 1}:`, optionError);
+            }
           }
+        } catch (questionError) {
+          console.error(`Failed to create question ${index + 1}:`, questionError);
         }
-      });
+      }
+      Toast("Exam created successfully", "success");
+      router.push(`/course`);
+      
+    } catch (error) {
+      Toast(
+        error instanceof Error ? error.message : "Failed to create exam",
+        "error"
+      );
     }
   };
 
@@ -305,6 +329,8 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
                         <input
                           type="checkbox"
                           className="w-5 h-5 rounded accent-electricViolet"
+                          checked={option.isCorrect}
+                          onChange={() => toggleOptionCorrect(index)}
                         />
                       </motion.button>
                     </div>
@@ -321,8 +347,69 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
                   <span>Add Option</span>
                 </motion.button>
               </div>
-            </motion.div>
 
+              <>
+                {questions.length > 0 && (
+                  <div className="space-y-4">
+                    <h2 className="text-2xl text-slate-50 font-semibold">
+                      Created Questions
+                    </h2>
+                    {questions.map((q, index) => (
+                      <div
+                        key={q.id}
+                        className="relative p-4 rounded-xl"
+                      >
+                        <div className="flex justify-between items-start space-x-4">
+                          <div className="flex-grow flex-col space-y-2">
+                            <div className="flex flex-col items-start space-y-2">
+                              <p className="text-xl font-semibold text-white">
+                                {q.question}
+                              </p>
+                              <div className="flex justify-start items-center space-x-4">
+                                <InputTheme
+                                  type="number"
+                                  value={q.points}
+                                  onChange={(e) =>
+                                    updateQuestionPoints(
+                                      index,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                  min={1}
+                                />
+                                <p className="text-md text-slate-500">points</p>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              {q.options.map((opt, optIndex) => (
+                                <div
+                                  key={opt.id}
+                                  className={`rounded-lg p-4 w-full border border-skyBlue/30 ${
+                                    opt.isCorrect
+                                      ? "bg-green-100"
+                                      : "bg-white/10"
+                                  }`}
+                                >
+                                  <p
+                                    className={`${
+                                      opt.isCorrect
+                                        ? "text-green-700"
+                                        : "text-white"
+                                    }`}
+                                  >
+                                    {opt.optionText}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            </motion.div>
             <motion.button
               onClick={createExam}
               className="w-full py-4 bg-electricViolet hover:bg-electricViolet/80 text-white rounded-xl font-semibold text-lg transition-colors"

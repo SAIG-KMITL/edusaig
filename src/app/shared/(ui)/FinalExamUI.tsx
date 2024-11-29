@@ -5,13 +5,12 @@ import fillCheck from "@/../public/ulits/fill-check.svg";
 import { createExamAttemptAction } from "@/actions/examAttemptAction";
 import HeaderPage from "@/components/HeaderPage/HeaderPage";
 import { Toast } from "@/components/Toast/Toast";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 import { ExamAnswerType, ExamAttempt, ExamType } from "@/types/exam.type";
 import { QuestionOptionType, QuestionType } from "@/types/question.type";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { CourseModuleResponseType } from "@/types/course.type";
-import { CourseType } from "@/types/course.type";
 
 interface finalExamUIProps {
   exams: ExamType[];
