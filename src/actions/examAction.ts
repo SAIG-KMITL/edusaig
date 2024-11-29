@@ -95,7 +95,7 @@ export async function generateExamAction(
 }
 
 export async function fetchExamByModuleAction(moduleId: string) {
-  return baseApiAction<ExamResponseType>(`/exam/module/${moduleId}`, {
+  return baseApiAction<ExamResponseType>(`/exam/course-module/${moduleId}`, {
     method: "GET",
     requiresAuth: true,
   });

@@ -1,8 +1,7 @@
+import { fetchCoursesWithOwnershipAction } from "@/actions/courseAction";
+import { fetchEnrollmentsAction } from "@/actions/enrollment.Action";
 import { fetchUserAction } from "@/actions/userAction";
 import ProfileUI from "../../shared/(ui)/ProfileUI";
-import { fetchEnrollmentsAction } from "@/actions/enrollment.Action";
-import { fetchProgressesAction } from "@/actions/progress.Action";
-import { fetchCoursesWithOwnershipAction } from "@/actions/courseAction";
 
 export default async function Profile() {
   const user = await fetchUserAction();
@@ -13,13 +12,19 @@ export default async function Profile() {
     return null;
   }
 
-  if (!courses.data){
+  if (!courses.data) {
     return null;
   }
 
-  if(!enroll.data){
+  if (!enroll.data) {
     return null;
   }
 
-  return <ProfileUI user={user.data} courses={courses.data.data} enrolls={enroll.data.data} />;
+  return (
+    <ProfileUI
+      user={user.data}
+      courses={courses.data.data}
+      enrolls={enroll.data.data}
+    />
+  );
 }

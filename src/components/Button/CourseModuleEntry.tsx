@@ -2,6 +2,7 @@ import { fetchExamByModuleAction } from "@/actions/examAction";
 import { courseModule } from "@/constants/courseModule";
 import { handleOpenModal } from "@/lib/modal";
 import { ChapterResponseType } from "@/types/chapter.type";
+import Link from "next/link";
 import {
   CourseModuleResponseType,
   CourseModuleType,
@@ -107,10 +108,13 @@ export default function CourseModuleEntry({
   const isPlaying = chapters.some(
     (chapter) => chapter.id == currentChapter?.id
   );
-  const percent = chapters.length ? Math.round(
-    (chapters.filter((chapter) => hasChapterCompleted(chapter)).length /
-      chapters.length) * 100       
-  ) : 100;
+  const percent = chapters.length
+    ? Math.round(
+        (chapters.filter((chapter) => hasChapterCompleted(chapter)).length /
+          chapters.length) *
+          100
+      )
+    : 100;
 
   const handleEntryClick = () => {
     if (editMode || chapters.length) {
@@ -252,6 +256,7 @@ export default function CourseModuleEntry({
                 if (exam.courseModuleId == module.id) {
                   return (
                     <div key={exam.id}>
+                      <Link href={`/course/final-exam/${exam.courseModuleId}`}>
                       <div
                         className={`py-2 px-6 flex justify-between items-center border-b border-silver/10 text-sm rounded-xl text-silver ${
                           isPlaying ? "bg-skyBlue/10" : "hover:bg-silver/10"
@@ -290,6 +295,7 @@ export default function CourseModuleEntry({
                           )
                         )}
                       </div>
+                      </Link>
                     </div>
                   );
                 }
