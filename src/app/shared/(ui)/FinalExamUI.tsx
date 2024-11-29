@@ -10,32 +10,50 @@ import HeaderPage from "@/components/HeaderPage/HeaderPage";
 import { QuestionOptionType, QuestionType } from "@/types/question.type";
 import { createExamAttemptAction } from "@/actions/examAttemptAction";
 import { Toast } from "@/components/Toast/Toast";
+import { CourseModuleResponseType, CourseType } from "@/types/course.type";
 
 interface finalExamUIProps {
-  exam: ExamType;
+  exams: ExamType[];
   questions: QuestionType[];
   question_options: QuestionOptionType[];
   exam_answers: ExamAnswerType[];
   exam_attempts: ExamAttempt[];
+  courseModuleId: CourseModuleResponseType[];
+  course: CourseType;
 }
 
 export default function FinalExamUI({
-  exam,
+  exams,
   questions,
   question_options,
   exam_answers,
   exam_attempts,
+  courseModuleId,
+  course,
 }: finalExamUIProps) {
-  const [questionIndex, setQuestionIndex] = useState<number>(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
-    Array(exam.questions.length).fill(null)
-  );
-
-  const router = useRouter();
+  const [exam, setExam] = useState<ExamType>();
+  const [courseModule, setCourseModule] = useState<CourseModuleResponseType>();
 
   useEffect(() => {
     console.log("Selected Answers Updated:", selectedAnswers);
-  }, [selectedAnswers]);
+    setCourseModule(
+      courseModuleId.find((moduleId) => moduleId.courseId === course.id)
+    );
+    if (courseModule) {
+      setExam(exams.find((exam) => exam.courseModuleId === courseModule.id));
+    }
+  }, []);
+
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(
+    Array(exam?.questions.length).fill(null)
+  );
+
+  if (!exam) {
+    return null;
+  }
+
+  const router = useRouter();
 
   const handleOptionClicked = (optionIndex: number) => {
     setSelectedAnswers((prevSelectedAnswer) => {
@@ -63,12 +81,13 @@ export default function FinalExamUI({
         const CountExam = exam_attempts.filter(
           (exam) => exam.examId === exam.id
         );
+
         if (CountExam.length === exam.maxAttempts) {
-          router.push(`/course/${exam.courseModuleId}/exam-recommend`);
+          router.push(`/course/${course.id}/exam-recommend`);
           return Toast("You have used up your rights", "error");
         } else {
           await createExamAttemptAction(exam.id, cor, "completed");
-          router.push(`/course/${exam.courseModuleId}/exam-recommend`);
+          router.push(`/course/${course.id}/exam-recommend`);
           return Toast("Final-Exam submitted", "success");
         }
       }
@@ -83,7 +102,7 @@ export default function FinalExamUI({
 
   return (
     <div className="flex flex-col justify-center items-center w-auto mx-4 lg:mx-24 sm:mx-12 py-4 space-y-8">
-      <HeaderPage namePage={exam.title} />
+      <HeaderPage namePage={course.title} />
       <div className="w-full h-[810px] lg:h-[720px] my-4 lg:my-24 sm:my-12 rounded-3xl bg-slate-100 bg-opacity-5 backdrop-blur-md">
         <div className="flex flex-col justify-center items-center w-full h-[200px] lg:h-[150px] space-y-4 rounded-3xl bg-slate-100">
           <h2 className="text-black">{exam.title}</h2>
