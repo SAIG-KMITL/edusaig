@@ -121,6 +121,7 @@ const RegisterUI = () => {
              placeholder="User Name"
              error={errors.username}
              {...register("username")}
+             labelClassName="text-white"
            />
            <Input
              type="text"
@@ -128,6 +129,7 @@ const RegisterUI = () => {
              placeholder="FullName"
              error={errors.fullname}
              {...register("fullname")}
+             labelClassName="text-white"
            />
           <Input
             type="email"
