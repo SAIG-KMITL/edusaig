@@ -56,16 +56,11 @@ export default function ProfileUI({ user, enrolls,courses }: ProfileUIProps) {
                 {formatDate(user.createdAt)}
               </p>
             </div>
-            <div className="md:hidden flex mt-1">
-              <p className="flex border border-yellow-500 px-2 rounded-2xl py-1 items-center">
-                <Award className="w-5 h-5 text-yellow-500" /> X,XXX pts
-              </p>
-            </div>
           </div>
         </div>
-        <div className="flex-col h-[192px] justify-center mr-[68px] hidden md:flex">
+        <div className="flex-col h-[192px] justify-center items-end mr-[68px] hidden md:flex">
           <h1>My Point</h1>
-          <p className="font-semibold text-[28px]">X,XXX pts</p>
+          <p className="font-semibold text-[28px]">{user.points} pts</p>
         </div>
       </div>
       <div className="mx-14">
