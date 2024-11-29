@@ -14,8 +14,7 @@ import { fetchUserAction } from "@/actions/userAction";
 import CourseDetailsUI from "@/app/shared/(ui)/CourseDetailsUI";
 
 interface CourseDetailsProps {
-  params: { id: string };
-  searchParams: Record<string, string>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function CourseDetails({ params }: CourseDetailsProps) {

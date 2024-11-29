@@ -1,4 +1,9 @@
-import { ExamType,ExamResponseType } from "@/types/exam.type";
+import {
+  CreateExamType,
+  EditExamType,
+  ExamResponseType,
+  ExamType,
+} from "@/types/exam.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchExamsAction() {
@@ -8,35 +13,24 @@ export async function fetchExamsAction() {
   });
 }
 
-export async function fetchExamAction(id: string) {
-  return baseApiAction<ExamType>(`/exam/${id}`, {
-    method: "GET",
+export async function createExamAction(data: CreateExamType) {
+  return baseApiAction<ExamType>("/exam", {
+    method: "POST",
+    body: data,
     requiresAuth: true,
   });
 }
 
-export async function createExamAction(
-  courseModuleId: string,
-  title: string,
-  description: string,
-  timeLimit: string,
-  passingScore: number,
-  maxAttempts: number,
-  shuffleQuestions: boolean,
-  status: string
-) {
-  return baseApiAction<ExamType>(`/exam`, {
-    method: "POST",
-    body: {
-      courseModuleId,
-      title,
-      description,
-      timeLimit,
-      passingScore,
-      maxAttempts,
-      shuffleQuestions,
-      status,
-    },
+export async function editExamAction(id: string, data: EditExamType) {
+  return baseApiAction<ExamType>(`/exam/${id}`, {
+    method: "GET",
+    body: data,
+    requiresAuth: true,
+  });
+}
+export async function fetchExamAction(id: string) {
+  return baseApiAction<ExamType>(`/exam/${id}`, {
+    method: "GET",
     requiresAuth: true,
   });
 }
@@ -96,6 +90,13 @@ export async function generateExamAction(
       shuffleQuestions,
       status,
     },
+    requiresAuth: true,
+  });
+}
+
+export async function fetchExamByModuleAction(moduleId: string) {
+  return baseApiAction<ExamResponseType>(`/exam/module/${moduleId}`, {
+    method: "GET",
     requiresAuth: true,
   });
 }

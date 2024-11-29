@@ -4,5 +4,6 @@ export const userPointStreak: PointStreakType[] = [
   {
     point: 2400,
     streak: 5,
+    lastActivityDate: ""
   },
 ];

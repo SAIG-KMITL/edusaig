@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { UserOccupationResponseType } from "@/types/userOccupation.type";
-import { UserBackgroundTopicResponseType } from "@/types/userBackgroundTopic.type";
+import { createPretestAction } from "@/actions/pretestAction";
+import { createUserBackgroundAction } from "@/actions/userBackgroundAction";
+import UserSkillCard from "@/components/Cards/UserSkillCard";
 import { SelectTheme } from "@/components/Inputs/SelectTheme";
+import { Toast } from "@/components/Toast/Toast";
+import { createUserBackgroundSchema } from "@/schema/userBackground.schema";
+import { UserResponseType } from "@/types/user.type";
+import { UserBackgroundTopicResponseType } from "@/types/userBackgroundTopic.type";
+import { UserOccupationResponseType } from "@/types/userOccupation.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonStanding, PlusIcon, Trophy } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { createUserBackgroundSchema } from "@/schema/userBackground.schema";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createUserBackgroundAction } from "@/actions/userBackgroundAction";
-import { Toast } from "@/components/Toast/Toast";
-import { UserResponseType } from "@/types/user.type";
-import UserSkillCard from "@/components/Cards/UserSkillCard";
-import { createPretestAction } from "@/actions/pretestAction";
 
 type CreateUserBackgroundFormData = z.infer<typeof createUserBackgroundSchema>;
 
@@ -60,7 +60,7 @@ export default function UserBackgroundFormUI({
       const response = await createUserBackgroundAction(
         data.userId,
         data.occupationId,
-        levels.filter((topicId) => topicId != undefined)
+        levels.filter((topicId): topicId is string => topicId !== undefined)
       );
 
       if (response.error?.message) {
@@ -75,7 +75,6 @@ export default function UserBackgroundFormUI({
         3,
         1
       );
-      console.log(pretest);
 
       Toast("Background has been sent.", "success");
       router.push("/pretest");

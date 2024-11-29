@@ -1,7 +1,14 @@
+import { fetchExamByModuleAction } from "@/actions/examAction";
+import { courseModule } from "@/constants/courseModule";
+import { handleOpenModal } from "@/lib/modal";
+import { ChapterResponseType } from "@/types/chapter.type";
 import {
   CourseModuleResponseType,
   CourseModuleType,
 } from "@/types/course.type";
+import { ExamType } from "@/types/exam.type";
+import { ProgressResponseType } from "@/types/progress.type";
+import { EXAM_STATUS } from "@/utils/enums/exam";
 import { motion, progress } from "framer-motion";
 import {
   CheckCircle,
@@ -9,19 +16,16 @@ import {
   Lock,
   MenuIcon,
   MoreVerticalIcon,
+  Paperclip,
   PencilIcon,
   Play,
   PlusIcon,
   Trash,
 } from "lucide-react";
-import { useState } from "react";
-import ActionButton, { ActionButtonEntryType } from "./ActionButton";
-import { handleOpenModal } from "@/lib/modal";
-import { ChapterResponseType } from "@/types/chapter.type";
 import { useRouter } from "next/navigation";
-import { courseModule } from "@/constants/courseModule";
+import { useEffect, useState } from "react";
 import RadialProgress from "../Progresses/RadialProgress";
-import { ProgressResponseType } from "@/types/progress.type";
+import ActionButton, { ActionButtonEntryType } from "./ActionButton";
 
 interface CourseModuleEntryProps {
   module: CourseModuleResponseType;
@@ -47,6 +51,7 @@ export default function CourseModuleEntry({
   progresses,
 }: CourseModuleEntryProps) {
   const [visible, setVisible] = useState<boolean>(false);
+  const [exam, setExam] = useState<ExamType[] | null>(null);
   const actionButtonEntries: ActionButtonEntryType[] = [
     {
       label: "Add Chapter",
@@ -74,6 +79,23 @@ export default function CourseModuleEntry({
     },
   ];
 
+  const examButtonEntries: ActionButtonEntryType[] = [
+    {
+      label: "Delete Exam",
+      icon: <Trash className="w-[14px] h-[14px] mr-2" />,
+      type: "button",
+      onClick: () => {
+        handleModuleSelected?.(module);
+        handleOpenModal("delete-course-module-modal");
+      },
+    },
+  ];
+
+  const handleFetchCourseModule = async (id: string) => {
+    const exam = await fetchExamByModuleAction(id);
+    return exam;
+  };
+
   const hasChapterCompleted = (chapter: ChapterResponseType): boolean => {
     return (
       progresses
@@ -91,10 +113,18 @@ export default function CourseModuleEntry({
   ) : 100;
 
   const handleEntryClick = () => {
-    if(editMode || chapters.length) {
+    if (editMode || chapters.length) {
       setVisible(!visible);
     }
-  }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await handleFetchCourseModule(module.id);
+      setExam(response.data?.data ?? null);
+    };
+    fetchData();
+  }, [module.id]);
 
   return (
     <motion.div
@@ -172,16 +202,28 @@ export default function CourseModuleEntry({
           `}
         >
           {isOwner && editMode && (
-            <motion.a
-              href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="m-2 px-6 py-3 bg-silver/50 text-white rounded-xl font-medium
-    hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm"
-            >
-              <PlusIcon className="w-5 h-5" />
-              <p>Add Chapter</p>
-            </motion.a>
+            <div className="flex flex-col md:flex-row gap-2 w-full justify-center">
+              <motion.a
+                href={`/dashboard/course/${module.course.id}/course-module/${module.id}/chapter/create-chapter`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="m-2 py-2 bg-silver/50 text-white rounded-xl font-medium
+    hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm w-full"
+              >
+                <PlusIcon className="w-5 h-5" />
+                <p>Add Chapter</p>
+              </motion.a>
+              <motion.a
+                href={`/dashboard/course/${module.course.id}/course-module/${module.id}/final-exam/create-exam`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="m-2 py-2 bg-silver/50 text-white rounded-xl font-medium
+    hover:bg-silver/40 transition-colors flex justify-center items-center gap-2 text-sm w-full"
+              >
+                <PlusIcon className="w-5 h-5" />
+                <p>Add Final Exam</p>
+              </motion.a>
+            </div>
           )}
 
           {chapters
@@ -203,6 +245,58 @@ export default function CourseModuleEntry({
                 />
               );
             })}
+
+          {exam && (
+            <div>
+              {exam.map((exam, index) => {
+                if (exam.courseModuleId == module.id) {
+                  return (
+                    <div key={exam.id}>
+                      <div
+                        className={`py-2 px-6 flex justify-between items-center border-b border-silver/10 text-sm rounded-xl text-silver ${
+                          isPlaying ? "bg-skyBlue/10" : "hover:bg-silver/10"
+                        }`}
+                      >
+                        <div className="flex gap-2 items-center">
+                          <div
+                            className={`w-8 h-8 ${
+                              isPlaying ? "bg-skyBlue/30" : "bg-royalPurple/30"
+                            } rounded-full flex items-center justify-center -ml-2 mr-2`}
+                          >
+                            {exam.status !== EXAM_STATUS.PUBLISHED ? (
+                              <Lock className="w-8 h-8 p-2" />
+                            ) : (
+                              <Paperclip className="w-8 h-8 p-2" />
+                            )}
+                          </div>
+                          <p>{exam.title}</p>
+                          <p className="text-silver/40">{`(${exam.timeLimit} mins)`}</p>
+                        </div>
+                        {isOwner ? (
+                          <div>
+                            {editMode && (
+                              <ActionButton
+                                entries={actionButtonEntries}
+                                icon={
+                                  <MoreVerticalIcon className="w-4 h-4 text-silver/60" />
+                                }
+                                popupClassName={"w-[150px]"}
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          hasEnrolled && (
+                            <CheckCircle className="mr-[14px] w-5 h-5 text-skyBlue ml-auto" />
+                          )
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          )}
         </motion.div>
       )}
     </motion.div>

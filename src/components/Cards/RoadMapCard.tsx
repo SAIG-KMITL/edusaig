@@ -58,7 +58,7 @@ export const RoadMapCard = ({ number, data, position }: RoadMapCardProps) => {
           whileHover={{ scale: 1.02 }}
           className={`absolute top-4 ${isLeft ? "left-0" : "md:right-0"}`}
         >
-          <CourseCard data={data} />
+          <CourseCard course={data} />
         </motion.div>
 
         <motion.div

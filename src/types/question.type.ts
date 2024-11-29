@@ -43,3 +43,18 @@ export type PreTestQuestionOptionsResponseType = {
   data: QuestionOptionType[];
   meta: MetaType;
 };
+
+export type CreateQuestionType = {
+  examId: string;
+  question: string;
+  type: string;
+  points: number;
+  orderIndex: number;
+};
+
+export type CreateQuestionOptionType = {
+  questionId: string;
+  optionText: string;
+  isCorrect: boolean;
+  explanation: string;
+};

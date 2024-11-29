@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Award, ChevronRight, Compass, Users } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const RoadmapHero = (): JSX.Element => {
@@ -9,12 +10,10 @@ const RoadmapHero = (): JSX.Element => {
   ];
   return (
     <div className="relative overflow-hidden bg-steelGray/30 border-b border-royalPurple/20">
-      {/* Animated gradient background */}
       <div className="absolute inset-0 opacity-20 animate-gradient-shift bg-gradient-radial" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
           <div className="space-y-6 animate-fade-slide-in">
             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-electricViolet/10 text-electricViolet">
               <Compass className="w-4 h-4" />
@@ -33,22 +32,25 @@ const RoadmapHero = (): JSX.Element => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                className="px-8 py-3 rounded-lg bg-electricViolet text-white font-medium 
+              <Link href="/user-background">
+                <button
+                  className="px-8 py-3 rounded-lg bg-electricViolet text-white font-medium 
                          flex items-center justify-center space-x-2 shadow-lg
                          hover:scale-102 active:scale-98 transition-transform"
-              >
-                <span>Start Learning</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-
-              <button
-                className="px-8 py-3 rounded-lg border border-royalPurple/30 text-white 
+                >
+                  <span>Start Learning</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </Link>
+              <Link href="/course">
+                <button
+                  className="px-8 py-3 rounded-lg border border-royalPurple/30 text-white 
                          font-medium hover:bg-royalPurple/10 transition-colors
                          hover:scale-102 active:scale-98"
-              >
-                View Curriculum
-              </button>
+                >
+                  View Curriculum
+                </button>
+              </Link>
             </div>
 
             <div className="flex gap-8 pt-6">

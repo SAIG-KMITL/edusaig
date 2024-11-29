@@ -11,15 +11,11 @@ export default async function page() {
   }
 
   const questions = await fetchQuestionPretestAction();
-  console.log("Questions: ", questions);
-
   if (!questions.data?.data) {
     return null;
   }
 
   const roadmap = await fetchRoadmapByUserAction();
-  console.log("Roadmap: ", roadmap);
-
   if (!roadmap.data) {
     return <div>Loading ...</div>;
   }

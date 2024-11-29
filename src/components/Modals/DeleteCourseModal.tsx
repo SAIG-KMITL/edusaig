@@ -1,12 +1,12 @@
-import { XIcon } from "lucide-react";
-import Modal from "./Modal";
-import { motion } from "framer-motion";
-import { handleCloseModal } from "@/lib/modal";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Toast } from "../Toast/Toast";
 import { deleteCourseAction } from "@/actions/courseAction";
+import { handleCloseModal } from "@/lib/modal";
 import { CourseType } from "@/types/course.type";
+import { motion } from "framer-motion";
+import { XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Toast } from "../Toast/Toast";
+import Modal from "./Modal";
 
 interface DeleteCourseModalProps {
   course: CourseType | null;
@@ -29,7 +29,6 @@ export default function DeleteCourseModal({
       handleCloseModal("delete-course-modal");
       router.refresh();
     } catch (error) {
-      console.log("grand", error);
       Toast(
         error instanceof Error ? error.message : "Failed to delete course",
         "error"
@@ -38,7 +37,7 @@ export default function DeleteCourseModal({
       setIsLoading(false);
     }
   };
-  
+
   return (
     <Modal
       modalId="delete-course-modal"

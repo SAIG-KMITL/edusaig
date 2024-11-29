@@ -59,7 +59,6 @@ export default function RewardDetailUI({ reward }: { reward: RewardType }) {
         Toast(response.error?.message || REWARD.REDEEM_FAILED, "error");
       }
     } catch (error) {
-      console.log(error);
       Toast(
         error instanceof Error ? error.message : REWARD.REDEEM_FAILED,
         "error"
