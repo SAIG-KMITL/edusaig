@@ -59,7 +59,7 @@ export const RoadMapCardResult = ({ number, data, position }: RoadMapCardProps) 
           whileHover={{ scale: 1.02 }}
           className={"py-3 w-[190px] md:w-auto  sm:w-[300px]"}
         >
-          <CourseCard data={data} />
+          <CourseCard course={data} />
         </motion.div>
 
         <motion.div

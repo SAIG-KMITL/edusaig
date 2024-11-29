@@ -1,5 +1,4 @@
-import CreateExamUI from "@/app/shared/(ui)/CreateExamUI";
-
+import CreateCategoryUI from "@/app/shared/(ui)/CreateCategoryUI";
 export default function CreateCategoryPage() {
-  return <CreateExamUI />;
+  return <CreateCategoryUI />;
 }

@@ -15,17 +15,15 @@ type ProfileUIProps = {
   courses: CourseType[];
 };
 
-export default function ProfileUI({ user, enrolls,courses }: ProfileUIProps) {
+export default function ProfileUI({ user, enrolls, courses }: ProfileUIProps) {
   const [myCourse, setMyCourse] = useState<CourseType[]>();
   const [myCourseProgress, setMyCourseProgress] =
     useState<EnrollmentResponseType[]>();
 
   useEffect(() => {
-    setMyCourse(courses.filter(course => course.teacher.id === user.id))
-    setMyCourseProgress(enrolls.filter(enroll => enroll.user.id === user.id))
+    setMyCourse(courses.filter((course) => course.teacher.id === user.id));
+    setMyCourseProgress(enrolls.filter((enroll) => enroll.user.id === user.id));
   }, []);
-
-  console.log(enrolls);
 
   return (
     <div className="text-white">

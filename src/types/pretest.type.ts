@@ -17,3 +17,7 @@ export type PretestsResponseType = {
   data: PretestType[];
   meta: MetaType;
 }
+
+export type PreTestEvaluateResponse = {
+  result: string;
+}

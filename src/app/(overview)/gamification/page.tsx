@@ -1,6 +1,6 @@
 import { fetchUserAction } from "@/actions/userAction";
 import { fetchUserStreakAction } from "@/actions/userStreakAction";
-import GamificationUI from "@/app/shared/(ui)/Gamification";
+import GamificationUI from "@/app/shared/(ui)/GamificationUI";
 import { userPointStreak } from "@/constants/pointStreak";
 
 export default async function GamificationPage() {
@@ -14,7 +14,5 @@ export default async function GamificationPage() {
     lastActivityDate: userStreak.data?.[streak - 1]?.lastActivityDate ?? "",
   };
 
-  console.log(userPointStreak);
-
-  return <GamificationUI userPointStreak={userPointStreak} />;
+  return <GamificationUI userPointStreak={[userPointStreak]} />;
 }

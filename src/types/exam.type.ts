@@ -18,6 +18,11 @@ export type ExamType = {
   questions: QuestionType[];
 };
 
+export type ExamResponseType = {
+  data: ExamType[];
+  meta: MetaType;
+};
+
 export type ExamAnswerType = {
   id: string;
   examAttemptId: string;
@@ -28,6 +33,11 @@ export type ExamAnswerType = {
   points: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type ExamAnswerResponseType = {
+  data: ExamAnswerType[];
+  meta: MetaType;
 };
 
 export type ExamAttempt = {
@@ -41,11 +51,6 @@ export type ExamAttempt = {
   submittedAt: string;
   createdAt: string;
   updatedAt: string;
-};
-
-export type ExamResponseType = {
-  data: ExamType[];
-  meta: MetaType;
 };
 
 export type ExamAttemptResponseType = {

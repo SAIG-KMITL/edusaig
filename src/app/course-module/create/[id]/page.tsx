@@ -8,7 +8,11 @@ export default function CreateCourseModulePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = React.use(params);
+  const [id, setId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    params.then(({ id }) => setId(id));
+  }, [params]);
 
   return <CreateCourseModule />;
 }

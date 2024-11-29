@@ -1,22 +1,23 @@
 "use client";
 
-import { exam } from "@/constants/exam";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
-import { useParams } from "next/navigation";
-import { courses } from "@/constants/course";
-import { CourseType } from "@/types/course.type";
-import { motion } from "framer-motion";
-import { QuestionType } from "@/types/question.type";
-import { Toast } from "@/components/Toast/Toast";
 import { createExamAnswerAction } from "@/actions/examAnswerAction";
 import {
   updateExamAttemptPretestAction,
   updateExamAttemptPretestBySubmitAction,
 } from "@/actions/examAttemptAction";
+import { createPretestEvaluateAction } from "@/actions/pretestAction";
+import { createRoadmapByAiAction } from "@/actions/roadmapAction";
+import { Toast } from "@/components/Toast/Toast";
+import { courses } from "@/constants/course";
+import { exam } from "@/constants/exam";
+import { CourseType } from "@/types/course.type";
+import { QuestionType } from "@/types/question.type";
 import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
+import { motion } from "framer-motion";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
 export interface PreTestUIProps {
   title: string;
@@ -88,7 +89,7 @@ export default function PreTestUI(exam: PreTestUIProps) {
       );
 
       if (response.error?.message) {
-        router.push("/course/1/pretest/result");
+        router.push("/pretest/result");
         return Toast(response.error.message, "error");
       }
 
@@ -97,12 +98,15 @@ export default function PreTestUI(exam: PreTestUIProps) {
       );
 
       if (update.error?.message) {
-        console.log(update.error.message);
         return Toast(update.error.message, "error");
       }
 
+      const evaluate = await createPretestEvaluateAction(exam.pretestId);
+      const roadmap = await createRoadmapByAiAction(
+        evaluate.data?.result as string
+      );
       Toast("Pretest submitted", "success");
-      router.push("/course/1/pretest/result");
+      router.push("/pretest/result");
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to submit pretest",
@@ -138,11 +142,11 @@ export default function PreTestUI(exam: PreTestUIProps) {
               questionIndex + 1
             } of ${exam.questions.length}`}</h2>
             <h2 className="text-[18px] text-center">
-              {exam.questions[questionIndex].question}
+              {exam.questions[questionIndex]?.question}
             </h2>
           </div>
           <div className="px-12 md:px-24 grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-6 flex-wrap">
-            {exam.questions[questionIndex].options?.map((option, index) => {
+            {exam.questions[questionIndex]?.options?.map((option, index) => {
               return (
                 <motion.button
                   whileTap={{ scale: 0.95 }}

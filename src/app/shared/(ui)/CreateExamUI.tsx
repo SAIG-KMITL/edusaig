@@ -153,8 +153,12 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
   };
 
   const createQuestionOption = async (option: CreateQuestionOptionType) => {
-    const response = await createQuestionOptionAction(option);
-    console.log(response);
+    const response = await createQuestionOptionAction(
+      option.questionId,
+      option.optionText,
+      option.isCorrect,
+      option.explanation
+    );
   };
 
   const createExam = async () => {
@@ -185,7 +189,6 @@ export default function CreateExamUI({ moduleId }: { moduleId: string }) {
                 isCorrect: option.isCorrect,
                 explanation: option.explanation,
               });
-              console.log(optionResponse);
             });
           }
         }

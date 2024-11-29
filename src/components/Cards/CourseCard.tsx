@@ -10,20 +10,16 @@ import Link from "next/link";
 import React from "react";
 import ActionButton, { ActionButtonEntryType } from "../Button/ActionButton";
 import CourseLevelTag from "../Tags/CourseLevelTag";
-
-interface CourseCardProps {
-  course: CourseType;
-  showOptionButton?: boolean;
-  handleCourseSelected?: (course: CourseType) => void;
-}
+import CourseCategoryTag from "../Tags/CourseCategoryTag";
+import CourseStatusTag from "../Tags/CourseStatusTag";
 
 export default function CourseCard({
   course,
-  showOptionButton,
+  devMode,
   handleCourseSelected,
 }: {
   course: CourseType;
-  showOptionButton?: boolean;
+  devMode?: boolean;
   handleCourseSelected?: (course: CourseType) => void;
 }) {
   if (!course) {
@@ -77,6 +73,12 @@ export default function CourseCard({
             <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`${course.duration} mins`}</span>
             <span className="py-1 px-2 rounded-sm bg-gray-800 bg-opacity-50 text-sm font-medium text-white">{`$${course.price}`}</span>
           </div>
+          {devMode && (
+            <CourseStatusTag
+              status={course.status}
+              className="absolute right-2 top-2 py-1 px-2 rounded-sm font-medium text-white"
+            />
+          )}
         </div>
         <div className="relative pt-2 flex flex-row items-start gap-2">
           <Image
@@ -86,7 +88,11 @@ export default function CourseCard({
             alt="teacher profile image"
           />
           <div className="flex-1 pt-1 flex flex-col gap-2 overflow-x-visible">
-            <h2 className="text-lg font-semibold leading-[100%] text-white">
+            <h2
+              className={`md:h-11 pt-[3px] ${
+                devMode && "mr-7"
+              } text-lg font-semibold leading-[120%] text-white truncate whitespace-normal line-clamp-1 md:line-clamp-2`}
+            >
               {course.title}
             </h2>
             <p className="text-sm  leading-[100%] text-silver">
@@ -94,15 +100,13 @@ export default function CourseCard({
             </p>
             <div className="-ml-3 flex flex-row gap-2 flex-wrap">
               <CourseLevelTag level={course.level} />
-              <span className="py-1 px-3 rounded-full border border-skyBlue text-xs text-skyBlue font-light">
-                {course.category.title}
-              </span>
+              <CourseCategoryTag category={course.category.title} />
             </div>
           </div>
         </div>
       </div>
-      {showOptionButton && (
-        <div className="absolute top-[204px] right-1">
+      {devMode && (
+        <div className="absolute top-[210px] right-1">
           <ActionButton
             entries={actionButtonEntries}
             buttonClassName={"relative z-[2]"}

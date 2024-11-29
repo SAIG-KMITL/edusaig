@@ -1,4 +1,4 @@
-import { fetchExamByCourseModuleIdAction } from "@/actions/examAction";
+import { fetchExamByModuleAction } from "@/actions/examAction";
 import { courseModule } from "@/constants/courseModule";
 import { handleOpenModal } from "@/lib/modal";
 import { ChapterResponseType } from "@/types/chapter.type";
@@ -92,7 +92,7 @@ export default function CourseModuleEntry({
   ];
 
   const handleFetchCourseModule = async (id: string) => {
-    const exam = await fetchExamByCourseModuleIdAction(id);
+    const exam = await fetchExamByModuleAction(id);
     return exam;
   };
 

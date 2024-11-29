@@ -10,9 +10,6 @@ export default async function Home() {
   const user = await fetchUserAction();
   const coursesPopular = await fetchCourseMostEnrollAction();
   const categories = await fetchCategoriesAction();
-
-  console.log(coursesPopular.data);
-  console.log(categories.data);
   return (
     <>
       <Navbar user={user.data as UserResponseType} />
