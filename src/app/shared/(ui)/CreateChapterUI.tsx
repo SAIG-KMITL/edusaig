@@ -88,7 +88,6 @@ export default function CreateChapterUI({
       title: "",
       description: "",
       content: "",
-      summary: "",
       duration: undefined,
       moduleId: moduleId,
       isPreview: false,
@@ -104,16 +103,10 @@ export default function CreateChapterUI({
 
     try {
       setIsLoading(true);
-
-      console.log(data);
-
-      console.log("Submit Function ");
-
       const chapterResponse = await createChapterAction(
         data.title,
         data.description,
         data.content,
-        data.summary,
         data.duration,
         data.moduleId,
         data.isPreview
@@ -429,17 +422,6 @@ export default function CreateChapterUI({
               className="w-full"
               error={errors.content}
               {...register("content")}
-            />
-
-            <InputTheme
-              type="text"
-              label="Chapter Summary"
-              placeholder="Enter chapter summary"
-              leftIcon={<FileText className="w-5 h-5" />}
-              helper="Briefly summarize the key points or events of this chapter"
-              className="w-full"
-              error={errors.summary}
-              {...register("summary")}
             />
 
             <motion.div

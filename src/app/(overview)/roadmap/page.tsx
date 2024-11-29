@@ -4,6 +4,8 @@ import RoadmapHero from "@/components/Hero/RoadmapHero";
 
 export default async function RoadMapPage() {
   const roadmap = await fetchRoadmapByUserAction();
+
+  console.log("roadmap", roadmap);
   return (
     <>
       {roadmap.data && roadmap.data.data.length > 0 ? (
