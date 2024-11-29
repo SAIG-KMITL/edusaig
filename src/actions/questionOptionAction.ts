@@ -1,7 +1,7 @@
 import {
   PreTestQuestionOptionsResponseType,
+  QuestionOptionResponseType,
   QuestionOptionType,
-  QuestionOptionResponseType
 } from "@/types/question.type";
 import { baseApiAction } from "./baseAction";
 
@@ -32,6 +32,15 @@ export async function fetchQuestionOptionsAction() {
   });
 }
 
+export async function fetchQuestionOptionsByIdAction(id: string) {
+  return baseApiAction<PreTestQuestionOptionsResponseType>(
+    `/question-option/pretest/${id}`,
+    {
+      method: "GET",
+    }
+  );
+}
+
 export async function createQuestionOptionAction(
   questionId: string,
   optionText: string,
@@ -48,6 +57,16 @@ export async function createQuestionOptionAction(
     },
     requiresAuth: true,
   });
+}
+
+export async function fetchQuestionOptionsPretestAction() {
+  return baseApiAction<PreTestQuestionOptionsResponseType>(
+    `/question-option/pretest`,
+    {
+      method: "GET",
+      requiresAuth: true,
+    }
+  );
 }
 
 export async function fetchQuestionOptionAction(id: string) {

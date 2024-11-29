@@ -16,6 +16,7 @@ import { createUserBackgroundAction } from "@/actions/userBackgroundAction";
 import { Toast } from "@/components/Toast/Toast";
 import { UserResponseType } from "@/types/user.type";
 import UserSkillCard from "@/components/Cards/UserSkillCard";
+import { createPretestAction } from "@/actions/pretestAction";
 
 type CreateUserBackgroundFormData = z.infer<typeof createUserBackgroundSchema>;
 
@@ -67,8 +68,17 @@ export default function UserBackgroundFormUI({
         return;
       }
 
+      const pretest = await createPretestAction(
+        "Pretest",
+        "Pretest for background",
+        20,
+        3,
+        1
+      );
+      console.log(pretest);
+
       Toast("Background has been sent.", "success");
-      router.push("/roadmap");
+      router.push("/pretest");
       reset();
     } catch (error) {
       Toast(
@@ -89,7 +99,9 @@ export default function UserBackgroundFormUI({
   };
 
   const handleTopicChange = (index: number, value: string) => {
-    const prevTopic = userBackgroundTopics.find((topic) => topic.id == levels[index]);
+    const prevTopic = userBackgroundTopics.find(
+      (topic) => topic.id == levels[index]
+    );
 
     const updatedTopics = [...topics];
     updatedTopics[index] = value;
@@ -98,7 +110,7 @@ export default function UserBackgroundFormUI({
     const updatedLevels = [...levels];
 
     const newTopic = userBackgroundTopics.find((topic) => {
-        return topic.title == value && topic.level == prevTopic?.level
+      return topic.title == value && topic.level == prevTopic?.level;
     });
 
     updatedLevels[index] = newTopic?.id;
@@ -110,9 +122,9 @@ export default function UserBackgroundFormUI({
     updatedLevels[index] = value;
     setLevels(updatedLevels);
 
-    if(!updatedLevels.some((topicId) => topicId == undefined)) {
-        setValue("level", "approved");
-        setValue("topic", "approved");
+    if (!updatedLevels.some((topicId) => topicId == undefined)) {
+      setValue("level", "approved");
+      setValue("topic", "approved");
     }
   };
 
@@ -201,7 +213,7 @@ export default function UserBackgroundFormUI({
       />
       <div className="flex justify-between items-center w-full mt-10">
         <h2 className="text-xl text-white font-semibold">
-            Highlight Your Expertise
+          Highlight Your Expertise
         </h2>
       </div>
       <div className="mt-6 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

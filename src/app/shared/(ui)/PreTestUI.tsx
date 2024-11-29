@@ -17,6 +17,8 @@ import {
   updateExamAttemptPretestBySubmitAction,
 } from "@/actions/examAttemptAction";
 import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
+import { createPretestEvaluateAction } from "@/actions/pretestAction";
+import { createRoadmapByAiAction } from "@/actions/roadmapAction";
 
 export interface PreTestUIProps {
   title: string;
@@ -88,7 +90,7 @@ export default function PreTestUI(exam: PreTestUIProps) {
       );
 
       if (response.error?.message) {
-        router.push("/course/1/pretest/result");
+        router.push("/pretest/result");
         return Toast(response.error.message, "error");
       }
 
@@ -101,8 +103,17 @@ export default function PreTestUI(exam: PreTestUIProps) {
         return Toast(update.error.message, "error");
       }
 
+      const evaluate = await createPretestEvaluateAction(exam.pretestId);
+      console.log(evaluate);
+
+      const roadmap = await createRoadmapByAiAction(
+        evaluate.data?.result as string
+      );
+
+      console.log(roadmap);
+
       Toast("Pretest submitted", "success");
-      router.push("/course/1/pretest/result");
+      router.push("/pretest/result");
     } catch (error) {
       Toast(
         error instanceof Error ? error.message : "Failed to submit pretest",
@@ -138,11 +149,11 @@ export default function PreTestUI(exam: PreTestUIProps) {
               questionIndex + 1
             } of ${exam.questions.length}`}</h2>
             <h2 className="text-[18px] text-center">
-              {exam.questions[questionIndex].question}
+              {exam.questions[questionIndex]?.question}
             </h2>
           </div>
           <div className="px-12 md:px-24 grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-6 flex-wrap">
-            {exam.questions[questionIndex].options?.map((option, index) => {
+            {exam.questions[questionIndex]?.options?.map((option, index) => {
               return (
                 <motion.button
                   whileTap={{ scale: 0.95 }}
