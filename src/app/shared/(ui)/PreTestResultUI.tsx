@@ -8,18 +8,19 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { courses } from "@/constants/course";
 import { CourseType } from "@/types/course.type";
-import { ExamAttempt, ExamAttemptPretestResponseType } from "@/types/exam.type";
+import { ExamAttemptPretestType } from "@/types/exam.type";
 import { motion } from "framer-motion";
 import { roadmap } from "@/constants/roadmap";
 import { RoadMapCardResult } from "@/components/Cards/RoadMapCardResult";
-import { RoadMapResponseType } from "@/types/roadmap.type";
+import { RoadMapType } from "@/types/roadmap.type";
 import { QuestionType } from "@/types/question.type";
+import { a } from "framer-motion/client";
 
 interface PreTestResultUIProps {
   title: string;
-  examAttempt: ExamAttemptPretestResponseType;
+  examAttempt: ExamAttemptPretestType;
   questions: QuestionType[];
-  roadmap: RoadMapResponseType;
+  roadmap: RoadMapType[];
 }
 
 export default function PreTestResultUI({
@@ -53,7 +54,7 @@ export default function PreTestResultUI({
     <div className="text-white mx-6 sm:mx-16 lg:mx-[120px] my-12 flex flex-col gap-2">
       <div className="absolute top-[80px] sm:left-10 flex items-center">
         <Link
-          href={`/course/${course?.id}`}
+          href={`/pretest`}
           className="px-6 py-2 flex h-full justify-center items-center bg-royalPurple/20 hover:bg-royalPurple/30 rounded-full"
         >
           <ChevronLeft className="mr-2 w-5 h-5" />
@@ -67,16 +68,16 @@ export default function PreTestResultUI({
           <div className="w-full p-6 flex flex-col items-center gap-1 border border-electricViolet/50 rounded-xl">
             <p className="text-[20px] font-medium">Result</p>
             <p className="py-4 md:py-2 lg:py-4 text-[32px] font-semibold">{`${Math.round(
-              (parseInt(examAttempt.data[0].score) / questions.length) * 100
+              (parseInt(examAttempt?.score) / questions.length) * 100
             )}%`}</p>
             <p className="text-[14px]">You have earned</p>
             <p className="-mt-2 text-[14px] text-center">
               <span className="text-[18px] font-medium">
-                {parseInt(examAttempt.data[0].score)}
+                {parseInt(examAttempt?.score)}
               </span>{" "}
               points of total{" "}
               <span className="text-[18px] font-medium">
-                {questions.length}
+                {questions?.length}
               </span>{" "}
               points
             </p>
@@ -84,8 +85,8 @@ export default function PreTestResultUI({
               <p>Time spent: </p>
               <p className="text-[18px] font-medium">
                 {calTimeInterval(
-                  examAttempt.data[0].startedAt,
-                  examAttempt.data[0].submittedAt
+                  examAttempt?.startedAt,
+                  examAttempt?.submittedAt
                 )}
               </p>
             </div>
@@ -129,14 +130,16 @@ export default function PreTestResultUI({
                 transition={{ duration: 1 }}
                 className="absolute w-[6px] bg-gradient-to-b from-electricViolet via-skyBlue to-royalPurple rounded-full top-10 bottom-0 ml-[-3px]"
               />
-              {roadmap.data.map((item, index) => (
-                <RoadMapCardResult
-                  key={index}
-                  number={index}
-                  data={item.courses[index]}
-                  position="right"
-                />
-              ))}
+              {roadmap
+                .sort((a, b) => a.priority - b.priority)
+                .map((item, index) => (
+                  <RoadMapCardResult
+                    key={index}
+                    number={item.priority}
+                    data={item.courses[item.courses.length - 1]}
+                    position="right"
+                  />
+                ))}
             </div>
           </div>
         </div>
