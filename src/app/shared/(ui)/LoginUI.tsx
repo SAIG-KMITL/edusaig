@@ -59,9 +59,10 @@ const LoginUI = () => {
 
   return (
     <div className="relative flex justify-center items-center h-screen">
+
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        className="absolute top-4 left-4 font-bold text-[26px] leading-[100%] text-white flex ml-5 cursor-pointer"
+        whileHover={{ scale: 1.05 }}
+        className="hover:scale-105 absolute top-4 left-4 font-bold text-[26px] leading-[100%] text-white flex ml-5 cursor-pointer"
       >
         <Link href="/" className="flex flex-row items-center gap-3">
           <Image
@@ -69,15 +70,16 @@ const LoginUI = () => {
             width={32}
             height={32}
             alt="logo"
-            className="pb-2"
+            className="pb-2 pointer-events-auto"
           />
-          <p className="flex flex-row items-baseline">
+          <p className="flex flex-row items-baseline pointer-events-auto">
             EDUSA
             <Image
               src="/icons/wand.svg"
               width={24}
               height={24}
               alt="wand icon"
+              className="pointer-events-auto"
             />
             G
           </p>
@@ -100,7 +102,7 @@ const LoginUI = () => {
         className="absolute bottom-4 right-16 object-cover">
       </Image>
 
-      <div className="flex flex-col space-y-4 w-full max-w-[720px] min-w-[360px] mx-36 px-16 md:px-32 py-4 rounded-3xl bg-purple-100 bg-opacity-10 backdrop-blur-md">
+      <div className="flex flex-col space-y-4 w-full max-w-[720px] min-w-[360px] mx-36 px-16 md:px-32 py-8 md:py-16 rounded-3xl bg-purple-100 bg-opacity-10 backdrop-blur-md">
         <h1 className="text-[36px] md:text-[72px] font-semibold text-white text-center">
           LOGIN
         </h1>
