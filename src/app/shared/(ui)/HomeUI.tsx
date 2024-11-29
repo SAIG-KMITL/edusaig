@@ -99,12 +99,12 @@ export default function HomeUI({ courses, cats }: HomeProps) {
                 their careers through our comprehensive courses.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="px-8 py-3 bg-electricViolet text-white rounded-lg font-medium hover:bg-darkMagenta transition-colors">
+                <Link href={'/roadmap'} className="px-8 py-3 bg-electricViolet text-white rounded-lg font-medium hover:bg-darkMagenta transition-colors">
                   Get Started
-                </button>
-                <button className="px-8 py-3 bg-royalPurple/30 text-white rounded-lg font-medium hover:bg-royalPurple/50 transition-colors">
+                </Link>
+                <Link href={`/course`} className="px-8 py-3 bg-royalPurple/30 text-white rounded-lg font-medium hover:bg-royalPurple/50 transition-colors">
                   View Courses
-                </button>
+                </Link>
               </div>
             </motion.div>
 
@@ -247,13 +247,15 @@ export default function HomeUI({ courses, cats }: HomeProps) {
                 Join thousands of students already learning on our platform.
                 Start your journey today!
               </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-white text-electricViolet rounded-lg font-medium hover:bg-gray-100 transition-colors"
-              >
-                Get Started Now
-              </motion.button>
+              <Link href={`/roadmap`}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-3 bg-white text-electricViolet rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                >
+                  Get Started Now
+                </motion.button>
+              </Link>
             </div>
           </div>
         </div>
