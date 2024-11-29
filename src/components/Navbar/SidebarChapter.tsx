@@ -18,7 +18,7 @@ export default function SidebarChapter({
   currentChapter?: ChapterResponseType;
   chapters: ChapterResponseType[];
   isOwner: boolean;
-  progresses: ProgressResponseType[];
+  progresses?: ProgressResponseType[];
   hasEnrolled?: boolean;
 }) {
   return (

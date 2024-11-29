@@ -22,12 +22,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface CourseDetailsProps {
-  user: UserResponseType;
+  user?: UserResponseType;
   course: CourseType;
   enrollment?: EnrollmentResponseType;
   courseModules: CourseModuleResponseType[];
   chapters: ChapterResponseType[];
-  progresses: ProgressResponseType[];
+  progresses?: ProgressResponseType[];
 }
 
 export default function CourseDetailsUI({
@@ -42,9 +42,13 @@ export default function CourseDetailsUI({
   const router = useRouter();
 
   const handleEnroll = async () => {
+    if(!user?.id) {
+      return ;
+    }
+
     try {
       setIsLoading(true);
-      console.log(user.id, course.id, false, 0, "active", new Date(), null);
+      console.log(user?.id, course.id, false, 0, "active", new Date(), null);
       const response = await createEnrollmentAction(
         user.id,
         course.id,
@@ -122,7 +126,7 @@ export default function CourseDetailsUI({
                 <p className="-mb-[7px]">{`${course.duration} mins`}</p>
               </div>
             </motion.div>
-            {!enrollment && user.role == "student" && (
+            {!enrollment && user?.role == "student" && (
               <motion.button
                 type="button"
                 onClick={handleEnroll}
@@ -140,11 +144,11 @@ export default function CourseDetailsUI({
           <div className="flex justify-center">
             <div className="w-full grid grid-cols-1 gap-8">
               <div>
-                <div className="flex items-center">
+                <div className="flex flex-col items-start">
                   <div className="text-2xl mr-8 font-semibold">
                     {course.title}
                   </div>
-                  <div className="text-gray-400">
+                  <div className="text-gray-400 mb-1">
                     by {course.teacher.fullname}
                   </div>
                 </div>
@@ -157,7 +161,7 @@ export default function CourseDetailsUI({
                   <SidebarChapter
                     courseModules={courseModules}
                     chapters={chapters}
-                    isOwner={course.teacher.id == user.id}
+                    isOwner={course.teacher.id == user?.id}
                     progresses={progresses}
                     hasEnrolled={enrollment != undefined}
                   />

@@ -10,7 +10,7 @@ import { baseApiAction } from "./baseAction";
 export async function fetchCoursesAction() {
   return baseApiAction<CoursesResponseType>("/course?page=1&limit=100", {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 
@@ -78,7 +78,7 @@ export async function deleteCourseAction(id: string) {
 export async function fetchCourseAction(id: string) {
   return baseApiAction<CourseType>(`/course/${id}`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 
