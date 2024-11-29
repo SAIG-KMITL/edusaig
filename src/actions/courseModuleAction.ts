@@ -4,14 +4,14 @@ import { baseApiAction } from "./baseAction";
 export async function fetchCourseModuleAction(id: string) {
   return baseApiAction<CourseModuleResponseType>(`/course-module/${id}`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 
 export async function fetchCourseModulesAction() {
   return baseApiAction<CourseModulesResponseType>(`/course-module?limit=100`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 

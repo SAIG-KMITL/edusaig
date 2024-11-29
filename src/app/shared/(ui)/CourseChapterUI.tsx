@@ -23,13 +23,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 interface CourseChapterUIProps {
-  user: UserResponseType;
+  user?: UserResponseType;
   enrollment?: EnrollmentResponseType;
   course: CourseType;
   courseModules: CourseModuleResponseType[];
   currentChapter: ChapterResponseType;
   chapters: ChapterResponseType[];
-  progresses: ProgressResponseType[];
+  progresses?: ProgressResponseType[];
 }
 
 export default function CourseChapterUI({
@@ -168,7 +168,7 @@ export default function CourseChapterUI({
                   </motion.button>
                   {enrollment &&
                     !hasChapterCompleted(currentChapter) &&
-                    user.role == "student" && (
+                    user?.role == "student" && (
                       <motion.button
                         disabled={isLoading}
                         whileHover={{ scale: 1.05 }}
@@ -209,7 +209,7 @@ export default function CourseChapterUI({
             courseModules={courseModules}
             currentChapter={currentChapter}
             chapters={chapters}
-            isOwner={course.teacher.id == user.id}
+            isOwner={course.teacher.id == user?.id}
             progresses={progresses}
           />
         </div>
