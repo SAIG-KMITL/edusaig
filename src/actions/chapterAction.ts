@@ -4,21 +4,21 @@ import { baseApiAction } from "./baseAction";
 export async function fetchChapterAction(id: string) {
   return baseApiAction<ChapterResponseType>(`/chapter/${id}`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 
 export async function fetchChaptersAction() {
   return baseApiAction<ChaptersResponseType>(`/chapter?limit=100`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 
 export async function fetchChaptersByModuleAction(moduleId: string) {
   return baseApiAction<ChapterResponseType[]>(`/chapter/module/${moduleId}`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 

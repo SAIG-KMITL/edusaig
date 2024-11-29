@@ -1,4 +1,7 @@
-import { fetchChaptersWithOwnershipAction } from "@/actions/chapterAction";
+import {
+  fetchChaptersAction,
+  fetchChaptersWithOwnershipAction,
+} from "@/actions/chapterAction";
 import { fetchCourseAction } from "@/actions/courseAction";
 import { fetchCourseModulesByCourseAction } from "@/actions/courseModuleAction";
 import { fetchEnrollmentsByUserAction } from "@/actions/enrollment.Action";
@@ -16,7 +19,9 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
   const courseResponse = await fetchCourseAction(id);
   const enrollmentsResponse = await fetchEnrollmentsByUserAction();
   const courseModuleResponse = await fetchCourseModulesByCourseAction(id);
-  const chaptersResponse = await fetchChaptersWithOwnershipAction();
+  const chaptersResponse = userResponse.data
+    ? await fetchChaptersWithOwnershipAction()
+    : await fetchChaptersAction();
   const progressesResponse = await fetchProgressByUserAction();
 
   let enrollment = enrollmentsResponse.data?.data.find(
@@ -35,10 +40,6 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
     return <div>Chapter not found</div>;
   }
 
-  if (!progressesResponse.data?.data) {
-    return <div>progresses not found</div>;
-  }
-
   return (
     <CourseDetailsUI
       user={userResponse.data}
@@ -49,7 +50,7 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
           (courseModule) => courseModule.id == chapter.moduleId
         )
       )}
-      progresses={progressesResponse.data.data}
+      progresses={progressesResponse.data?.data}
       enrollment={enrollment}
     />
   );

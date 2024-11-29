@@ -27,7 +27,7 @@ interface CourseDetailsProps {
   enrollment?: EnrollmentResponseType;
   courseModules: CourseModuleResponseType[];
   chapters: ChapterResponseType[];
-  progresses: ProgressResponseType[];
+  progresses?: ProgressResponseType[];
 }
 
 export default function CourseDetailsUI({
@@ -42,8 +42,13 @@ export default function CourseDetailsUI({
   const router = useRouter();
 
   const handleEnroll = async () => {
+    if(!user?.id) {
+      return ;
+    }
+
     try {
       setIsLoading(true);
+
       if (user) {
         const response = await createEnrollmentAction(
           user.id,
@@ -141,11 +146,11 @@ export default function CourseDetailsUI({
           <div className="flex justify-center">
             <div className="w-full grid grid-cols-1 gap-8">
               <div>
-                <div className="flex items-center">
+                <div className="flex flex-col items-start">
                   <div className="text-2xl mr-8 font-semibold">
                     {course.title}
                   </div>
-                  <div className="text-gray-400">
+                  <div className="text-gray-400 mb-1">
                     by {course.teacher.fullname}
                   </div>
                 </div>
