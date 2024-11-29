@@ -15,7 +15,6 @@ export type ExamType = {
   status: string;
   createdAt: string;
   updatedAt: string;
-
   questions: QuestionType[];
 };
 
@@ -86,4 +85,25 @@ export type ExamAnswerResponse = {
   points: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateExamType = {
+  courseModuleId: string;
+  title: string;
+  description: string;
+  timeLimit: number;
+  passingScore: number;
+  maxAttempts: number;
+  shuffleQuestions: boolean;
+  status: string;
+};
+
+export type EditExamType = {
+  title: string;
+  description: string;
+  timeLimit: number;
+  passingScore: number;
+  maxAttempts: number;
+  shuffleQuestions: boolean;
+  status: string;
 };

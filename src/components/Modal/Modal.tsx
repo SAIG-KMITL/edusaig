@@ -1,7 +1,7 @@
+import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 
 interface ModalProps {
   modalId: string;
@@ -16,10 +16,21 @@ export function Modal({ modalId, children }: ModalProps) {
     if (!dialogRef.current?.open) {
       dialogRef.current?.showModal();
     }
+
+    const dialog = dialogRef.current;
+    const handleCancel = (e: Event) => {
+      e.preventDefault();
+      onDismiss();
+    };
+
+    dialog?.addEventListener("cancel", handleCancel);
+
+    return () => {
+      dialog?.removeEventListener("cancel", handleCancel);
+    };
   }, []);
 
   function onDismiss() {
-    console.log("onDismiss");
     router.back();
   }
 
@@ -28,7 +39,6 @@ export function Modal({ modalId, children }: ModalProps) {
       <motion.dialog
         id={modalId}
         ref={dialogRef}
-        onClose={onDismiss}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}

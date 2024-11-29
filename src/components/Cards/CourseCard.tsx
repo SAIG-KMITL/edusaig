@@ -4,7 +4,7 @@ import { THUMBNAIL_BASE_URL } from "@/constants/thumbnail";
 import { handleOpenModal } from "@/lib/modal";
 import { CourseType } from "@/types/course.type";
 import { fetchThumbnail } from "@/utils/resource/fetchThumbnail";
-import { PencilIcon, Trash, Wrench } from "lucide-react";
+import { Paperclip, PencilIcon, Trash, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -33,6 +33,12 @@ export default function CourseCard({
       href: `/dashboard/course/${course.id}/course-module`,
     },
     {
+      label: "Manage Course Exam",
+      icon: <Paperclip className="w-[14px] h-[14px] mr-2" />,
+      type: "link",
+      href: `/dashboard/course/${course.id}/create-exam`,
+    },
+    {
       label: "Edit Course",
       icon: <PencilIcon className="w-[14px] h-[14px] mr-2" />,
       type: "link",
@@ -50,7 +56,7 @@ export default function CourseCard({
   ];
 
   return (
-    <div className="relative">
+    <div className="relative w-72">
       <div className="relative gradient-border p-2 rounded-2xl bg-gradient-to-t from-white/5 to-white/25 hover:to-white/30">
         <Link
           href={`/course/${course.id}`}

@@ -1,20 +1,20 @@
 "use client";
 
+import authEffect from "@/../public/ulits/auth-effect.svg";
 import { registerAction } from "@/actions/authAction";
 import Input from "@/components/Inputs/Input";
 import { Toast } from "@/components/Toast/Toast";
 import { registerSchema } from "@/schema/register.schema";
 import { SERVICE_AUTH } from "@/utils/enums/service-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
 import { motion } from "framer-motion";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import authEffect from "@/../public/ulits/auth-effect.svg";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 

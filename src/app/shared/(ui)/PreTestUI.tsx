@@ -1,24 +1,23 @@
 "use client";
 
-import { exam } from "@/constants/exam";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
-import { useParams } from "next/navigation";
-import { courses } from "@/constants/course";
-import { CourseType } from "@/types/course.type";
-import { motion } from "framer-motion";
-import { QuestionType } from "@/types/question.type";
-import { Toast } from "@/components/Toast/Toast";
 import { createExamAnswerAction } from "@/actions/examAnswerAction";
 import {
   updateExamAttemptPretestAction,
   updateExamAttemptPretestBySubmitAction,
 } from "@/actions/examAttemptAction";
-import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
 import { createPretestEvaluateAction } from "@/actions/pretestAction";
 import { createRoadmapByAiAction } from "@/actions/roadmapAction";
+import { Toast } from "@/components/Toast/Toast";
+import { courses } from "@/constants/course";
+import { exam } from "@/constants/exam";
+import { CourseType } from "@/types/course.type";
+import { QuestionType } from "@/types/question.type";
+import { ExamAttemptStatus } from "@/utils/enums/examAttempt";
+import { motion } from "framer-motion";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
 export interface PreTestUIProps {
   title: string;
@@ -99,19 +98,13 @@ export default function PreTestUI(exam: PreTestUIProps) {
       );
 
       if (update.error?.message) {
-        console.log(update.error.message);
         return Toast(update.error.message, "error");
       }
 
       const evaluate = await createPretestEvaluateAction(exam.pretestId);
-      console.log(evaluate);
-
       const roadmap = await createRoadmapByAiAction(
         evaluate.data?.result as string
       );
-
-      console.log(roadmap);
-
       Toast("Pretest submitted", "success");
       router.push("/pretest/result");
     } catch (error) {

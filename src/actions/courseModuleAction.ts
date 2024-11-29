@@ -32,7 +32,7 @@ export async function fetchCourseModuleWithOwnershipAction(id: string) {
 export async function fetchCourseModulesByCourseAction(courseId: string) {
   return baseApiAction<CourseModuleResponseType[]>(`/course-module/course/${courseId}`, {
     method: "GET",
-    requiresAuth: true,
+    requiresAuth: false,
   });
 }
 

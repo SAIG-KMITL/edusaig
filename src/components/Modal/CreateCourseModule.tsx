@@ -1,16 +1,15 @@
-import { z } from "zod";
-import { Modal } from "./Modal";
 import { createCourseModuleSchema } from "@/schema/course-module.schema";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Input from "../Inputs/Input";
 import { useParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import Input from "../Inputs/Input";
+import { Modal } from "./Modal";
 
 type createCourseModuleFormData = z.infer<typeof createCourseModuleSchema>;
 
 export default function CreateCourseModule() {
   const onCreate = async () => {
-    console.log("Create course module");
     reset();
   };
 

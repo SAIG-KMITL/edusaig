@@ -1,15 +1,14 @@
-import { fetchExamAttemptsAction } from "@/actions/examAttemptAction";
-import ExamRecommendUI from "@/app/shared/(ui)/ExamRecommendUI";
-import { fetchQuestionsAction } from "@/actions/questionAction";
-import { fetchQuestionOptionsAction } from "@/actions/questionOptionAction";
-import { fetchExamAnswersAction } from "@/actions/examAnswerAction";
-import { fetchExamsAction } from "@/actions/examAction";
 import { fetchCourseAction } from "@/actions/courseAction";
 import { fetchCourseModulesByCourseAction } from "@/actions/courseModuleAction";
+import { fetchExamAction, fetchExamsAction } from "@/actions/examAction";
+import { fetchExamAnswersAction } from "@/actions/examAnswerAction";
+import { fetchExamAttemptsAction } from "@/actions/examAttemptAction";
+import { fetchQuestionsAction } from "@/actions/questionAction";
+import { fetchQuestionOptionsAction } from "@/actions/questionOptionAction";
+import ExamRecommendUI from "@/app/shared/(ui)/ExamRecommendUI";
 
 interface ExamProps {
-  params: { id: string };
-  searchParams: Record<string, string>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function ExamRecommendPage({ params }: ExamProps) {

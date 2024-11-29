@@ -7,8 +7,7 @@ import { fetchUserAction } from "@/actions/userAction";
 import CourseChapterUI from "@/app/shared/(ui)/CourseChapterUI";
 
 interface ChapterProps {
-  params: { id: string, chapterId: string };
-  searchParams: Record<string, string>;
+  params: Promise<{ id: string, chapterId: string }>;
 }
 
 export default async function Chapter({ params }: ChapterProps) {

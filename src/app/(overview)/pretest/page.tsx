@@ -31,7 +31,6 @@ export default async function PreTestPage() {
   const questions = await fetchQuestionsByPretestIdAction(pretestId);
 
   if (!questions.data?.data) {
-    console.log("No questions found");
     return null;
   }
 

@@ -31,7 +31,7 @@ export default function CourseTable({ courses }: CourseTableProps) {
                 <td className="p-4">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={course.thumbnail}
+                      src={course.thumbnailKey}
                       alt={course.title}
                       className="w-16 h-12 object-cover rounded lg:flex hidden"
                     />
@@ -43,11 +43,11 @@ export default function CourseTable({ courses }: CourseTableProps) {
                     </div>
                   </div>
                 </td>
-                <td className="p-4">{course.category}</td>
+                <td className="p-4">{course.category.title}</td>
                 <td className="p-4">
                   <div className="flex items-center space-x-2">
                     <User size={16} className="text-gray-400" />
-                    <span>{course.teacher}</span>
+                    <span>{course.teacher.fullname}</span>
                   </div>
                 </td>
                 <td className="p-4">

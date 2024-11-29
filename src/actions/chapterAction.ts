@@ -40,14 +40,13 @@ export async function createChapterAction(
   title: string,
   description: string,
   content: string,
-  summary: string,
   duration: number,
   moduleId: string,
   isPreview: boolean,
   ) {
   return baseApiAction<ChapterResponseType>(`/chapter`, {
     method: "POST",
-    body: { title, description, content, summary, duration, moduleId, isPreview },
+    body: { title, description, content, duration, moduleId, isPreview },
     requiresAuth: true,
   }); 
 }

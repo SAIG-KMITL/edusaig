@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface CourseDetailsProps {
-  user: UserResponseType;
+  user?: UserResponseType;
   course: CourseType;
   enrollment?: EnrollmentResponseType;
   courseModules: CourseModuleResponseType[];
@@ -44,20 +44,21 @@ export default function CourseDetailsUI({
   const handleEnroll = async () => {
     try {
       setIsLoading(true);
-      console.log(user.id, course.id, false, 0, "active", new Date(), null);
-      const response = await createEnrollmentAction(
-        user.id,
-        course.id,
-        false,
-        0,
-        "active",
-        new Date(),
-        null
-      );
+      if (user) {
+        const response = await createEnrollmentAction(
+          user.id,
+          course.id,
+          false,
+          0,
+          "active",
+          new Date(),
+          null
+        );
 
-      if (response.error?.message) {
-        Toast(response.error.message, "error");
-        return;
+        if (response.error?.message) {
+          Toast(response.error.message, "error");
+          return;
+        }
       }
 
       Toast("Enrollment created successfully!", "success");
@@ -122,7 +123,7 @@ export default function CourseDetailsUI({
                 <p className="-mb-[7px]">{`${course.duration} mins`}</p>
               </div>
             </motion.div>
-            {!enrollment && user.role == "student" && (
+            {!enrollment && user && user.role == "student" && (
               <motion.button
                 type="button"
                 onClick={handleEnroll}
@@ -157,7 +158,7 @@ export default function CourseDetailsUI({
                   <SidebarChapter
                     courseModules={courseModules}
                     chapters={chapters}
-                    isOwner={course.teacher.id == user.id}
+                    isOwner={user ? course.teacher.id == user.id : false}
                     progresses={progresses}
                     hasEnrolled={enrollment != undefined}
                   />
