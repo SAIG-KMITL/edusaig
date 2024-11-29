@@ -13,9 +13,11 @@ import { UserResponseType } from "@/types/user.type";
 import { fetchVideo } from "@/utils/resource/fetchVideo";
 import { motion } from "framer-motion";
 import {
+  ArrowUp,
   BookMarked,
   CheckCircle,
   ChevronLeft,
+  ChevronUp,
   Download,
   MessageCircle,
 } from "lucide-react";
@@ -42,6 +44,7 @@ export default function CourseChapterUI({
   progresses,
 }: CourseChapterUIProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [summaryVisible, setSummaryVisible] = useState<boolean>(false);
   const router = useRouter();
 
   const handleComplete = async () => {
@@ -185,6 +188,7 @@ export default function CourseChapterUI({
 
               <div className="space-y-4">
                 <motion.button
+                  onClick={() => setSummaryVisible(!summaryVisible)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="w-full flex items-center justify-center px-4 py-3 bg-royalPurple text-white rounded-xl hover:bg-darkMagenta transition-colors"
@@ -202,6 +206,26 @@ export default function CourseChapterUI({
                 </motion.button>
               </div>
             </div>
+            {summaryVisible && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-6 rounded-2xl text-white text-sm bg-steelGray/30 border border-royalPurple/30"
+              >
+                <div className="flex flex-row justify-between">
+                  <p className="text-lg font-semibold mb-2">Summary</p>
+                  <motion.button
+                    onClick={() => setSummaryVisible(!summaryVisible)}
+                    animate={{ rotate: summaryVisible ? 0 : 180 }}
+                    transition={{ duration: 0.2 }}
+                    className="w-8 h-8 p-2 rounded-full hover:bg-white/20"
+                  >
+                    <ChevronUp className="w-4 h-4 text-white" />
+                  </motion.button>
+                </div>
+                <p className="text-silver">{currentChapter.summary}</p>
+              </motion.div>
+            )}
           </motion.div>
         </div>
         <div className="md:w-1/3 mb-16 rounded-3xl p-4 pt-6">

@@ -51,10 +51,17 @@ export async function createChapterAction(
   }); 
 }
 
-export async function editChapterAction(id: string, orderIndex: string, videoKey: string) {
+export async function updateChapterAction(id: string, orderIndex: number, videoKey: string) {
   return baseApiAction<ChapterResponseType>(`/chapter/${id}`, {
     method: "PATCH",
     body: { orderIndex, videoKey },
+    requiresAuth: true,
+  });
+}
+
+export async function summarizeChapterAction(id: string) {
+  return baseApiAction<ChapterResponseType>(`/chapter/${id}/summarize`, {
+    method: "GET",
     requiresAuth: true,
   });
 }

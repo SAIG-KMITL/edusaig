@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import {
   AlertCircle,
   CheckCircle,
+  ChevronLeft,
   Clock,
   FileText,
   Hash,
@@ -21,6 +22,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -230,7 +232,14 @@ export default function CreateChapterUI({
             exit="exit"
             className="flex flex-col space-y-6"
           >
-            <div className="flex justify-end">
+            <div className="flex justify-between gap-4 flex-wrap">
+              <Link
+                href={`/dashboard/course/${courseId}/course-module`}
+                className="flex items-center px-4 py-2 text-white bg-royalPurple/20 rounded-full hover:bg-royalPurple/30 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Course Modules
+              </Link>
               <motion.label
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
