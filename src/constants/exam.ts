@@ -610,6 +610,43 @@ export const exam: ExamType = {
       pretestId: null,
     },
   ],
+  courseModule: {
+    id: "",
+    course: {
+      id: "",
+      title: "",
+      description: "",
+      thumbnailKey: "",
+      teacher: {
+        id: "",
+        email: "",
+        role: "",
+        fullname: "",
+        points: 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      category: {
+        id: "category1",
+        title: "General Knowledge",
+        slug: "general-knowledge",
+        description: "General knowledge category",
+        createdAt: "2024-11-15T10:00:00Z",
+        updatedAt: "2024-11-15T10:00:00Z",
+      },
+      duration: 0,
+      level: "beginner",
+      price: 0,
+      createdAt: "",
+      updatedAt: "",
+      status: "draft",
+    },
+    title: "",
+    description: "",
+    orderIndex: 0,
+    createdAt: "",
+    updatedAt: "",
+  },
 };
 
 export const examAttempt: ExamAttempt = {
