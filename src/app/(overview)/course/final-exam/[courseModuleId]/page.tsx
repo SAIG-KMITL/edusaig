@@ -16,7 +16,6 @@ import { exam } from "@/constants/exam";
 
 interface ExamProps {
   params: Promise<{ courseModuleId: string }>;
-  searchParams: Record<string, string>;
 }
 
 export default async function FinalExamPage({ params }: ExamProps) {
