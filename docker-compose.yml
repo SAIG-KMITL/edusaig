@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  app:
+    image: edusaig
+    build:
+      context: ./
+      target: production
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
