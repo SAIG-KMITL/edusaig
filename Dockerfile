@@ -7,6 +7,7 @@ EXPOSE 5000
 FROM base as builder
 WORKDIR /app
 COPY . .
+RUN yarn install next@latest
 RUN yarn build
 
 
