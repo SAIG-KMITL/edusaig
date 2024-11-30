@@ -60,7 +60,7 @@ export async function updateChapterAction(id: string, orderIndex: number, videoK
 }
 
 export async function summarizeChapterAction(id: string) {
-  return baseApiAction<ChapterResponseType>(`/chapter/${id}/summarize`, {
+  return baseApiAction<ChapterResponseType>(`/chapter/summarize/${id}`, {
     method: "GET",
     requiresAuth: true,
   });

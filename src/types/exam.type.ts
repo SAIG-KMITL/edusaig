@@ -1,3 +1,4 @@
+import { CourseModuleType } from "./course.type";
 import { MetaType } from "./meta.type";
 import { PretestType } from "./pretest.type";
 import { QuestionOptionType, QuestionType } from "./question.type";
@@ -16,6 +17,7 @@ export type ExamType = {
   createdAt: string;
   updatedAt: string;
   questions: QuestionType[];
+  courseModule: CourseModuleType;
 };
 
 export type ExamResponseType = {
