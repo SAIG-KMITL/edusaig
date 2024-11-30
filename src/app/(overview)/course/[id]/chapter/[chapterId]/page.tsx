@@ -13,7 +13,6 @@ import { fetchUserAction } from "@/actions/userAction";
 import CourseChapterUI from "@/app/shared/(ui)/CourseChapterUI";
 
 interface ChapterProps {
-  searchParams: Record<string, string>;
   params: Promise<{ id: string, chapterId: string }>;
 }
 

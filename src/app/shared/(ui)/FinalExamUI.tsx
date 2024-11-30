@@ -40,10 +40,8 @@ export default function FinalExamUI({
   course,
 }: finalExamUIProps) {
   const [exam, setExam] = useState<ExamType>();
-  // const [courseModule, setCourseModule] = useState<CourseModuleType>();
 
   useEffect(() => {
-    console.log("Selected Answers Updated:", selectedAnswers);
     if (courseModule) {
       setExam(exams.find((exam) => exam.courseModuleId === courseModule.id));
     }
@@ -75,13 +73,6 @@ export default function FinalExamUI({
     e.preventDefault();
     try {
       let cor = 0;
-
-      const CountExam = exam_attempts.length;
-
-      if (CountExam === exam.maxAttempts) {
-        router.push(`/course/${course.id}/exam-recommend`);
-        return Toast("You have used up your rights", "error");
-      }
 
       for (let i = 0; i < questions.length; i++) {
         const selectedOption = selectedAnswers[i];
