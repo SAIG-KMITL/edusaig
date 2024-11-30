@@ -1,0 +1,203 @@
+import { CategoryType } from "@/types/category";
+
+type CategoryOptions = {
+  id: string;
+  label: string;
+  count: number;
+};
+
+export const categories: CategoryType[] = [
+  {
+    id: "1",
+    title: "Python",
+    description: "Python programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-20",
+  },
+  {
+    id: "2",
+    title: "JavaScript",
+    description: "JavaScript programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-18",
+  },
+  {
+    id: "3",
+    title: "TypeScript",
+    description: "TypeScript programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-19",
+  },
+  {
+    id: "4",
+    title: "Java",
+    description: "Java programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-17",
+  },
+  {
+    id: "5",
+    title: "C++",
+    description: "C++ programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-16",
+  },
+  {
+    id: "6",
+    title: "C#",
+    description: "C# programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-15",
+  },
+  {
+    id: "7",
+    title: "Kotlin",
+    description: "Kotlin programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-14",
+  },
+  {
+    id: "8",
+    title: "Swift",
+    description: "Swift programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-13",
+  },
+  {
+    id: "9",
+    title: "Go",
+    description: "Go programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-12",
+  },
+  {
+    id: "10",
+    title: "Ruby",
+    description: "Ruby programming language",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-11",
+  },
+  {
+    id: "11",
+    title: "AI",
+    description: "Artificial Intelligence",
+    slug: "ai",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-10",
+  },
+  {
+    id: "12",
+    title: "ML",
+    description: "Machine Learning",
+    slug: "ml",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-09",
+  },
+  {
+    id: "13",
+    title: "DL",
+    description: "Deep Learning",
+    slug: "dl",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-08",
+  },
+  {
+    id: "14",
+    title: "CV",
+    description: "Computer Vision",
+    slug: "cv",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-07",
+  },
+  {
+    id: "15",
+    title: "NLP",
+    description: "Natural Language Processing",
+    slug: "nlp",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-06",
+  },
+  {
+    id: "16",
+    title: "React",
+    description: "React JavaScript library",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-05",
+  },
+  {
+    id: "17",
+    title: "Vue",
+    description: "Vue JavaScript library",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-04",
+  },
+  {
+    id: "18",
+    title: "Angular",
+    description: "Angular JavaScript framework",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-03",
+  },
+  {
+    id: "19",
+    title: "Svelte",
+    description: "Svelte JavaScript framework",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-02",
+  },
+  {
+    id: "20",
+    title: "Deno",
+    description: "Deno JavaScript runtime",
+    slug: "programming",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-03-01",
+  },
+];
+
+export const categoryOptions: CategoryOptions[] = [
+  {
+    id: "programming",
+    label: "Programming",
+    count: 10,
+  },
+  {
+    id: "ai",
+    label: "Artificial Intelligence",
+    count: 1,
+  },
+  {
+    id: "ml",
+    label: "Machine Learning",
+    count: 1,
+  },
+  {
+    id: "dl",
+    label: "Deep Learning",
+    count: 1,
+  },
+  {
+    id: "cv",
+    label: "Computer Vision",
+    count: 1,
+  },
+  {
+    id: "nlp",
+    label: "Natural Language Processing",
+    count: 1,
+  },
+];
