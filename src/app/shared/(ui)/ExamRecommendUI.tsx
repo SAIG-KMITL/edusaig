@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { QuestionType } from "@/types/question.type";
-import { QuestionOptionType } from "@/types/question.type";
-import { ExamAnswerType } from "@/types/exam.type";
 import HeaderPage from "@/components/HeaderPage/HeaderPage";
-import { ExamAttempt, ExamType } from "@/types/exam.type";
 import { CourseModuleResponseType, CourseType } from "@/types/course.type";
+import { ExamAnswerType, ExamAttempt, ExamType } from "@/types/exam.type";
+import { QuestionOptionType, QuestionType } from "@/types/question.type";
+import { RECOMMENDATION } from "@/utils/enums/recommendation";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ExamRecommendUIProps {
   exams: ExamType[];
@@ -16,7 +15,7 @@ interface ExamRecommendUIProps {
   question_options: QuestionOptionType[];
   exam_answers: ExamAnswerType[];
   exam_attempts: ExamAttempt[];
-  courseModuleResponse: CourseModuleResponseType[]
+  courseModuleResponse: CourseModuleResponseType[];
 }
 
 export default function ExamRecommendUI({
@@ -29,109 +28,142 @@ export default function ExamRecommendUI({
   courseModuleResponse,
 }: ExamRecommendUIProps) {
   const router = useRouter();
-
   const [summaryPoints, setSummaryPoints] = useState<number>(0);
-    const [courseModule, setCourseModule] = useState<CourseModuleResponseType>();
-    const [exam, setExam] = useState<ExamType>()
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
+  const [courseModule, setCourseModule] = useState<CourseModuleResponseType>();
+  const [exam, setExam] = useState<ExamType>();
+  const [lastAttempt, setLastAttempt] = useState<ExamAttempt>();
+  const [totalScore, setTotalScore] = useState<number>(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
-    const filterpts = exam_attempts.filter((exam) => exam.examId === exam.id);
-    const points = filterpts.findLast((arr) => arr);
-    if (points) {
-      setSummaryPoints(points.score);
+    const foundCourseModule = courseModuleResponse.find(
+      (module) => module.courseId === course.id
+    );
+    setCourseModule(foundCourseModule);
+
+    if (foundCourseModule) {
+      const foundExam = exams.find(
+        (exam) => exam.courseModule.id === foundCourseModule.id
+      );
+      setExam(foundExam);
+
+      if (foundExam) {
+        const examAttempts = exam_attempts.filter(
+          (attempt) => attempt.examId === foundExam.id
+        );
+
+        const sortedAttempts = examAttempts.sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
+
+        const mostRecentAttempt = sortedAttempts[0];
+        setLastAttempt(mostRecentAttempt);
+
+        if (mostRecentAttempt) {
+          setSummaryPoints(mostRecentAttempt.score);
+        }
+
+        setTotalQuestions(questions.length);
+
+        const totalScore = questions.reduce((acc, question) => {
+          return acc + question.points;
+        }, 0);
+
+        setTotalScore(totalScore);
+        setIsLoaded(true);
+      }
     }
-    setCourseModule(courseModuleResponse.find(moduleId=>moduleId.courseId === course.id))
-    if (courseModule){
-        setExam(exams.find(exam => exam.courseModuleId === courseModule.id))
-    }
-  },[]);
+  }, [course.id, courseModuleResponse, exams, exam_attempts]);
+
+  const getLevelColor = (percentage: number) => {
+    if (percentage >= 80) return "text-advanced";
+    if (percentage >= 60) return "text-intermediate";
+    return "text-beginner";
+  };
+
+  const getScoreAnimation = () => {
+    const percentage = Math.round((summaryPoints / totalScore) * 100);
+    if (percentage >= 80) return "animate-pulse-scale";
+    if (percentage >= 60) return "animate-fade-scale-in";
+    return "animate-fade-up";
+  };
 
   const handleBackToCourse = () => {
     router.push(`/course/${course.id}`);
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-auto mx-4 lg:mx-24 sm:mx-12 py-4 space-y-8">
-      <HeaderPage namePage={course.title} />
-      <div className="flex justify-start items-center w-full">
-        <h2 className="text-2xl font-medium text-slate-100">{exam?.title}</h2>
-      </div>
-      <div
-        className="flex flex-col lg:grid lg:grid-cols-4 gap-8 w-full max-h-[960px] lg:max-h-[720px] 
-            overflow-hidden p-8 my-4 lg:my-24 sm:my-12 rounded-3xl bg-slate-100 bg-opacity-5 backdrop-blur-md text-black"
-      >
-        <div className="flex flex-col gap-8 font-semibold text-xl">
-          <div className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl bg-slate-50">
-            <h4>Score</h4>
-            <p>
-              {summaryPoints}/{exam?.questions.length}
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl bg-slate-50">
-            <h4>Your Level</h4>
-            <p>{summaryPoints}</p>
+    <div className="min-h-screen bg-steelGray bg-opacity-95 animate-gradient-shift">
+      <div className="flex flex-col justify-start items-center w-auto mx-4 lg:mx-24 sm:mx-12 py-4 space-y-8">
+        <div className="animate-fade-slide-in w-full">
+          <div className="flex justify-start items-start">
+            <HeaderPage namePage={course.title} />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:col-span-3 h-full gap-4">
-          <div className="w-full h-fit max-h-[360px] lg:max-h-[480px] border-2 border-slate-50 p-2 overflow-y-auto">
-            <div className="flex flex-col justify-start items-start w-full">
-              <h2 className="text-2xl font-semibold text-slate-100">
-                Recommendation
-              </h2>
-              <p className="text-lg font-light text-slate-100">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
-                necessitatibus hic reprehenderit, eveniet totam, unde quae iure
-                a sit doloribus architecto dicta dolorem fuga, repellat harum
-                modi adipisci aspernatur earum! Est sint sit et id voluptates
-                minus quia, error veritatis eius ratione recusandae. Quod
-                dignissimos quisquam quam magni dolorum aliquam!
+        <div className="w-full animate-fade-up">
+          <h2 className="text-2xl font-medium text-skyBlue">{exam?.title}</h2>
+        </div>
+
+        <div
+          className="flex flex-col lg:grid lg:grid-cols-4 gap-8 w-full max-h-[960px] lg:max-h-[720px] 
+            overflow-hidden p-8 rounded-3xl bg-darkMagenta bg-opacity-10 backdrop-blur-md 
+            shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-scale-in"
+        >
+          <div className="flex flex-col gap-8 font-semibold text-xl">
+            <div
+              className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl 
+                bg-royalPurple bg-opacity-20 backdrop-blur-md shadow-lg 
+                hover:scale-102 transition-transform duration-300"
+            >
+              <h4 className="text-skyBlue">Score</h4>
+              <p className={`text-4xl ${getScoreAnimation()} text-oceanBlue`}>
+                {summaryPoints}/{totalScore}
               </p>
             </div>
 
-            <div className="flex flex-col gap-2">
-              {exam?.questions.map((question, index) => {
-                const selectedOption = question.options[index].isCorrect;
-
-                return (
-                  <div
-                    key={question.id}
-                    className={`p-4 border-2 rounded-lg break-words ${
-                      selectedOption
-                        ? "border-green-500 bg-green-100"
-                        : selectedOption
-                        ? "border-red-500 bg-red-100"
-                        : "border-gray-500 bg-gray-100"
-                    }`}
-                  >
-                    <p>
-                      <strong>Question {index + 1}:</strong> {question.question}
-                    </p>
-                    <p>
-                      <strong>Answer:</strong>{" "}
-                      {
-                        question.options.find((option) => option.isCorrect)
-                          ?.optionText
-                      }
-                    </p>
-                    <p>
-                      <strong>Reason:</strong>{" "}
-                      {
-                        question.options.find((option) => option.isCorrect)
-                          ?.explanation
-                      }
-                    </p>
-                  </div>
-                );
-              })}
+            <div
+              className="flex flex-col items-center gap-4 w-full h-auto p-8 rounded-xl 
+                bg-royalPurple bg-opacity-20 backdrop-blur-md shadow-lg 
+                hover:scale-102 transition-transform duration-300"
+            >
+              <h4 className="text-skyBlue">Your Level</h4>
+              <p
+                className={`text-4xl ${getLevelColor(
+                  Math.round((summaryPoints / totalScore) * 100)
+                )}`}
+              >
+                {Math.round((summaryPoints / totalScore) * 100)}%
+              </p>
             </div>
           </div>
-          <div className="flex justify-end items-center my-4">
-            <button
-              onClick={handleBackToCourse}
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-purple-700 transition-all duration-200"
+
+          <div className="grid grid-cols-1 lg:col-span-3 h-full gap-4">
+            <div
+              className="w-full h-fit max-h-[360px] lg:max-h-[480px] border-2 border-electricViolet 
+                p-6 rounded-xl overflow-y-auto bg-royalPurple bg-opacity-10 backdrop-blur-md"
             >
-              Done
-            </button>
+              <h3 className="text-2xl font-semibold text-silver mb-4">
+                Recommendations
+              </h3>
+              <div className="prose prose-invert max-w-none text-white">
+                {RECOMMENDATION.FINAL}
+              </div>
+            </div>
+
+            <div className="flex justify-end items-center my-4">
+              <button
+                onClick={handleBackToCourse}
+                className="px-6 py-3 bg-oceanBlue text-white rounded-lg 
+                    hover:bg-electricViolet transition-all duration-300 
+                    hover:scale-102 active:scale-98 shadow-lg"
+              >
+                Back to Course
+              </button>
+            </div>
           </div>
         </div>
       </div>

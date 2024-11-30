@@ -80,10 +80,6 @@ export default async function FinalExamPage({ params }: ExamProps) {
       return question;
     })
   );
-
-  console.log("Exams : ", exams.data?.data);
-  console.log("Question : ", questions?.data?.data);
-
   return (
     <FinalExamUI
       exams={exams.data.data}
@@ -93,6 +89,5 @@ export default async function FinalExamPage({ params }: ExamProps) {
       courseModule={courseModule.data}
       course={course?.data}
     />
-    // <div>Final Exam</div>
   );
 }
