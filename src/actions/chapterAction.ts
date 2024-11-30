@@ -1,4 +1,7 @@
-import { ChapterResponseType, ChaptersResponseType } from "@/types/chapter.type";
+import {
+  ChapterResponseType,
+  ChaptersResponseType,
+} from "@/types/chapter.type";
 import { baseApiAction } from "./baseAction";
 
 export async function fetchChapterAction(id: string) {
@@ -23,10 +26,13 @@ export async function fetchChaptersByModuleAction(moduleId: string) {
 }
 
 export async function fetchChaptersWithOwnershipAction() {
-  return baseApiAction<ChaptersResponseType>(`/chapter/with-ownership?limit=100`, {
-    method: "GET",
-    requiresAuth: true,
-  });
+  return baseApiAction<ChaptersResponseType>(
+    `/chapter/with-ownership?limit=100`,
+    {
+      method: "GET",
+      requiresAuth: true,
+    }
+  );
 }
 
 export async function fetchChapterWithOwnershipAction() {
@@ -42,16 +48,20 @@ export async function createChapterAction(
   content: string,
   duration: number,
   moduleId: string,
-  isPreview: boolean,
-  ) {
+  isPreview: boolean
+) {
   return baseApiAction<ChapterResponseType>(`/chapter`, {
     method: "POST",
     body: { title, description, content, duration, moduleId, isPreview },
     requiresAuth: true,
-  }); 
+  });
 }
 
-export async function updateChapterAction(id: string, orderIndex: number, videoKey: string) {
+export async function updateChapterAction(
+  id: string,
+  orderIndex: number,
+  videoKey: string
+) {
   return baseApiAction<ChapterResponseType>(`/chapter/${id}`, {
     method: "PATCH",
     body: { orderIndex, videoKey },
@@ -60,7 +70,7 @@ export async function updateChapterAction(id: string, orderIndex: number, videoK
 }
 
 export async function summarizeChapterAction(id: string) {
-  return baseApiAction<ChapterResponseType>(`/chapter/summarize/${id}`, {
+  return baseApiAction<ChapterResponseType>(`/chapter/${id}/summarize`, {
     method: "GET",
     requiresAuth: true,
   });
@@ -68,7 +78,7 @@ export async function summarizeChapterAction(id: string) {
 
 export async function uploadChapterVideoAction(id: string, file: File) {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   return baseApiAction<void>(`/chapter/${id}/video`, {
     method: "PATCH",
