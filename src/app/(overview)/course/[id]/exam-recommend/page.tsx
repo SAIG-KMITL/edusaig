@@ -51,7 +51,7 @@ export default async function ExamRecommendPage({ params }: ExamProps) {
       questions={questions.data.data}
       question_options={question_options.data.data}
       exam_answers={exam_answers.data.data}
-      exam_attempts={exam_attempts.data}
+      exam_attempts={exam_attempts.data.data}
       courseModuleResponse={courseModuleResponse.data}
       course={course.data}
     />
