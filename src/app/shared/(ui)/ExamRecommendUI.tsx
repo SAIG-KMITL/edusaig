@@ -44,7 +44,7 @@ export default function ExamRecommendUI({
 
     if (foundCourseModule) {
       const foundExam = exams.find(
-        (exam) => exam.courseModule.id === foundCourseModule.id
+        (exam) => exam.courseModule && exam.courseModule.id === foundCourseModule.id
       );
       setExam(foundExam);
 

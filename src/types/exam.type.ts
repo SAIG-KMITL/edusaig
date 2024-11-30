@@ -17,7 +17,7 @@ export type ExamType = {
   createdAt: string;
   updatedAt: string;
   questions: QuestionType[];
-  courseModule: CourseModuleType;
+  courseModule?: CourseModuleType;
 };
 
 export type ExamResponseType = {
