@@ -1,4 +1,4 @@
-"usr server";
+"use server";
 
 import { RewardOptions, RewardResponseType, RewardStatus, RewardType } from "@/types/reward";
 import { baseApiAction } from "./baseAction";
