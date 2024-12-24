@@ -43,9 +43,11 @@ pipeline {
         }
 
         stage('Deployment') {
-            script {
-                sh "git clone $manifest-repo"
-                // ใช้คำสั่ง kubectl set image เพื่อทำการ set image ใหม่ให้กับ deployment ของเรา
+            steps {
+                script {
+                    sh "git clone $manifest-repo"
+                    // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา
+                }
             }
         }
     }
