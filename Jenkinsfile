@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "docker build --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER ."
+                    sh "docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER ."
                     // ใช้คำสั่ง docker.build เพื่อทำการ build image ของโปรเจคของเรา
                 }
             }
