@@ -42,7 +42,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'edusaig-manifest-repo', variable: 'MANIFEST_REPO')]) {
                         sh "git clone $MANIFEST_REPO"
-                        sh 'sed -i 's/^\([[:space:]]*tag:[[:space:]]*\).*/\1"${BUILD_NUMBER}"/' $MANIFEST_REPO/values.yaml'
+                        sh 'sed -i "s/^\\([[:space:]]*tag:[[:space:]]*\\).*/\\1\\"$BUILD_NUMBER\\"/" $MANIFEST_REPO/values.yaml'
                         sh "cd edusaig-manifest && git add . && git commit -m 'Update tag to $BUILD_NUMBER' && git push"
                         // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา และใช้คำสั่ง sed เพื่อทำการแก้ไขไฟล์ values.yaml ในโปรเจคของเรา
                     }
