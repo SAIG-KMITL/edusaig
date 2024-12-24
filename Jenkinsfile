@@ -31,7 +31,6 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'gan-docker-hub') {
                         docker.image("$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER").push()
-                        docker.image("$DOCKER_CREDENTIALS_USR/edusaig:latest").push()
                         // ใช้คำสั่ง docker.image.push เพื่อทำการ push image ของเราไปยัง Docker Hub
                     }
                 }
@@ -43,8 +42,6 @@ pipeline {
         always {
             sh "docker rmi $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER"
             sh "docker rmi registry.hub.docker.com/$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER"
-            sh "docker rmi $DOCKER_CREDENTIALS_USR/edusaig:latest"
-            sh "docker rmi registry.hub.docker.com/$DOCKER_CREDENTIALS_USR/edusaig:latest"
             // ใช้คำสั่ง docker rmi เพื่อทำการลบ image ที่เรา build และ push ไปยัง Docker Hub
         }
     }
