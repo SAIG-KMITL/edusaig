@@ -22,30 +22,31 @@ pipeline {
 
 
     stages {
-        stage('Build') {
-            steps {
-                script {
-                    sh "docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER ."
-                    // ใช้คำสั่ง docker.build เพื่อทำการ build image ของโปรเจคของเรา
-                }
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         script {
+        //             sh "docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER ."
+        //             // ใช้คำสั่ง docker.build เพื่อทำการ build image ของโปรเจคของเรา
+        //         }
+        //     }
+        // }
 
-        stage('Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'gan-docker-hub') {
-                        docker.image("$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER").push()
-                        // ใช้คำสั่ง docker.image.push เพื่อทำการ push image ของเราไปยัง Docker Hub
-                    }
-                }
-            }
-        }
+        // stage('Push') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry('https://registry.hub.docker.com', 'gan-docker-hub') {
+        //                 docker.image("$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER").push()
+        //                 // ใช้คำสั่ง docker.image.push เพื่อทำการ push image ของเราไปยัง Docker Hub
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Deployment') {
             steps {
                 script {
-                    sh "git clone $manifest-repo"
+                    echo"${manifest-repo}"
+                    // sh "git clone $manifest-repo"
                     // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา
                 }
             }
