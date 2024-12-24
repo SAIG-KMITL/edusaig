@@ -41,10 +41,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'edusaig-manifest-repo', variable: 'MANIFEST_REPO')]) {
-                        sh "docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW"
+                    
                         // ใช้คำสั่ง docker login เพื่อทำการ login เข้าสู่ Docker Hub
+                        echo "$MANIFEST_REPO"
                     }
-                    echo "$MANIFEST_REPO"
                     // sh "git clone $manifest-repo"
                     // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา
                 }
