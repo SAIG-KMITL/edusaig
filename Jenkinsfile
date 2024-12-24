@@ -16,11 +16,6 @@ pipeline {
         // กำหนดตัวแปรชื่อ DOCKER_CREDENTIALS โดยให้มีค่าเป็น credentials ที่ชื่อ gan-docker-hub
     }
 
-    parameters {
-        credentials credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl', defaultValue: 'edusaig-manifest-repo', name: 'manifest-repo', required: false
-    }
-
-
     stages {
         // stage('Build') {
         //     steps {
@@ -45,7 +40,11 @@ pipeline {
         stage('Deployment') {
             steps {
                 script {
-                    echo "${manifest-repo}"
+                    withCredentials([string(credentialsId: 'edusaig-manifest-repo', variable: 'MANIFEST_REPO')]) {
+                        sh "docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW"
+                        // ใช้คำสั่ง docker login เพื่อทำการ login เข้าสู่ Docker Hub
+                    }
+                    echo "$MANIFEST_REPO"
                     // sh "git clone $manifest-repo"
                     // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา
                 }
