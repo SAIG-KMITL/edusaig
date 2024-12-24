@@ -45,7 +45,7 @@ pipeline {
         stage('Deployment') {
             steps {
                 script {
-                    echo"${manifest-repo}"
+                    echo "${manifest-repo}"
                     // sh "git clone $manifest-repo"
                     // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา
                 }
