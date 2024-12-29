@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER ."
+                    sh 'docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER .'
                     // ใช้คำสั่ง docker.build เพื่อทำการ build image ของโปรเจคของเรา
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'gan-docker-hub') {
-                        docker.image("$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER").push()
+                        docker.image('$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER').push()
                         // ใช้คำสั่ง docker.image.push เพื่อทำการ push image ของเราไปยัง Docker Hub
                     }
                 }
@@ -41,11 +41,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'edusaig-manifest-repo', variable: 'MANIFEST_REPO')]) {
-                        sh "git clone $MANIFEST_REPO"
+                        sh 'git clone $MANIFEST_REPO'
                         sh 'sed -i "s/^\\([[:space:]]*tag:[[:space:]]*\\).*/\\1\\"$BUILD_NUMBER\\"/" edusaig-manifests/values.yaml'
                         sh 'git config --global user.email "ganzazamar@gmail.com"'
                         sh 'git config --global user.name "ganthepro"'
-                        sh "cd edusaig-manifests && git add . && git commit -m 'Update tag to $BUILD_NUMBER' && git push"
+                        sh 'cd edusaig-manifests && git add . && git commit -m "Update tag to $BUILD_NUMBER" && git push'
                         // ใช้คำสั่ง git clone เพื่อทำการ clone โปรเจคของเรา และใช้คำสั่ง sed เพื่อทำการแก้ไขไฟล์ values.yaml ในโปรเจคของเรา
                     }
                 }
@@ -55,10 +55,10 @@ pipeline {
     
     post {
         always {
-            sh "docker rmi $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER"
-            sh "docker rmi registry.hub.docker.com/$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER"
-            sh "echo y | docker system prune -a"
-            sh "rm -rf edusaig-manifests"
+            sh 'docker rmi $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
+            sh 'docker rmi registry.hub.docker.com/$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
+            sh 'echo y | docker system prune -a'
+            sh 'rm -rf edusaig-manifests'
             // ใช้คำสั่ง docker rmi เพื่อทำการลบ image ที่เรา build และ push ไปยัง Docker Hub
         }
     }
