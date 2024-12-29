@@ -55,8 +55,6 @@ pipeline {
     
     post {
         always {
-            sh 'docker rmi $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
-            sh 'docker rmi registry.hub.docker.com/$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
             sh 'echo y | docker system prune -a'
             sh 'rm -rf edusaig-manifests'
             // ใช้คำสั่ง docker rmi เพื่อทำการลบ image ที่เรา build และ push ไปยัง Docker Hub
