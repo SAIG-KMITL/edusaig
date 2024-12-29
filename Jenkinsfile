@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'gan-docker-hub') {
-                        docker.image('$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER').push()
+                        docker.image("$DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER").push()
                         // ใช้คำสั่ง docker.image.push เพื่อทำการ push image ของเราไปยัง Docker Hub
                     }
                 }
