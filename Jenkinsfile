@@ -45,7 +45,7 @@ pipeline {
         stage("Image Analysis") {
             steps {
                 script {
-                    sh 'trivy image --scanners vuln --no-progress --exit-code 1 --severity HIGH,CRITICAL $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
+                    sh 'trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
                 }
             }
         }
