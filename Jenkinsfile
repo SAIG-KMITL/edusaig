@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'agent1'
+            label 'main-agent'
             // label คือชื่อของเครื่องที่เราต้องการให้ Jenkins ทำการ build โปรเจคของเรา
         }
     }
@@ -29,14 +29,23 @@ pipeline {
                             -Dsonar.sources=. \
                             -Dsonar.host.url=https://sonarcloud.io"
                 }
+                // ใช้คำสั่ง sonar-scanner เพื่อทำการวิเคราะห์โค้ดของเรา
             }
         }
-        
+
         stage('Build') {
             steps {
                 script {
                     sh 'docker build --no-cache --target production -t $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER .'
                     // ใช้คำสั่ง docker.build เพื่อทำการ build image ของโปรเจคของเรา
+                }
+            }
+        }
+        
+        stage("Image Analysis") {
+            steps {
+                script {
+                    sh 'trivy image --scanners vuln --no-progress --exit-code 1 --severity HIGH,CRITICAL $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER'
                 }
             }
         }
