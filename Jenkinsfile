@@ -32,6 +32,14 @@ pipeline {
                 // ใช้คำสั่ง sonar-scanner เพื่อทำการวิเคราะห์โค้ดของเรา
             }
         }
+
+        stage('Install Dependencies') {
+            steps {
+                nodejs(nodeJSInstallationName: 'nodejs') {
+                    sh 'pnpm install'
+                }
+            }
+        }
         
         stage('OWASP Dependency Check') {
             steps {
@@ -86,10 +94,17 @@ pipeline {
     }
     
     post {
+        clearWs()
         always {
             sh 'echo y | docker system prune -a'
             sh 'rm -rf edusaig-manifests'
             // ใช้คำสั่ง docker rmi เพื่อทำการลบ image ที่เรา build และ push ไปยัง Docker Hub
+            cleanWs(cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true,
+                patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                           [pattern: '.propsfile', type: 'EXCLUDE']])
         }
     }
 }
