@@ -35,8 +35,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                nodejs(nodeJSInstallationName: 'nodejs') {
-                    sh 'npm install'
+                nodejs(nodeJSInstallationName: 'yarn') {
+                    sh 'yarn install'
                 }
             }
         }
