@@ -94,7 +94,6 @@ pipeline {
     }
     
     post {
-        clearWs()
         always {
             sh 'echo y | docker system prune -a'
             sh 'rm -rf edusaig-manifests'
