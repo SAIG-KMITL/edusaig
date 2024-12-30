@@ -36,7 +36,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 nodejs(nodeJSInstallationName: 'nodejs') {
-                    sh 'pnpm install'
+                    sh 'npm install'
                 }
             }
         }
