@@ -32,6 +32,14 @@ pipeline {
                 // ใช้คำสั่ง sonar-scanner เพื่อทำการวิเคราะห์โค้ดของเรา
             }
         }
+        
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dependency-check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                // ใช้คำสั่ง dependencyCheck เพื่อทำการวิเคราะห์ dependency ของโปรเจคของเรา
+            }
+        }
 
         stage('Build') {
             steps {
