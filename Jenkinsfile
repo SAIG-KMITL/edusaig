@@ -69,9 +69,10 @@ pipeline {
         stage("Filesystem Analysis") {
             steps {
                 script {
-                sh 'docker run --rm -it $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER 
-                    / curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-                    / trivy fs /'
+                    sh 'docker run --rm -it $DOCKER_CREDENTIALS_USR/edusaig:$BUILD_NUMBER 
+                        / curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+                        / trivy fs /'
+                    }
                 }
             }
         }
