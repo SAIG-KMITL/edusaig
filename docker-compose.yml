@@ -14,3 +14,10 @@ services:
       - "5000:5000"
     env_file:
       - .env
+    networks:
+      - edusaig
+
+networks:
+  edusaig:
+    external: true
+    driver: bridge

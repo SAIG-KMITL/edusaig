@@ -20,4 +20,6 @@ jobs:
           cat .env
 
       - name: Running Docker Compose
-        run: docker compose up -d --build
+        run: |
+            docker network create edusaig || true
+            docker compose up -d --build
